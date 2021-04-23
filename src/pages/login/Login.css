@@ -12,111 +12,6 @@
   border: 2px solid #FFFFFF;
 }
 
-.header {
-  position: relative;
-  width: 414px;
-  height: 360px;
-  background: #FFFFFF;
-  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.06);
-  border-radius: 18px;
-  margin-bottom: 30px;
-}
-
-.header-logo {
-  position: relative;
-  width: 74.95px;
-  height: 74.95px;
-  left: 170.5px;
-  top: 101px;
-
-  background: #FA4A0C;
-  transform: rotate(45deg);
-}
-
-.header-minilogo {
-  position: relative;
-  width: 14.85px;
-  height: 14.85px;
-  left: 175.5px;
-  top: 95px;
-
-  background: #FA4A0C;
-  border: 25px solid #FFFFFF;
-  transform: rotate(45deg);
-}
-
-.header-title {
-  position: absolute;
-  width: 49px;
-  height: 25px;
-  left: 182px;
-  top: 325px;
-
-  font-family: "Open Sans", sans-serif;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 25px;
-  color: #000000;
-}
-
-.header-bottom {
-  position: absolute;
-  width: 134px;
-  height: 3px;
-  left: 140px;
-  top: 360px;
-
-  background: #FA4A0C;
-  box-shadow: 0px 4px 4px rgba(196, 63, 21, 0.1);
-  border-radius: 40px;
-}
-
-.Login-Group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 314px;
-  margin-top: 2.7rem;
-}
-
-.Login-Label {
-  position: relative;
-  font-family: "Open Sans", sans-serif;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 15px;
-  line-height: 20px;
-  color: #000000;
-  opacity: 0.4;
-}
-
-.Login-Field {
-  background-color: transparent;
-  color: #000000;
-
-  outline: none;
-  outline-style: none;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  border-bottom: solid #000000 1.5px;
-  margin-top: 11px;
-  padding-bottom: 5px;
-  font-weight: bold;
-  width: 314px;
-  transition: all .1s linear;
-}
-
-.Login-Field:focus {
-    box-shadow: 0 0 0 rgba(0, 0, 0, .5);
-    outline: none;
-}
-
-.Login-Error {
-    color: #ff8080;
-}
-
 .Login-Forgot {
   position: relative;
   width: 159px;
@@ -158,8 +53,11 @@
   border-radius: 30px;
 }
 
-.Login-Btn:hover {
-    cursor: pointer;
+.Login-Button:hover {
+  cursor: pointer;
+  border: 5px solid #FA4A0C;
+  background: #FFFFFF;
+  color: #000000;
 }
 
 .footer {
