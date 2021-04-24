@@ -6,8 +6,9 @@ import * as yup from 'yup'
 import './Login.css'
 import Header from './Header'
 import InputField from '../../components/InputField'
+import auth from '../../utilities/auth'
 
-const Login = ({setToken}) => {
+const Login = props => {
 
   // Implementar login aqui:
   // tentar logar no backend: deve retornar um usuario com perfil
@@ -15,7 +16,11 @@ const Login = ({setToken}) => {
     // values.preventDefault() parece não funcionar
     if (values.email === 'gugajansen@hotmail.com'){
       console.log("Você se logou com sucesso!!")
-      setToken(values)
+      console.log(props)
+      auth.login(() => {
+        props.history.push("/prof");
+      });
+      console.log(auth.isAuthenticated ? "true" : "false")
     } else { }
   }
 
