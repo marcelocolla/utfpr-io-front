@@ -7,8 +7,17 @@ import './Login.css'
 import Header from './Header'
 import InputField from '../../components/InputField'
 
-const Login = () => {
-  const handleSubmit = values => console.log(values)
+const Login = ({setToken}) => {
+
+  // Implementar login aqui:
+  // tentar logar no backend: deve retornar um usuario com perfil
+  const handleSubmit = values => {
+    // values.preventDefault() parece não funcionar
+    if (values.email === 'gugajansen@hotmail.com'){
+      console.log("Você se logou com sucesso!!")
+      setToken(values)
+    } else { }
+  }
 
   const validations = yup.object().shape({
     email: yup.string().email().required(),
@@ -24,22 +33,14 @@ const Login = () => {
         onSubmit={handleSubmit}
         validationSchema={validations}>
           <Form className="Login">
-              <InputField
-                value='email'
-                type='email'
-                label='Usuário'/>
-
-              <InputField
-                value='password'
-                type='password'
-                label='Senha'/>
-
+              <InputField value='email' type='email' label='Usuário'/>
+              <InputField value='password' type='password' label='Senha'/>
               <div className="Login-Forgot">Esqueceu a senha?</div>
-
               <div className="reminder">
                 Se você for servidor, informe nos campos acima o nome de usuário
                 e senha que utiliza para acessar os sistemas da UTFPR.
               </div>
+
               <div className="footer">
                 <button
                     className="Login-Button"
