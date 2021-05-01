@@ -6,7 +6,7 @@ import * as yup from 'yup'
 import './Login.css'
 import Header from './Header'
 import InputField from '../../components/InputField'
-import auth from '../../utilities/auth'
+//import auth from '../../utilities/auth.js'
 
 const Login = props => {
 
@@ -14,20 +14,30 @@ const Login = props => {
   // tentar logar no backend: deve retornar um usuario com perfil
   const handleSubmit = values => {
     // values.preventDefault() parece não funcionar
-    if (values.email === 'gugajansen@hotmail.com'){
-      console.log("Você se logou com sucesso!!")
-      console.log(props)
-      auth.login(() => {
-        props.history.push("/prof");
-      });
-      console.log(auth.isAuthenticated ? "true" : "false")
-    } else { }
+    /* 
+    console.log("Teste");
+      if (values.email === 'gugajansen@hotmail.com'){
+        console.log("Você se logou com sucesso!!")
+        console.log(props)
+        auth.login(() => {
+          props.history.push("/prof");
+        });
+        console.log(auth.isAuthenticated ? "true" : "false")
+      } else { } */
+      setTimeout(() => {
+        console.log("email: "+values.email);
+        console.log("senha: "+values.password);
+        //alert(JSON.stringify(values, null, 2));
+
+      }, 400);
+      
+
   }
 
   const validations = yup.object().shape({
     email: yup.string().email().required(),
     password: yup.string().min(8).required()
-  })
+  }) 
 
   return (
     <div className="base-container">
@@ -36,7 +46,8 @@ const Login = props => {
       <Formik
         initialValues={{}}
         onSubmit={handleSubmit}
-        validationSchema={validations}>
+        validationSchema={validations}
+        >
           <Form className="Login">
               <InputField value='email' type='email' label='Usuário'/>
               <InputField value='password' type='password' label='Senha'/>
