@@ -1,3 +1,5 @@
+import React from 'react'
+
 class Auth {
     constructor() {
       this.authenticated = false;

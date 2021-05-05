@@ -6,28 +6,66 @@ import * as yup from 'yup'
 import './Login.css'
 import Header from './Header'
 import InputField from '../../components/InputField'
-import auth from '../../utilities/auth'
+import PropTypes from 'prop-types';
+import App from '../../containers/App'
+import ReactDOM from 'react-dom';
+import {BrowserRouter} from 'react-router-dom'
 
-const Login = props => {
 
-  // Implementar login aqui:
-  // tentar logar no backend: deve retornar um usuario com perfil
-  const handleSubmit = values => {
-    // values.preventDefault() parece não funcionar
-    if (values.email === 'gugajansen@hotmail.com'){
-      console.log("Você se logou com sucesso!!")
-      console.log(props)
-      auth.login(() => {
-        props.history.push("/prof");
-      });
-      console.log(auth.isAuthenticated ? "true" : "false")
-    } else { }
-  }
+
+async function loginUser(credentials) {
+  // Realizando autenticação:
+/*
+return axios.post('https://utf-io-staging.herokuapp.com/auth/authenticate', {
+   method: 'POST',
+   headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(credentials)
+})
+  .then((res) => {
+     return res.json;
+  })
+  .catch((err) => console.log('Erro durante a request...', err))
+  */
+
+ 
+  return fetch('https://utf-io-staging.herokuapp.com/auth/authenticate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(credentials)
+    
+  })
+    .then( data => data.json())
+    
+ }
+
+ export default function Login({ setToken,setTipoPessoa,setCodigoPessoa }) {
+
+   const handleSubmit = async e => {
+
+     const json = await loginUser({
+       email:e.email,
+       senha:e.password
+      }
+     );
+     
+     setToken(json.token);
+     setTipoPessoa(json.pessoa.tipo_usuario);
+     setCodigoPessoa(json.pessoa.id_pessoa);
+
+     ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.getElementById('root'));
+   }
+
+   
+ 
 
   const validations = yup.object().shape({
     email: yup.string().email().required(),
-    password: yup.string().min(8).required()
-  })
+    password: yup.string().min(3).required()
+  }) 
 
   return (
     <div className="base-container">
@@ -36,10 +74,11 @@ const Login = props => {
       <Formik
         initialValues={{}}
         onSubmit={handleSubmit}
-        validationSchema={validations}>
+        validationSchema={validations}
+        >
           <Form className="Login">
-              <InputField value='email' type='email' label='Usuário'/>
-              <InputField value='password' type='password' label='Senha'/>
+              <InputField value='email' type='email' label='Usuário' />
+              <InputField value='password' type='password' label='Senha' />
               <div className="Login-Forgot">Esqueceu a senha?</div>
               <div className="reminder">
                 Se você for servidor, informe nos campos acima o nome de usuário
@@ -58,4 +97,13 @@ const Login = props => {
   )
 }
 
-export default Login
+Login.propTypes = {
+  setToken: PropTypes.func.isRequired
+};
+Login.propTypes = {
+  setTipoPessoa: PropTypes.func.isRequired
+};
+
+Login.propTypes = {
+  setCodigoPessoa: PropTypes.func.isRequired
+};

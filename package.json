@@ -6,7 +6,12 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+<<<<<<< HEAD
     "create-react-app": "^4.0.3",
+=======
+    "axios": "^0.21.1",
+    "crypto-js": "^4.0.0",
+>>>>>>> 6ff850e6648565c34fa759745af35f831e5ad70c
     "formik": "^2.2.6",
     "history": "^5.0.0",
     "normalize.css": "^8.0.1",
