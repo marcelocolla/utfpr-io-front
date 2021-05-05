@@ -1,4 +1,8 @@
-.liberacao-container {
+a {
+    text-decoration: none;
+}
+
+.solicitacao-container {
     position: static;
     display: flex;
     flex-direction: row;
@@ -7,13 +11,14 @@
     height: 102px;
     left: 50px;
     top: 178px;
+    margin-top: 15px;
 
     background: #FFFFFF;
     box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.03);
     border-radius: 20px;
 }
 
-.liberacao-avatar {
+.solicitacao-avatar {
     position: relative;
     width: 69.21px;
     height: 69.21px;
@@ -23,14 +28,14 @@
     border-radius: 50%;
 }
 
-.liberacao-detalhes {
+.solicitacao-detalhes {
     position: relative;
     display: flex;
     flex-direction: column;
     left: 33px;
 }
 
-.liberacao-nome {
+.solicitacao-professor {
     font-family: "Open Sans", sans-serif;
     font-style: normal;
     font-weight: bold;
@@ -41,7 +46,7 @@
     color: #000000;
 }
 
-.liberacao-datas {
+.solicitacao-datas {
     display: flex;
     flex-direction: row;
     width: 110px;
@@ -63,9 +68,9 @@
     height: 10px;
 }
 
-.IconButton {
-    width: 120px;
-    height: 50px;
+.Icon-Button {
+    width: 250px;
+    height: 70px;
     left: 50px;
   
     background: #FA4A0C;
@@ -76,15 +81,15 @@
     border-radius: 30px;
     margin-top: 15px;
     
-  }
-
-.Icon {
-margin-top: 300px;
-justify-content: center;
-align-items: center;
-
 }
 
+.Icons {
+    margin-top: 300px;
+    justify-content: center;
+    align-items: center;
+
+}
+  
 .Icon-Button:hover {
 cursor: pointer;
 border: 5px solid #f5551b;
@@ -92,6 +97,6 @@ background: #FFFFFF;
 color: #000000;
 }
 
-.liberacao-inicio {
+.solicitacao-inicio {
     padding-right: inherit;
 }
