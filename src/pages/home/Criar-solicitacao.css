@@ -1,0 +1,28 @@
+.Button {
+    width: 150px;
+    height: 50px;
+    left: 50px;
+  
+    background: #FA4A0C;
+    color: #FFFFFF;
+    font-style: normal;
+    font-weight: bold;
+    border: 3px solid #F2F2F2;
+    border-radius: 30px;
+    margin-top: 15px;
+    
+}
+
+.Icons {
+    margin-top: 300px;
+    justify-content: center;
+    align-items: center;
+
+}
+  
+.Button:hover {
+cursor: pointer;
+border: 5px solid #f5551b;
+background: #FFFFFF;
+color: #000000;
+}
