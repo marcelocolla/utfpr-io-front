@@ -5,52 +5,39 @@ import './App.css'
 import {Route, Switch,BrowserRouter } from 'react-router-dom';
 
 import Login from '../pages/login/Login'
-import HomeProfessor from '../pages/home/HomeProfessor'
-<<<<<<< HEAD
-import HomeSolicitacao from '../pages/home/HomeSolicitacao'
-import CriarSolicita from '../pages/home/Criar-solicitacao'
-=======
-import HomeVigilante from '../pages/home/HomeVigilante'
-import HomeDeseg from '../pages/home/HomeDeseg'
->>>>>>> 6ff850e6648565c34fa759745af35f831e5ad70c
+import HomeProfessor from '../pages/home/professor/HomeProfessor'
+import HomeSolicitacao from '../pages/home/professor/HomeSolicitacao'
+import CriarSolicita from '../pages/home/professor/Criar-solicitacao'
+import HomeVigilante from '../pages/home/vigilante/HomeVigilante'
+import Limpar from '../pages/home/limpar'
+import HomeDeseg from '../pages/home/deseg/HomeDeseg'
 import NotFound from '../components/NotFound'
 import useToken from './useToken';
 import userTipoPessoa from './userTipoPessoa';
 import userCodigoPessoa from './userCodigoPessoa';
 import {getMemoriaLocal} from '../utilities/validacoes'
+import {limparStorage} from '../utilities/storageUser'
 
 
 const App = () => {
-<<<<<<< HEAD
-    return (
-        <Switch>
-            <Route exact path="/" component={Login}/>
-            <ProtectedRoute exact path="/prof" component={HomeProfessor}/>
-            <ProtectedRoute exact path="/solicitacao" component= {HomeSolicitacao}/>
-            <ProtectedRoute exact path="/criasolicitacao" component= {CriarSolicita}/>
-            <Route path="*" component={NotFound}/>
-        </Switch>
-    )
-=======
+
     
     const { token, setToken } = useToken();
     const { tipo_usuario, setTipoPessoa } = userTipoPessoa();
     const { codigo_pessoa, setCodigoPessoa } = userCodigoPessoa();
-    console.log(getMemoriaLocal('token'));
-    console.log(!getMemoriaLocal('token'));
-    while(!getMemoriaLocal('token')){   
+    if(!getMemoriaLocal('token')){   
         return <Login setToken={setToken} setTipoPessoa = {setTipoPessoa} setCodigoPessoa = {setCodigoPessoa}/>
     }
-
     var tipo = getMemoriaLocal('tipo_usuario');
     switch(parseInt(tipo)){
         case 0:
             return (
                 <BrowserRouter>
                 <Switch>
-                  <Route >
-                    <HomeProfessor />
-                  </Route>
+                  <Route path="/" > <HomeProfessor /></Route>
+                  <Route path="/solicitacao" ><HomeSolicitacao/></Route>
+                  <Route path="/criasolicitacao" ><CriarSolicita/></Route>   
+                  <Route path="/limpar" ><Limpar/></Route>               
                 </Switch>
               </BrowserRouter>
             );
@@ -58,9 +45,10 @@ const App = () => {
             return (
                 <BrowserRouter>
                 <Switch>
-                  <Route >
+                  <Route path = "/">
                     <HomeDeseg />
                   </Route>
+                  <Route path="/limpar" ><Limpar/></Route>    
                 </Switch>
               </BrowserRouter>
             );
@@ -68,9 +56,10 @@ const App = () => {
             return (
                 <BrowserRouter>
                 <Switch>
-                  <Route >
+                  <Route path = "/">
                     <HomeVigilante />
                   </Route>
+                  <Route path="/limpar" ><Limpar/></Route>    
                 </Switch>
               </BrowserRouter>
             );
@@ -81,13 +70,13 @@ const App = () => {
                   <Route path="*">
                     <NotFound />
                   </Route>
+                  <Route path="/limpar" ><Limpar/></Route>    
                 </Switch>
               </BrowserRouter>
             );                      
 
     }
 
->>>>>>> 6ff850e6648565c34fa759745af35f831e5ad70c
 }
 
 export default App;

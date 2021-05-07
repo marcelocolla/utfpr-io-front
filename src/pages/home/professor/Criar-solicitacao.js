@@ -5,7 +5,7 @@ import * as yup from 'yup'
 
 
 import './Criar-solicitacao.css'
-import InputField from '../../components/InputField'
+import InputField from '../../../components/InputField'
 
 
 const CriarSolicita = props => {

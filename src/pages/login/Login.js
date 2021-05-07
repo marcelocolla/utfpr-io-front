@@ -2,34 +2,21 @@ import React from 'react'
 
 import { Formik, Form } from 'formik'
 import * as yup from 'yup'
-
+import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import './Login.css'
 import Header from './Header'
 import InputField from '../../components/InputField'
 import PropTypes from 'prop-types';
 import App from '../../containers/App'
-import ReactDOM from 'react-dom';
-import {BrowserRouter} from 'react-router-dom'
+import HomeVigilante from '../home/vigilante/HomeVigilante';
+import HomeProfessor from '../home/professor/HomeProfessor';
+import HomeDeseg from '../home/deseg/HomeDeseg';
 
 
 
 async function loginUser(credentials) {
   // Realizando autenticação:
-/*
-return axios.post('https://utf-io-staging.herokuapp.com/auth/authenticate', {
-   method: 'POST',
-   headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(credentials)
-})
-  .then((res) => {
-     return res.json;
-  })
-  .catch((err) => console.log('Erro durante a request...', err))
-  */
-
- 
   return fetch('https://utf-io-staging.herokuapp.com/auth/authenticate', {
     method: 'POST',
     headers: {
@@ -43,7 +30,6 @@ return axios.post('https://utf-io-staging.herokuapp.com/auth/authenticate', {
  }
 
  export default function Login({ setToken,setTipoPessoa,setCodigoPessoa }) {
-
    const handleSubmit = async e => {
 
      const json = await loginUser({
@@ -60,8 +46,18 @@ return axios.post('https://utf-io-staging.herokuapp.com/auth/authenticate', {
     if(!json.pessoa.id_pessoa!==undefined){
         setCodigoPessoa(json.pessoa.id_pessoa);
       }
-
-     ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.getElementById('root'));
+      switch(json.pessoa.tipo_usuario){
+        case 0: 
+        window.location.reload();
+        break;
+        case 1:
+          window.location.reload();
+          break;
+        case 3:
+          window.location.reload();
+          break;
+      }
+      
    }
 
    
@@ -71,7 +67,6 @@ return axios.post('https://utf-io-staging.herokuapp.com/auth/authenticate', {
     email: yup.string().email().required(),
     password: yup.string().min(3).required()
   }) 
-
   return (
     <div className="base-container">
       <Header />
@@ -99,8 +94,8 @@ return axios.post('https://utf-io-staging.herokuapp.com/auth/authenticate', {
           </Form>
       </Formik>
     </div>
-  )
-}
+  );
+ }
 
 Login.propTypes = {
   setToken: PropTypes.func.isRequired
