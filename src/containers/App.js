@@ -2,17 +2,15 @@
 import React from 'react'
 
 import './App.css'
-import {Route, Switch,BrowserRouter } from 'react-router-dom';
+import {Route, Switch,BrowserRouter,Redirect,useHistory   } from 'react-router-dom';
 
 import Login from '../pages/login/Login'
-import HomeProfessor from '../pages/home/HomeProfessor'
-<<<<<<< HEAD
-import HomeSolicitacao from '../pages/home/HomeSolicitacao'
-import CriarSolicita from '../pages/home/Criar-solicitacao'
-=======
-import HomeVigilante from '../pages/home/HomeVigilante'
-import HomeDeseg from '../pages/home/HomeDeseg'
->>>>>>> 6ff850e6648565c34fa759745af35f831e5ad70c
+import HomeProfessor from '../pages/home/professor/HomeProfessor'
+import HomeSolicitacao from '../pages/home/professor/HomeSolicitacao'
+import CriarSolicita from '../pages/home/professor/Criar-solicitacao'
+import HomeVigilante from '../pages/home/vigilante/HomeVigilante'
+import Limpar from '../pages/home/limpar'
+import HomeDeseg from '../pages/home/deseg/HomeDeseg'
 import NotFound from '../components/NotFound'
 import useToken from './useToken';
 import userTipoPessoa from './userTipoPessoa';
@@ -21,17 +19,7 @@ import {getMemoriaLocal} from '../utilities/validacoes'
 
 
 const App = () => {
-<<<<<<< HEAD
-    return (
-        <Switch>
-            <Route exact path="/" component={Login}/>
-            <ProtectedRoute exact path="/prof" component={HomeProfessor}/>
-            <ProtectedRoute exact path="/solicitacao" component= {HomeSolicitacao}/>
-            <ProtectedRoute exact path="/criasolicitacao" component= {CriarSolicita}/>
-            <Route path="*" component={NotFound}/>
-        </Switch>
-    )
-=======
+
     
     const { token, setToken } = useToken();
     const { tipo_usuario, setTipoPessoa } = userTipoPessoa();
@@ -47,9 +35,10 @@ const App = () => {
             return (
                 <BrowserRouter>
                 <Switch>
-                  <Route >
-                    <HomeProfessor />
-                  </Route>
+                  <Route path="/prof" > <HomeProfessor /></Route>
+                  <Route path="/solicitacao" ><HomeSolicitacao/></Route>
+                  <Route path="/criasolicitacao" ><CriarSolicita/></Route>   
+                  <Route path="/limpar" ><Limpar/></Route>               
                 </Switch>
               </BrowserRouter>
             );
@@ -57,9 +46,10 @@ const App = () => {
             return (
                 <BrowserRouter>
                 <Switch>
-                  <Route >
+                  <Route path = "/deseg">
                     <HomeDeseg />
                   </Route>
+                  <Route path="/limpar" ><Limpar/></Route>    
                 </Switch>
               </BrowserRouter>
             );
@@ -67,9 +57,10 @@ const App = () => {
             return (
                 <BrowserRouter>
                 <Switch>
-                  <Route >
+                  <Route path = "/vigilante">
                     <HomeVigilante />
                   </Route>
+                  <Route path="/limpar" ><Limpar/></Route>    
                 </Switch>
               </BrowserRouter>
             );
@@ -80,13 +71,13 @@ const App = () => {
                   <Route path="*">
                     <NotFound />
                   </Route>
+                  <Route path="/limpar" ><Limpar/></Route>    
                 </Switch>
               </BrowserRouter>
             );                      
 
     }
 
->>>>>>> 6ff850e6648565c34fa759745af35f831e5ad70c
 }
 
 export default App;

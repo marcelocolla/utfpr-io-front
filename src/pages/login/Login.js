@@ -2,34 +2,16 @@ import React from 'react'
 
 import { Formik, Form } from 'formik'
 import * as yup from 'yup'
-
+import {useHistory} from 'react-router-dom'
 import './Login.css'
 import Header from './Header'
 import InputField from '../../components/InputField'
 import PropTypes from 'prop-types';
-import App from '../../containers/App'
-import ReactDOM from 'react-dom';
-import {BrowserRouter} from 'react-router-dom'
-
+import {getMemoriaLocal} from '../../utilities/validacoes'
 
 
 async function loginUser(credentials) {
   // Realizando autenticação:
-/*
-return axios.post('https://utf-io-staging.herokuapp.com/auth/authenticate', {
-   method: 'POST',
-   headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(credentials)
-})
-  .then((res) => {
-     return res.json;
-  })
-  .catch((err) => console.log('Erro durante a request...', err))
-  */
-
- 
   return fetch('https://utf-io-staging.herokuapp.com/auth/authenticate', {
     method: 'POST',
     headers: {
@@ -43,7 +25,7 @@ return axios.post('https://utf-io-staging.herokuapp.com/auth/authenticate', {
  }
 
  export default function Login({ setToken,setTipoPessoa,setCodigoPessoa }) {
-
+  let history = useHistory();
    const handleSubmit = async e => {
 
      const json = await loginUser({
@@ -51,12 +33,32 @@ return axios.post('https://utf-io-staging.herokuapp.com/auth/authenticate', {
        senha:e.password
       }
      );
-     
-     setToken(json.token);
-     setTipoPessoa(json.pessoa.tipo_usuario);
-     setCodigoPessoa(json.pessoa.id_pessoa);
+     if(json.token!==undefined){
+        setToken(json.token);
+      }
+     if(!json.pessoa.tipo_usuario!==undefined){
+        setTipoPessoa(json.pessoa.tipo_usuario);
+      }
+    if(!json.pessoa.id_pessoa!==undefined){
+        setCodigoPessoa(json.pessoa.id_pessoa);
+      }
 
-     ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.getElementById('root'));
+      var tipo = getMemoriaLocal('tipo_usuario');
+      switch(parseInt(tipo)){
+        case 0:
+          history.push('/prof');
+          break;
+        case 1:
+          history.push('/deseg');
+          break;
+        case 3:
+          history.push('/vigilante');
+          break;
+        default:  
+                          
+    }
+    window.location.reload();
+      
    }
 
    
@@ -66,7 +68,6 @@ return axios.post('https://utf-io-staging.herokuapp.com/auth/authenticate', {
     email: yup.string().email().required(),
     password: yup.string().min(3).required()
   }) 
-
   return (
     <div className="base-container">
       <Header />
@@ -94,8 +95,8 @@ return axios.post('https://utf-io-staging.herokuapp.com/auth/authenticate', {
           </Form>
       </Formik>
     </div>
-  )
-}
+  );
+ }
 
 Login.propTypes = {
   setToken: PropTypes.func.isRequired
