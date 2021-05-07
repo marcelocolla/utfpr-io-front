@@ -51,10 +51,15 @@ return axios.post('https://utf-io-staging.herokuapp.com/auth/authenticate', {
        senha:e.password
       }
      );
-     
-     setToken(json.token);
-     setTipoPessoa(json.pessoa.tipo_usuario);
-     setCodigoPessoa(json.pessoa.id_pessoa);
+     if(json.token!==undefined){
+        setToken(json.token);
+      }
+     if(!json.pessoa.tipo_usuario!==undefined){
+        setTipoPessoa(json.pessoa.tipo_usuario);
+      }
+    if(!json.pessoa.id_pessoa!==undefined){
+        setCodigoPessoa(json.pessoa.id_pessoa);
+      }
 
      ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.getElementById('root'));
    }

@@ -19,8 +19,9 @@ const App = () => {
     const { token, setToken } = useToken();
     const { tipo_usuario, setTipoPessoa } = userTipoPessoa();
     const { codigo_pessoa, setCodigoPessoa } = userCodigoPessoa();
-
-    if(!getMemoriaLocal('token')){   
+    console.log(getMemoriaLocal('token'));
+    console.log(!getMemoriaLocal('token'));
+    while(!getMemoriaLocal('token')){   
         return <Login setToken={setToken} setTipoPessoa = {setTipoPessoa} setCodigoPessoa = {setCodigoPessoa}/>
     }
 
