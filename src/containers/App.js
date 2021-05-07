@@ -2,7 +2,7 @@
 import React from 'react'
 
 import './App.css'
-import {Route, Switch,BrowserRouter } from 'react-router-dom';
+import {Route, Switch,BrowserRouter,Redirect,useHistory   } from 'react-router-dom';
 
 import Login from '../pages/login/Login'
 import HomeProfessor from '../pages/home/professor/HomeProfessor'
@@ -16,7 +16,6 @@ import useToken from './useToken';
 import userTipoPessoa from './userTipoPessoa';
 import userCodigoPessoa from './userCodigoPessoa';
 import {getMemoriaLocal} from '../utilities/validacoes'
-import {limparStorage} from '../utilities/storageUser'
 
 
 const App = () => {
@@ -25,16 +24,18 @@ const App = () => {
     const { token, setToken } = useToken();
     const { tipo_usuario, setTipoPessoa } = userTipoPessoa();
     const { codigo_pessoa, setCodigoPessoa } = userCodigoPessoa();
+
     if(!getMemoriaLocal('token')){   
         return <Login setToken={setToken} setTipoPessoa = {setTipoPessoa} setCodigoPessoa = {setCodigoPessoa}/>
     }
+
     var tipo = getMemoriaLocal('tipo_usuario');
     switch(parseInt(tipo)){
         case 0:
             return (
                 <BrowserRouter>
                 <Switch>
-                  <Route path="/" > <HomeProfessor /></Route>
+                  <Route path="/prof" > <HomeProfessor /></Route>
                   <Route path="/solicitacao" ><HomeSolicitacao/></Route>
                   <Route path="/criasolicitacao" ><CriarSolicita/></Route>   
                   <Route path="/limpar" ><Limpar/></Route>               
@@ -45,7 +46,7 @@ const App = () => {
             return (
                 <BrowserRouter>
                 <Switch>
-                  <Route path = "/">
+                  <Route path = "/deseg">
                     <HomeDeseg />
                   </Route>
                   <Route path="/limpar" ><Limpar/></Route>    
@@ -56,7 +57,7 @@ const App = () => {
             return (
                 <BrowserRouter>
                 <Switch>
-                  <Route path = "/">
+                  <Route path = "/vigilante">
                     <HomeVigilante />
                   </Route>
                   <Route path="/limpar" ><Limpar/></Route>    

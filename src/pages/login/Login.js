@@ -2,17 +2,12 @@ import React from 'react'
 
 import { Formik, Form } from 'formik'
 import * as yup from 'yup'
-import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import {useHistory} from 'react-router-dom'
 import './Login.css'
 import Header from './Header'
 import InputField from '../../components/InputField'
 import PropTypes from 'prop-types';
-import App from '../../containers/App'
-import HomeVigilante from '../home/vigilante/HomeVigilante';
-import HomeProfessor from '../home/professor/HomeProfessor';
-import HomeDeseg from '../home/deseg/HomeDeseg';
-
+import {getMemoriaLocal} from '../../utilities/validacoes'
 
 
 async function loginUser(credentials) {
@@ -30,6 +25,7 @@ async function loginUser(credentials) {
  }
 
  export default function Login({ setToken,setTipoPessoa,setCodigoPessoa }) {
+  let history = useHistory();
    const handleSubmit = async e => {
 
      const json = await loginUser({
@@ -46,17 +42,22 @@ async function loginUser(credentials) {
     if(!json.pessoa.id_pessoa!==undefined){
         setCodigoPessoa(json.pessoa.id_pessoa);
       }
-      switch(json.pessoa.tipo_usuario){
-        case 0: 
-        window.location.reload();
-        break;
+
+      var tipo = getMemoriaLocal('tipo_usuario');
+      switch(parseInt(tipo)){
+        case 0:
+          history.push('/prof');
+          break;
         case 1:
-          window.location.reload();
+          history.push('/deseg');
           break;
         case 3:
-          window.location.reload();
+          history.push('/vigilante');
           break;
-      }
+        default:  
+                          
+    }
+    window.location.reload();
       
    }
 
