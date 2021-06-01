@@ -1,4 +1,5 @@
 import { useHistory } from "react-router-dom";
+import { Button } from "../../components/Button/Button";
 
 import * as S from "./styles";
 
@@ -17,14 +18,9 @@ type Props = {
 const Home = ({ dados }: Props) => {
   const history = useHistory();
 
-  function redirect() {
-    history.push("/solicitacoes");
-    window.location.reload();
-  }
-
   return (
     <S.HomeSection>
-      <strong>Home</strong>
+      <strong onClick={() => history.goBack()}>Home</strong>
 
       <div className="content">
         <div className="card">
@@ -37,16 +33,9 @@ const Home = ({ dados }: Props) => {
           </span>
         </div>
 
-        {dados.escopoPerfil === "deseg" ? (
-          <>
-            <button onClick={redirect}>Solicitações</button>
-            <button>+</button>
-          </>
-        ) : (
-          <>
-            <button onClick={redirect}>Solicitações</button>
-          </>
-        )}
+        <Button type="button" name="solicitacoesButton" path="/solicitacoes">
+          Solicitações
+        </Button>
       </div>
     </S.HomeSection>
   );

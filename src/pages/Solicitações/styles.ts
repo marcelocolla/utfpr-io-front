@@ -2,9 +2,9 @@ import styled from "styled-components";
 
 export const SolicitacoesWrapper = styled.section`
   width: 100%;
-  height: auto;
+  height: 100vh;
 
-  padding: 6rem 5rem 4rem;
+  padding: 6rem 4.5rem 4rem;
 
   display: flex;
   flex-direction: column;
@@ -21,13 +21,16 @@ export const SolicitacoesWrapper = styled.section`
   }
 
   .cardsWrapper {
-    width: 70%;
-    height: 50vh;
+    width: 100%;
+    height: 80%;
+
+    padding: 0 0.5rem;
 
     overflow-y: auto;
 
     display: flex;
     flex-direction: column;
+    align-items: center;
 
     gap: 1.6rem;
   }
@@ -48,7 +51,8 @@ export const SolicitacoesWrapper = styled.section`
 
 export const Card = styled.div`
   width: 100%;
-  height: fit-content;
+  max-width: 40rem;
+  height: 100%;
 
   background: #ffffff;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -63,11 +67,6 @@ export const Card = styled.div`
   cursor: pointer;
 
   transition: 0.25s;
-
-  @media (min-width: 768px) {
-    width: 40rem;
-    margin: 0 auto;
-  }
 
   &:hover {
     box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.15);

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useHistory } from "react-router";
 
 import Modal from "../../components/Modal";
 
@@ -24,49 +25,25 @@ const mock = [
     dataSaida: "26/04",
   },
   {
-    id: 2,
-    nome: "Yuri Rodrigues",
-    dataEntrada: "26/04",
-    dataSaida: "26/04",
+    id: 3,
+    nome: "Alexandro",
+    dataEntrada: "27/04",
+    dataSaida: "26/06",
   },
   {
-    id: 2,
-    nome: "Yuri Rodrigues",
-    dataEntrada: "26/04",
-    dataSaida: "26/04",
-  },
-  {
-    id: 2,
-    nome: "Yuri Rodrigues",
-    dataEntrada: "26/04",
-    dataSaida: "26/04",
-  },
-  {
-    id: 2,
-    nome: "Yuri Rodrigues",
-    dataEntrada: "26/04",
-    dataSaida: "26/04",
-  },
-  {
-    id: 2,
-    nome: "Yuri Rodrigues",
-    dataEntrada: "26/04",
-    dataSaida: "26/04",
-  },
-  {
-    id: 2,
-    nome: "Yuri Rodrigues",
-    dataEntrada: "26/04",
-    dataSaida: "26/04",
+    id: 4,
+    nome: "Matheus Silva",
+    dataEntrada: "27/04",
+    dataSaida: "26/06",
   },
 ];
 
 const Solicitacoes = () => {
   const [open, setOpen] = useState(false);
-
+  const history = useHistory();
   return (
     <S.SolicitacoesWrapper>
-      <strong>Solicitações</strong>
+      <strong onClick={() => history.goBack()}>Solicitações</strong>
       <div className="cardsWrapper">
         {mock.map((el) => (
           <S.Card key={el.id} onClick={() => setOpen(true)}>
