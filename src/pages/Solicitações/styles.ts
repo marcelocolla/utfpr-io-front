@@ -34,19 +34,6 @@ export const SolicitacoesWrapper = styled.section`
 
     gap: 1.6rem;
   }
-
-  button {
-    background: #fa4a0c;
-    border-radius: 30px;
-    border: 0px;
-
-    padding: 2.5rem 8.8rem;
-
-    font-weight: bold;
-    font-size: 17px;
-    line-height: 23px;
-    color: #ffffff;
-  }
 `;
 
 export const Card = styled.div`

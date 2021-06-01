@@ -1,7 +1,12 @@
+import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useHistory } from "react-router";
+import { FormBody } from "../../components/Form/FormSection/FormBody";
+import { FormLine } from "../../components/Form/FormSection/FormLine";
+import InputField from "../../components/Form/InputField";
+import PasswordField from "../../components/Form/PasswordField";
 
-import Modal from "../../components/Modal";
+import { Modal } from "../../components/Modal";
 
 import * as S from "./styles";
 
@@ -41,9 +46,15 @@ const mock = [
 const Solicitacoes = () => {
   const [open, setOpen] = useState(false);
   const history = useHistory();
+
+  function handleSubmit() {
+    return;
+  }
+
   return (
     <S.SolicitacoesWrapper>
       <strong onClick={() => history.goBack()}>Solicitações</strong>
+
       <div className="cardsWrapper">
         {mock.map((el) => (
           <S.Card key={el.id} onClick={() => setOpen(true)}>
@@ -64,7 +75,22 @@ const Solicitacoes = () => {
         ))}
       </div>
 
-      <Modal open={open} close={() => setOpen(false)}></Modal>
+      <Modal visible={open} close={() => setOpen(false)}>
+        <h2>Solicitação</h2>
+        <br />
+        <Formik onSubmit={handleSubmit} initialValues={{}}>
+          <Form>
+            <FormBody>
+              <FormLine>
+                <InputField name="codigo" label="Código" />
+              </FormLine>
+              <FormLine>
+                <PasswordField name="senha" label="senha" />
+              </FormLine>
+            </FormBody>
+          </Form>
+        </Formik>
+      </Modal>
     </S.SolicitacoesWrapper>
   );
 };
