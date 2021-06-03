@@ -11,7 +11,7 @@ export const Container = styled.div`
   right: 0;
   bottom: 0;
   width: 100%;
-  z-index: 9999999;
+  z-index: 1;
   height: 100vh;
   display: flex;
   position: fixed;
@@ -29,7 +29,7 @@ export const Overlay = styled.div`
   right: 0;
   bottom: 0;
   width: 100%;
-  z-index: 999;
+  z-index: 2;
   height: 100vh;
   position: fixed;
 `;
@@ -38,7 +38,7 @@ export const Modal = styled.div`
   width: 90%;
   height: 90%;
   max-width: 700px;
-  z-index: 9999;
+  z-index: 3;
 
   padding: 3rem 4rem;
 
