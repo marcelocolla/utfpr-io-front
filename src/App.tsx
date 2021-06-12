@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from "./pages/Home";
 import Solicitacoes from "./pages/Solicitações";
 import Login from "./pages/Login";
+import CadastroSolicitacao from "./pages/CadastroSolicitacao";
 
 const dados = {
   id: 0,
@@ -19,6 +20,9 @@ function App() {
         </Route>
         <Route path="/solicitacoes">
           <Solicitacoes />
+        </Route>
+        <Route path="/cadastro_solicitacao">
+          <CadastroSolicitacao />
         </Route>
         <Route path="/">
           <Home dados={dados} />

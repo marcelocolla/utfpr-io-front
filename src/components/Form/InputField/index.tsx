@@ -36,6 +36,8 @@ type InputFieldProps = {
   required?: boolean;
   select?: boolean;
   children?: React.ReactNode;
+  onBlur?:any;
+  disabled?:any;
 };
 
 const InputField = ({ name, select, children, ...props }: InputFieldProps) => {
