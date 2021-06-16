@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -15,85 +15,95 @@ import InputField from "../../components/Form/InputField";
 import { MenuItem } from "@material-ui/core";
 
 import * as S from "./styles";
+import { api } from "../../services/api";
 
-const dados = {
-  id: 0,
-  nome: "Roberto Adalberto Nunes",
-  matricula: 1231234,
-  escopoPerfil: "deseg",
-};
-
-// receber do backend
-const mock = [
-  {
-    id: 1,
-    text: "COENS",
-  },
-  {
-    id: 2,
-    text: "COZOO",
-  },
-];
-
-const initialValues = {
-  departamento: mock[0].text,
+type Departamento = {
+  id_departamento: number;
+  nome_departamento: string;
+  sigla_departamento: string;
 };
 
 const Home = () => {
-  const { user } = useContext(AuthContext);
-  const [open, setOpen] = useState(true); // default seria false
   const history = useHistory();
-  console.log({ dados });
+  const [open, setOpen] = useState(true); // default seria false
+  const { user } = useContext(AuthContext);
+  const [departamentos, setDepartamentos] = useState<Departamento[]>();
+
+  useEffect(() => {
+    try {
+      api.get("departamento").then((response) => {
+        setDepartamentos(response.data.departamentos);
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+  console.log(departamentos);
 
   /// se 'dados' for professor e não tiver departamento, abrir modal
 
   /// quando selecionar o departamento, enviar requisição
   function handleSubmit() {
-    return;
+    // Envio de dados pro backend
+    setOpen(false);
   }
 
   return (
     <S.HomeSection>
       <strong onClick={() => history.goBack()}>Home</strong>
 
-      <div className="content">
-        <div className="card">
+      <S.Content>
+        <S.Card>
           <div>
             <img src="Ellipse 2.png" alt="Avatar" />
           </div>
-          <strong>{user?.email}</strong>
+          <strong>{user?.nome}</strong>
           <span>
-            Matrícula: <strong>{dados.matricula}</strong>
+            Matrícula: <strong>{user?.deseg?.matricula}</strong>
           </span>
-        </div>
+        </S.Card>
 
-        <Button type="button" name="solicitacoesButton" path="/solicitacoes">
-          Solicitações
-        </Button>
+        <S.ButtonWrapper>
+          <Button type="button" name="solicitacoesButton" path="/solicitacoes">
+            Solicitações
+          </Button>
+        </S.ButtonWrapper>
 
-        <Modal visible={open} close={() => setOpen(false)}>
+        {/* {user?.professor?.id_departamento === 0 && ( */}
+        <Modal visible={open}>
           <h2>Professor, por favor selecione seu departamento.</h2>
           <br />
-          <Formik onSubmit={handleSubmit} initialValues={{ ...initialValues }}>
+          <Formik
+            onSubmit={handleSubmit}
+            initialValues={{ departamentos: departamentos }}
+          >
             <Form>
               <FormBody>
-                <FormLine>
+                <FormLine mt="1rem">
                   <InputField name="departamento" label="Departamento" select>
-                    {mock?.map((item) => (
-                      <MenuItem key={item.id} value={item.text}>
-                        {item.text}
+                    {departamentos?.map((dep) => (
+                      //validar o value, o que tiver nele, seja id, sigla ou nome é o que vai ser mandado pro backend
+                      <MenuItem
+                        key={dep.id_departamento}
+                        value={dep.id_departamento}
+                      >
+                        {dep.sigla_departamento}
                       </MenuItem>
                     ))}
                   </InputField>
                 </FormLine>
               </FormBody>
-              <FormFooter>
-                <Button name="loginButton">Confirmar</Button>
+              <FormFooter mt="3rem">
+                <Button name="loginButton" mw="315px">
+                  Confirmar
+                </Button>
               </FormFooter>
             </Form>
           </Formik>
         </Modal>
-      </div>
+        {/* )} */}
+      </S.Content>
     </S.HomeSection>
   );
 };
