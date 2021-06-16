@@ -22,10 +22,17 @@ type AuthProviderProps = {
   children: ReactNode;
 };
 
+type Deseg = {
+  id_deseg: number;
+  matricula: number;
+};
+
 type User = {
+  nome: string;
   email: string;
   id_pessoa: number;
   tipo_usuario: number;
+  deseg: Deseg;
 };
 
 export const AuthContext = createContext({} as AuthContextData);
@@ -50,7 +57,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function signIn({ email, password }: SignInCredentials) {
     try {
-      const response = await api.post("authenticate", {
+      const response = await api.post("auth/authenticate", {
         email,
         senha: password,
       });
@@ -58,15 +65,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsAuthenticated(true);
 
       const token = response.data.token;
-      const { id_pessoa, tipo_usuario } = response.data.pessoa;
+      const { nome_pessoa, id_pessoa, tipo_usuario } = response.data.pessoa;
 
-      Cookies.set("utfprio.token", token, { expires: 0.001 });
+      const { id_deseg, matricula } = response.data?.deseg;
+
+      Cookies.set("utfprio.token", token, { expires: 1 });
       api.defaults.headers["Autorization"] = `Bearer ${token}`;
 
       setUser({
         email,
+        nome: nome_pessoa,
         id_pessoa: id_pessoa,
         tipo_usuario: tipo_usuario,
+        deseg: {
+          id_deseg: id_deseg,
+          matricula: matricula,
+        },
       });
 
       history.push("/");
