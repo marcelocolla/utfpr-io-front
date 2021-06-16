@@ -79,7 +79,7 @@ const Home = () => {
               <FormBody>
                 <FormLine>
                   <InputField name="departamento" label="Departamento" select>
-                    {mock?.map((item, index) => (
+                    {mock?.map((item) => (
                       <MenuItem key={item.id} value={item.text}>
                         {item.text}
                       </MenuItem>

@@ -1,11 +1,12 @@
-import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useHistory } from "react-router";
+
+import { Form, Formik } from "formik";
+
+import { Button } from "../../components/Button/Button";
+import InputField from "../../components/Form/InputField";
 import { FormBody } from "../../components/Form/FormSection/FormBody";
 import { FormLine } from "../../components/Form/FormSection/FormLine";
-import InputField from "../../components/Form/InputField";
-import PasswordField from "../../components/Form/PasswordField";
-import { Button } from "../../components/Button/Button";
 import { FormFooter } from "../../components/Form/FormSection/FormFooter";
 
 import { Modal } from "../../components/Modal";
@@ -66,35 +67,38 @@ const Solicitacoes = () => {
     <S.SolicitacoesWrapper>
       <strong onClick={() => history.goBack()}>Solicitações</strong>
       <div>
-      <select className="cardsWrapper" id="cbSolicitacoes">
-        <option>Pendentes de Permissao</option>
-        <option>Canceladas</ option>
-        <option>Em Execução</option>
-      </select>
+        <select className="cardsWrapper" id="cbSolicitacoes">
+          <option>Pendentes de Permissao</option>
+          <option>Canceladas</option>
+          <option>Em Execução</option>
+        </select>
       </div>
-      <br/>
+      <br />
       <div className="cardsWrapper">
-      <div className="cardsWrapper">
-        {mock.map((el) => (
-          <S.Card key={el.id} onClick={() => setOpen(true)}>
-            {/* parte esquerda, avatar */}
-            <div className="imageWrapper">
-              <img src="/dog.png" alt="foto solicitacao" />
-            </div>
-
-            {/* parte direita, infos */}
-            <div>
-              <h1>{el.nome}</h1>
-              <div>
-                <span>{el.dataEntrada}</span>
-                <strong>{el.dataSaida}</strong>
+        <div className="cardsWrapper">
+          {mock.map((el) => (
+            <S.Card key={el.id} onClick={() => setOpen(true)}>
+              {/* parte esquerda, avatar */}
+              <div className="imageWrapper">
+                <img src="/dog.png" alt="foto solicitacao" />
               </div>
-            </div>
-          </S.Card>
-        ))}
 
-      </div>
-        <Button type="button"  name="criarSolicitacao" path="/cadastro_solicitacao" >
+              {/* parte direita, infos */}
+              <div>
+                <h1>{el.nome}</h1>
+                <div>
+                  <span>{el.dataEntrada}</span>
+                  <strong>{el.dataSaida}</strong>
+                </div>
+              </div>
+            </S.Card>
+          ))}
+        </div>
+        <Button
+          type="button"
+          name="criarSolicitacao"
+          path="/cadastro_solicitacao"
+        >
           Criar Solicitação
         </Button>
       </div>
@@ -103,7 +107,7 @@ const Solicitacoes = () => {
         <h2>Solicitação</h2>
         <br />
         <Formik onSubmit={handleSubmit} initialValues={{ ...initialValues }}>
-        <Form>
+          <Form>
             <FormBody>
               <FormLine>
                 <InputField name="ra_aluno" label="RA" />
@@ -112,10 +116,14 @@ const Solicitacoes = () => {
                 <InputField name="email" type="email" label="Email" />
               </FormLine>
               <FormLine>
-                <InputField name="nome" label="Nome"  />
+                <InputField name="nome" label="Nome" />
               </FormLine>
               <FormLine>
-                <InputField name="data_inicio" type="date" label="Data Inicial" />
+                <InputField
+                  name="data_inicio"
+                  type="date"
+                  label="Data Inicial"
+                />
               </FormLine>
               <FormLine>
                 <InputField name="data_fim" type="date" label="Data Final" />
