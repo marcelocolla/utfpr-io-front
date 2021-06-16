@@ -5,6 +5,8 @@ import { FormBody } from "../../components/Form/FormSection/FormBody";
 import { FormLine } from "../../components/Form/FormSection/FormLine";
 import InputField from "../../components/Form/InputField";
 import PasswordField from "../../components/Form/PasswordField";
+import { Button } from "../../components/Button/Button";
+import { FormFooter } from "../../components/Form/FormSection/FormFooter";
 
 import { Modal } from "../../components/Modal";
 
@@ -47,6 +49,15 @@ const Solicitacoes = () => {
   const [open, setOpen] = useState(false);
   const history = useHistory();
 
+  const initialValues = {
+    ra: "",
+    email: "",
+    nome: "",
+    dataInicio: "",
+    dataFim: "",
+    local: "",
+  };
+
   function handleSubmit() {
     return;
   }
@@ -54,7 +65,15 @@ const Solicitacoes = () => {
   return (
     <S.SolicitacoesWrapper>
       <strong onClick={() => history.goBack()}>Solicitações</strong>
-
+      <div>
+      <select className="cardsWrapper" id="cbSolicitacoes">
+        <option>Pendentes de Permissao</option>
+        <option>Canceladas</ option>
+        <option>Em Execução</option>
+      </select>
+      </div>
+      <br/>
+      <div className="cardsWrapper">
       <div className="cardsWrapper">
         {mock.map((el) => (
           <S.Card key={el.id} onClick={() => setOpen(true)}>
@@ -73,21 +92,41 @@ const Solicitacoes = () => {
             </div>
           </S.Card>
         ))}
+
+      </div>
+        <Button type="button"  name="criarSolicitacao" path="/cadastro_solicitacao" >
+          Criar Solicitação
+        </Button>
       </div>
 
       <Modal visible={open} close={() => setOpen(false)}>
         <h2>Solicitação</h2>
         <br />
-        <Formik onSubmit={handleSubmit} initialValues={{}}>
-          <Form>
+        <Formik onSubmit={handleSubmit} initialValues={{ ...initialValues }}>
+        <Form>
             <FormBody>
               <FormLine>
-                <InputField name="codigo" label="Código" />
+                <InputField name="ra_aluno" label="RA" />
               </FormLine>
               <FormLine>
-                <PasswordField name="senha" label="senha" />
+                <InputField name="email" type="email" label="Email" />
+              </FormLine>
+              <FormLine>
+                <InputField name="nome" label="Nome"  />
+              </FormLine>
+              <FormLine>
+                <InputField name="data_inicio" type="date" label="Data Inicial" />
+              </FormLine>
+              <FormLine>
+                <InputField name="data_fim" type="date" label="Data Final" />
+              </FormLine>
+              <FormLine>
+                <InputField name="local" label="Local" />
               </FormLine>
             </FormBody>
+            <FormFooter>
+              <Button name="loginButton">Salvar</Button>
+            </FormFooter>
           </Form>
         </Formik>
       </Modal>

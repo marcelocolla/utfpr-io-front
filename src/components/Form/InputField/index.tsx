@@ -34,14 +34,19 @@ type InputFieldProps = {
   label?: string;
   type?: string;
   required?: boolean;
+  select?: boolean;
+  children?: React.ReactNode;
+  onBlur?:any;
+  disabled?:any;
 };
 
-const InputField = ({ name, ...props }: InputFieldProps) => {
+const InputField = ({ name, select, children, ...props }: InputFieldProps) => {
   const [field, meta] = useField(name);
 
   const configTextField = {
     ...field,
     ...props,
+    select,
     error: false,
     helperText: "",
     fullWidth: true,
@@ -52,7 +57,11 @@ const InputField = ({ name, ...props }: InputFieldProps) => {
     configTextField.helperText = meta.error;
   }
 
-  return <StyledTextField {...configTextField} />;
+  return (
+    <StyledTextField {...configTextField}>
+      {children}
+    </StyledTextField>
+  );
 };
 
 export default InputField;

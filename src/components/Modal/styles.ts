@@ -41,6 +41,8 @@ export const Modal = styled.div`
   max-width: 700px;
   z-index: 3;
 
+  padding: 3rem 4rem;
+
   background: white;
 
   /* overflow: hidden; */
