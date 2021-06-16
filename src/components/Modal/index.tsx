@@ -2,7 +2,7 @@ import React from "react";
 import * as S from "./styles";
 
 type ModalBasicProps = {
-  close: any;
+  close?: any;
   visible: boolean;
   children: React.ReactNode;
 };

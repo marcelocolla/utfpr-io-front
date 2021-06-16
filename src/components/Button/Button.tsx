@@ -3,6 +3,7 @@ import { useHistory } from "react-router";
 import styled, { css } from "styled-components";
 
 type ButtonProps = {
+  mw?: string;
   type?: any;
   name: string;
   children: ReactNode;
@@ -13,7 +14,9 @@ type ButtonProps = {
 
 export const ButtonStyled = styled.button<ButtonProps>`
   width: 100%;
+  max-width: 315px;
   max-height: 70px;
+  margin: 0 auto;
   padding: 2.4rem 0;
   border-radius: 30px;
 
@@ -57,6 +60,7 @@ export const Button = ({
   children,
   small,
   path,
+  mw,
   onClickFunction,
   ...props
 }: ButtonProps) => {

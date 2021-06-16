@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const HomeSection = styled.section`
   width: 100%;
+  /* min-height: 100vmax; */
   height: 100vh;
   padding: 6rem 5rem 4rem;
 
@@ -18,76 +19,72 @@ export const HomeSection = styled.section`
     font-weight: 700;
     margin-bottom: 4rem;
   }
+`;
 
-  .content {
+export const Content = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  height: 100%;
+`;
+
+export const Card = styled.div`
+  padding: 4.8rem 3rem 3.2rem;
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  background: #ffffff;
+  box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.03);
+  border-radius: 2rem;
+
+  gap: 1.6rem;
+
+  div {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    height: 100%;
-
-    // card
-    .card {
-      padding: 4.8rem 6.9rem 3.2rem;
-      display: flex;
-
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-
-      background: #ffffff;
-      box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.03);
-      border-radius: 2rem;
-
-      gap: 1.6rem;
-
-      strong {
-        font-size: 2.4rem;
-        line-height: 3.2rem;
-        font-weight: 700;
-        text-align: center;
-
-        margin: unset;
-      }
-
-      span {
-        font-weight: normal;
-        font-size: 1.5rem;
-        line-height: 2rem;
-        color: #fa4a0c;
-
-        strong {
-          font-size: 1.5rem;
-        }
-      }
-    }
-
-    a {
-      background: #fa4a0c;
-      border-radius: 30px;
-      border: 0px;
-
-      padding: 2.5rem 8.8rem;
-
-      font-weight: bold;
-      font-size: 17px;
-      line-height: 23px;
-      color: #ffffff;
-
-      text-decoration: none;
-    }
-
-    button {
-      background: #fa4a0c;
-      border-radius: 30px;
-      border: 0px;
-
-      padding: 2.5rem 8.8rem;
-
-      font-weight: bold;
-      font-size: 17px;
-      line-height: 23px;
-      color: #ffffff;
+    justify-content: center;
+    align-items: center;
+    img {
+      width: 90%;
     }
   }
+
+  strong {
+    font-size: 2.4rem;
+    line-height: 3.2rem;
+    font-weight: 700;
+    text-align: center;
+
+    margin: unset;
+  }
+
+  span {
+    font-weight: normal;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    color: #fa4a0c;
+
+    strong {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (min-width: 375px) {
+    max-width: 330px;
+    padding: 4.8rem 6.9rem 3.2rem;
+    div {
+      width: 177px;
+    }
+  }
+`;
+
+export const ButtonWrapper = styled.div`
+  width: 100%;
+  height: auto;
+
+  padding-top: 3rem;
 `;
