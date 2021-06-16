@@ -1,21 +1,21 @@
+import { useContext } from "react";
 import { useHistory } from "react-router-dom";
+
+import { AuthContext } from "../../contexts/AuthContext";
+
 import { Button } from "../../components/Button/Button";
 
 import * as S from "./styles";
 
-type DadosProps = {
-  id?: number;
-  nome?: string;
-  matricula?: number;
-  avatar?: string;
-  escopoPerfil?: string;
+const dados = {
+  id: 0,
+  nome: "Roberto Adalberto Nunes",
+  matricula: 1231234,
+  escopoPerfil: "deseg",
 };
 
-type Props = {
-  dados: DadosProps;
-};
-
-const Home = ({ dados }: Props) => {
+const Home = () => {
+  const { user } = useContext(AuthContext);
   const history = useHistory();
 
   return (
@@ -27,7 +27,7 @@ const Home = ({ dados }: Props) => {
           <div>
             <img src="Ellipse 2.png" alt="Avatar" />
           </div>
-          <strong>{dados.nome}</strong>
+          <strong>{user?.email}</strong>
           <span>
             Matrícula: <strong>{dados.matricula}</strong>
           </span>

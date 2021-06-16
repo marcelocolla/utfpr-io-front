@@ -1,5 +1,9 @@
-import { createContext, ReactNode, useState } from "react";
-import { useHistory } from "react-router";
+import { createContext, ReactNode, useEffect, useState } from "react";
+
+import Cookies from "js-cookie";
+
+import history from "../history";
+
 import { api } from "../services/api";
 
 type SignInCredentials = {
@@ -11,6 +15,7 @@ type AuthContextData = {
   signIn(credentials: SignInCredentials): Promise<void>;
   user: User | undefined;
   isAuthenticated: boolean;
+  loading: boolean;
 };
 
 type AuthProviderProps = {
@@ -27,9 +32,21 @@ export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | undefined>();
-  const isAuthenticated = !!user;
+  const [isAuthenticated, setIsAuthenticated] = useState(!!user);
+  const [loading, setLoading] = useState(true);
 
-  const history = useHistory();
+  useEffect(() => {
+    const token = Cookies.get("utfprio.token");
+
+    if (token) {
+      setIsAuthenticated(true);
+      api.defaults.headers.Autorization = `Bearer ${token}`;
+    }
+
+    // console.log(user);
+
+    setLoading(false);
+  }, [user]);
 
   async function signIn({ email, password }: SignInCredentials) {
     try {
@@ -38,7 +55,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         senha: password,
       });
 
+      setIsAuthenticated(true);
+
+      const token = response.data.token;
       const { id_pessoa, tipo_usuario } = response.data.pessoa;
+
+      Cookies.set("utfprio.token", token, { expires: 0.001 });
+      api.defaults.headers["Autorization"] = `Bearer ${token}`;
 
       setUser({
         email,
@@ -53,7 +76,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ signIn, user, isAuthenticated }}>
+    <AuthContext.Provider value={{ signIn, user, isAuthenticated, loading }}>
       {children}
     </AuthContext.Provider>
   );
