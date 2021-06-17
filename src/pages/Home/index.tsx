@@ -25,7 +25,7 @@ type Departamento = {
 
 const Home = () => {
   const history = useHistory();
-  const [open, setOpen] = useState(true); // default seria false
+  const [open, setOpen] = useState(false);
   const { user } = useContext(AuthContext);
   const [departamentos, setDepartamentos] = useState<Departamento[]>();
 
@@ -39,9 +39,7 @@ const Home = () => {
     }
   }, []);
 
-  console.log(departamentos);
-
-  /// se 'dados' for professor e não tiver departamento, abrir modal
+  console.log(user);
 
   /// quando selecionar o departamento, enviar requisição
   function handleSubmit() {
@@ -83,7 +81,6 @@ const Home = () => {
                 <FormLine mt="1rem">
                   <InputField name="departamento" label="Departamento" select>
                     {departamentos?.map((dep) => (
-                      //validar o value, o que tiver nele, seja id, sigla ou nome é o que vai ser mandado pro backend
                       <MenuItem
                         key={dep.id_departamento}
                         value={dep.id_departamento}
