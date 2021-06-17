@@ -9,7 +9,7 @@ type ButtonProps = {
   children: ReactNode;
   small?: boolean;
   path?: string;
-  onClickFunction?: string;
+  onClickFunction?: () => void;
 };
 
 export const ButtonStyled = styled.button<ButtonProps>`
@@ -78,7 +78,7 @@ export const Button = ({
       name={name}
       small={small}
       type={type ?? "submit"}
-      onClick={handleAction}
+      onClick={onClickFunction ?? handleAction}
       {...props}
     >
       {children}

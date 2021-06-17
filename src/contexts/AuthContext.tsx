@@ -28,9 +28,11 @@ type Deseg = {
 };
 
 type Professor = {
+  id_professor: number;
   nome: string;
   matricula: string;
   codigo_barra: string;
+  id_departamento: number;
 }
 
 type User = {
@@ -39,6 +41,7 @@ type User = {
   id_pessoa: number;
   tipo_usuario: number;
   deseg: Deseg;
+  professor: Professor;
 };
 
 export const AuthContext = createContext({} as AuthContextData);
@@ -70,13 +73,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
         codigo_barra: professor.codigo_barra,
         matricula: professor.matricula,
         permissao_deseg: 1,
-        id_departamento: 0,
+        id_departamento: professor.id_departamento,
         senha: password
       };
       console.log(infoProfessor);
-      await api.post("professor", infoProfessor);
-
-      signIn({email, password});
+      await api.post("professor", infoProfessor)
+        .then((response) => {
+          signIn({email, password});
+      }); 
     } catch (error) {
       console.log(error);
     }
@@ -108,6 +112,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
           id_deseg: id_deseg,
           matricula: matricula,
         },
+        professor: {
+          id_professor: 0,
+          id_departamento: 0,
+          matricula: matricula,
+          nome: nome_pessoa,
+          codigo_barra: "0",
+        }
       });
 
       history.push("/");
@@ -121,6 +132,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           addProfessor(
             {email, password},
             {
+              id_professor: 0,
+              id_departamento: 0,
               nome: errorData.usuario.name,
               codigo_barra: errorData.usuario.barcode + errorData.usuario.digit,
               matricula: errorData.usuario.code,

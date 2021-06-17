@@ -26,6 +26,7 @@ type Departamento = {
 const Home = () => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
+  const [openDeseg, setOpenDeseg] = useState(false);
   const { user } = useContext(AuthContext);
   const [departamentos, setDepartamentos] = useState<Departamento[]>();
 
@@ -47,6 +48,10 @@ const Home = () => {
     setOpen(false);
   }
 
+  function abrirCadastro() {
+    setOpenDeseg(true);
+  }
+
   return (
     <S.HomeSection>
       <strong onClick={() => history.goBack()}>Home</strong>
@@ -63,12 +68,40 @@ const Home = () => {
         </S.Card>
 
         <S.ButtonWrapper>
+          {/* não sei adicionar icone*/}
+          {user?.deseg &&
+            <Button type="button" name="relatorioButton" mw="10px">
+              R
+            </Button>
+          }
           <Button type="button" name="solicitacoesButton" path="/solicitacoes">
             Solicitações
           </Button>
+          {user?.deseg &&
+            <Button type="button" name="cadastroButton" mw="10px" onClickFunction={abrirCadastro}>
+              +
+            </Button>
+          }
         </S.ButtonWrapper>
 
-        {/* {user?.professor?.id_departamento === 0 && ( */}
+        <Modal visible={openDeseg} close={() => setOpenDeseg(false)}>
+          <h2>Cadastros</h2>
+          <br />
+          {/* não sei se é a melhor solução, criar um vertical*/}
+          <S.VerticalButtonWrapper>
+            <Button type="button" name="desegButton" path="/deseg">
+              DESEG
+            </Button>
+            <Button type="button" name="professoresButton" path="/professores">
+              Professores
+            </Button>
+            <Button type="button" name="vigilantesButton" path="/vigilantes">
+              Vigilantes
+            </Button>
+          </S.VerticalButtonWrapper>
+        </Modal>
+
+        {user?.professor?.id_departamento === 0 && (
         <Modal visible={open}>
           <h2>Professor, por favor selecione seu departamento.</h2>
           <br />
@@ -99,7 +132,7 @@ const Home = () => {
             </Form>
           </Formik>
         </Modal>
-        {/* )} */}
+        )}
       </S.Content>
     </S.HomeSection>
   );
