@@ -89,13 +89,13 @@ const Home = () => {
           <br />
           {/* não sei se é a melhor solução, criar um vertical*/}
           <S.VerticalButtonWrapper>
-            <Button type="button" name="desegButton" path="/deseg">
+            <Button type="button" name="desegButton" path="/usuarios/deseg">
               DESEG
             </Button>
-            <Button type="button" name="professoresButton" path="/professores">
+            <Button type="button" name="professoresButton" path="/usuarios/professor">
               Professores
             </Button>
-            <Button type="button" name="vigilantesButton" path="/vigilantes">
+            <Button type="button" name="vigilantesButton" path="/usuarios/vigilante">
               Vigilantes
             </Button>
           </S.VerticalButtonWrapper>
