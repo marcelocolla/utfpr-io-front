@@ -1,10 +1,10 @@
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
+import { Button } from "../../components/Button/Button";
+import InputField from "../../components/Form/InputField";
 import { FormBody } from "../../components/Form/FormSection/FormBody";
 import { FormLine } from "../../components/Form/FormSection/FormLine";
-import InputField from "../../components/Form/InputField";
-import { Button } from "../../components/Button/Button";
 import { FormFooter } from "../../components/Form/FormSection/FormFooter";
 import { Modal } from "../../components/Modal";
 
@@ -210,7 +210,11 @@ const Solicitacoes = () => {
                 <InputField name="nome" label="Nome" />
               </FormLine>
               <FormLine>
-                <InputField name="data_inicio" type="date" label="Data Inicial" />
+                <InputField
+                  name="data_inicio"
+                  type="date"
+                  label="Data Inicial"
+                />
               </FormLine>
               <FormLine>
                 <InputField name="data_fim" type="date" label="Data Final" />

@@ -1,34 +1,17 @@
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Home from "./pages/Home";
-import Solicitacoes from "./pages/Solicitações";
-import Login from "./pages/Login";
-import CadastroSolicitacao from "./pages/CadastroSolicitacao";
+import { Router } from "react-router-dom";
 
-const dados = {
-  id: 0,
-  nome: "Roberto Adalberto Nunes",
-  matricula: 1231234,
-  escopoPerfil: "deseg",
-};
+import Routes from "./routes";
+import history from "./history";
+
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/solicitacoes">
-          <Solicitacoes />
-        </Route>
-        <Route path="/cadastro_solicitacao">
-          <CadastroSolicitacao />
-        </Route>
-        <Route path="/">
-          <Home dados={dados} />
-        </Route>
-      </Switch>
-    </BrowserRouter>
+    <AuthProvider>
+      <Router history={history}>
+        <Routes />
+      </Router>
+    </AuthProvider>
   );
 }
 

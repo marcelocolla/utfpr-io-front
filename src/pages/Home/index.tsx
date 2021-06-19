@@ -1,6 +1,10 @@
+import { useContext, useEffect } from "react";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+
+import { AuthContext } from "../../contexts/AuthContext";
+
 import { Button } from "../../components/Button/Button";
 
 import { FormBody } from "../../components/Form/FormSection/FormBody";
@@ -11,87 +15,125 @@ import InputField from "../../components/Form/InputField";
 import { MenuItem } from "@material-ui/core";
 
 import * as S from "./styles";
+import { api } from "../../services/api";
 
-type DadosProps = {
-  id?: number;
-  nome?: string;
-  matricula?: number;
-  avatar?: string;
-  escopoPerfil?: string;
+type Departamento = {
+  id_departamento: number;
+  nome_departamento: string;
+  sigla_departamento: string;
 };
 
-type Props = {
-  dados: DadosProps;
-};
-
-// receber do backend
-const mock = [
-  {
-      id: 1,
-      text: "COENS"
-  },
-  {
-      id: 2,
-      text: "COZOO"
-  }
-];
-
-const initialValues = {
-  departamento: mock[0].text,
-};
-
-const Home = ({ dados }: Props) => {
-  const [open, setOpen] = useState(true); // default seria false
+const Home = () => {
   const history = useHistory();
-  console.log({dados});
+  const [open, setOpen] = useState(false);
+  const [openDeseg, setOpenDeseg] = useState(false);
+  const { user } = useContext(AuthContext);
+  const [departamentos, setDepartamentos] = useState<Departamento[]>();
 
-  /// se 'dados' for professor e não tiver departamento, abrir modal
+  useEffect(() => {
+    try {
+      api.get("departamento").then((response) => {
+        setDepartamentos(response.data.departamentos);
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+  console.log(user);
 
   /// quando selecionar o departamento, enviar requisição
   function handleSubmit() {
-    return;
+    // Envio de dados pro backend
+    setOpen(false);
+  }
+
+  function abrirCadastro() {
+    setOpenDeseg(true);
   }
 
   return (
     <S.HomeSection>
       <strong onClick={() => history.goBack()}>Home</strong>
 
-      <div className="content">
-        <div className="card">
+      <S.Content>
+        <S.Card>
           <div>
             <img src="Ellipse 2.png" alt="Avatar" />
           </div>
-          <strong>{dados.nome}</strong>
+          <strong>{user?.nome}</strong>
           <span>
-            Matrícula: <strong>{dados.matricula}</strong>
+            Matrícula: <strong>{user?.deseg?.matricula}</strong>
           </span>
-        </div>
+        </S.Card>
 
-        <Button type="button" name="solicitacoesButton" path="/solicitacoes">
-          Solicitações
-        </Button>
+        <S.ButtonWrapper>
+          {/* não sei adicionar icone*/}
+          {user?.deseg &&
+            <Button type="button" name="relatorioButton" mw="10px">
+              R
+            </Button>
+          }
+          <Button type="button" name="solicitacoesButton" path="/solicitacoes">
+            Solicitações
+          </Button>
+          {user?.deseg &&
+            <Button type="button" name="cadastroButton" mw="10px" onClickFunction={abrirCadastro}>
+              +
+            </Button>
+          }
+        </S.ButtonWrapper>
 
-        <Modal visible={open} close={() => setOpen(false)}>
+        <Modal visible={openDeseg} close={() => setOpenDeseg(false)}>
+          <h2>Cadastros</h2>
+          <br />
+          {/* não sei se é a melhor solução, criar um vertical*/}
+          <S.VerticalButtonWrapper>
+            <Button type="button" name="desegButton" path="/usuarios/deseg">
+              DESEG
+            </Button>
+            <Button type="button" name="professoresButton" path="/usuarios/professor">
+              Professores
+            </Button>
+            <Button type="button" name="vigilantesButton" path="/usuarios/vigilante">
+              Vigilantes
+            </Button>
+          </S.VerticalButtonWrapper>
+        </Modal>
+
+        {user?.professor?.id_departamento === 0 && (
+        <Modal visible={open}>
           <h2>Professor, por favor selecione seu departamento.</h2>
           <br />
-          <Formik onSubmit={handleSubmit} initialValues={{ ...initialValues }}>
-              <Form>
+          <Formik
+            onSubmit={handleSubmit}
+            initialValues={{ departamentos: departamentos }}
+          >
+            <Form>
               <FormBody>
-                <FormLine>
+                <FormLine mt="1rem">
                   <InputField name="departamento" label="Departamento" select>
-                    {mock?.map((item, index) => (
-                      <MenuItem key={item.id} value={item.text}>{item.text}</MenuItem>
+                    {departamentos?.map((dep) => (
+                      <MenuItem
+                        key={dep.id_departamento}
+                        value={dep.id_departamento}
+                      >
+                        {dep.sigla_departamento}
+                      </MenuItem>
                     ))}
                   </InputField>
                 </FormLine>
               </FormBody>
-              <FormFooter>
-                <Button name="loginButton">Confirmar</Button>
+              <FormFooter mt="3rem">
+                <Button name="loginButton" mw="315px">
+                  Confirmar
+                </Button>
               </FormFooter>
             </Form>
           </Formik>
         </Modal>
-      </div>
+        )}
+      </S.Content>
     </S.HomeSection>
   );
 };

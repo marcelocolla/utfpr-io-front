@@ -36,7 +36,8 @@ export const Overlay = styled.div`
 
 export const Modal = styled.div`
   width: 90%;
-  height: 90%;
+  height: auto;
+  max-height: 90%;
   max-width: 700px;
   z-index: 3;
 
@@ -44,7 +45,7 @@ export const Modal = styled.div`
 
   background: white;
 
-  overflow: hidden;
+  /* overflow: hidden; */
   border-radius: "4px";
 
   box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.25);
@@ -52,5 +53,6 @@ export const Modal = styled.div`
 `;
 
 export const Content = styled.div`
+  padding: 3rem 4rem;
   margin-bottom: -6px;
 `;
