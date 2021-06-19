@@ -113,7 +113,6 @@ const cadastroSolicitacao = () => {
                   "permissao_acesso":1,
                   "id_pessoa_permitiu":item.id_pessoa
                 });     
-                console.log(newArray);
             });
           }
         
@@ -178,10 +177,8 @@ const cadastroSolicitacao = () => {
                 },
                 body:JSON.stringify(enviarSolicitacao)
               }
-              console.log(JSON.stringify(enviarSolicitacao));
               fetch('https://utf-io-staging.herokuapp.com/solicitacao/cadastro',params
               ).then(function(response) {
-                console.log(response.status); // returns 200
                 if(response.status!=200){
                   alert("Dados não gerado, falar com o suporte!");
                 }else{
