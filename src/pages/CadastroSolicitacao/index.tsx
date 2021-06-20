@@ -156,7 +156,7 @@ const cadastroSolicitacao = () => {
               }
               fetch('https://utf-io-staging.herokuapp.com/solicitacao/cadastro',params
               ).then(function(response) {
-                if(response.status!=200){
+                if(response.status!==200){
                   alert("Dados não gerado, falar com o suporte!");
                 } else {
                   window.history.back();

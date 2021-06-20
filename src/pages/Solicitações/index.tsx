@@ -1,4 +1,4 @@
-import { Form, useFormik, FormikProvider, useFormikContext } from "formik";
+import { Form, useFormik, FormikProvider } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { Button } from "../../components/Button/Button";
@@ -13,8 +13,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import * as S from "./styles";
-import moment from 'moment'
-import { string } from "yup";
 
 /*
 * Quem esta logado
@@ -47,9 +45,9 @@ const getAluno = async (ra: string) => {
   return fetch(`https://utf-io-staging.herokuapp.com/aluno/${ra}`)
     .then((res) => res.json());
 }
-function executeAsync(func: any) {
-  setTimeout(func, 10);
-}
+// function executeAsync(func: any) {
+//   setTimeout(func, 10);
+// }
 
 /*
 * Trás todas as solicitações de cadastro pelo parametro de esta ou não pendente
@@ -213,7 +211,7 @@ const Solicitacoes = () => {
       alert("Somente visualização");
     }
 
-  }, [editar]);
+  }, [editar, formik, status]);
 
   /*
   * preencher a lista de acordo o radio button selecionado 
@@ -293,7 +291,7 @@ const Solicitacoes = () => {
         mock = mock.filter(json => (json.permissao_acesso < 1));
     }
 
-  }, [jsonObj]);
+  }, [jsonObj, status]);
 
   return (
     <S.SolicitacoesWrapper>

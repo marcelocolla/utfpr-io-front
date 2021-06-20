@@ -68,6 +68,10 @@ const CadastroUsuario = (params: UserProps) => {
         // abrir modal pra cadastro
     }
 
+    function exibirCadastro( tipo_usuario: number, user: User ) {
+        // abrir modal para exibição
+    }
+
     useEffect(() => {
         try {
           api.get(tipoUsuario).then((response) => {
@@ -85,14 +89,15 @@ const CadastroUsuario = (params: UserProps) => {
           <br />
           <div className="cardsWrapper">
             {usuarios?.map((el) => (
-            <S.Card key={el.id_pessoa}>
-                {/* parte esquerda, avatar 
-                onClick={() => setOpen(true)}
-                */}
+            <S.Card 
+              key={el.id_pessoa} 
+              onClick={() => exibirCadastro(el.Pessoa.tipo_usuario, el)}>
+                {/* parte esquerda, avatar */}
                 <div className="imageWrapper">
                 <img src="/dog.png" alt="foto solicitacao" />
                 </div>
 
+                {/* parte direita, informações gerais */}
                 <div>
                 <h1>{el.Pessoa.nome_pessoa}</h1>
                   {el.id_vigilante && (getInfoVigilante(el))}
