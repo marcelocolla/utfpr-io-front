@@ -17,11 +17,45 @@ type Pessoa = {
     tipo_usuario: number;
 }
 
+type Turno = {
+  id_turno: number;
+  nome_turno: string;
+}
+
 type User = {
     id_pessoa: number;
+    id_professor?: number;
+    id_vigilante?: number;
+    id_deseg?: number;
     matricula: number;
     Pessoa: Pessoa;
+    Turno?: Turno;
 };
+
+// deve ter algum Design Pattern que trata isso
+const getInfoProfessor = ( professor: User ) => {
+    return (
+      <div>
+        <span>{professor.Pessoa.email}</span>
+        <strong></strong>
+      </div>)
+}
+
+const getInfoDeseg = ( deseg: User ) => {
+  return (
+    <div>
+      <span>{deseg.Pessoa.email}</span>
+      <strong>{deseg.matricula}</strong>
+    </div>)
+}
+
+const getInfoVigilante = ( vigilante: User ) => {
+  return (
+    <div>
+      <span>Turno</span>
+      <strong>{vigilante.Turno?.nome_turno}</strong>
+    </div>)
+}
 
 const CadastroUsuario = (params: UserProps) => {
 
@@ -37,13 +71,13 @@ const CadastroUsuario = (params: UserProps) => {
     useEffect(() => {
         try {
           api.get(tipoUsuario).then((response) => {
-            setUsuarios(response.data[tipoUsuario+"s"]);
+            setUsuarios(response.data[tipoUsuario]);
           });
         } catch (err) {
           console.error(err);
         }
       }, [tipoUsuario]);
-    //console.log(usuarios);
+    console.log(usuarios);
 
     return (
         <S.UsuarioWrapper>
@@ -59,13 +93,11 @@ const CadastroUsuario = (params: UserProps) => {
                 <img src="/dog.png" alt="foto solicitacao" />
                 </div>
 
-                {/* parte direita, infos */}
                 <div>
                 <h1>{el.Pessoa.nome_pessoa}</h1>
-                <div>
-                    <span>{el.Pessoa.email}</span>
-                    <strong>{el.matricula}</strong>
-                </div>
+                  {el.id_vigilante && (getInfoVigilante(el))}
+                  {el.id_professor && (getInfoProfessor(el))}
+                  {el.id_deseg && (getInfoDeseg(el))}
                 </div>
             </S.Card>
             ))}
