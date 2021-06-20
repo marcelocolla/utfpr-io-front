@@ -64,7 +64,6 @@ const cadastroSolicitacao = () => {
       (res) => res.json()
     );
   };
-
   async function handleSubmit(values: Values) {
     if (tipo_pessoa === 1) {
       deseg(2).then((dados) => {
@@ -81,7 +80,12 @@ const cadastroSolicitacao = () => {
               nome: values.nome,
               data_inicio: values.data_inicio,
               data_fim: values.data_fim,
-              local: values.local,
+              locais: [
+                {
+                  id_local: null,
+                  nome: values.local,
+                },
+              ],
               permissao_acesso: 1,
               id_pessoa_permitiu: item.id_pessoa,
             });
@@ -148,17 +152,11 @@ const cadastroSolicitacao = () => {
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify(enviarSolicitacao),
-              };
-              console.log(JSON.stringify(enviarSolicitacao));
-
-              fetch(
-                "https://utf-io-staging.herokuapp.com/solicitacao/cadastro",
-                params
-              ).then(function (response) {
-                console.log(response.status); // returns 200
-
-                if (response.status !== 200) {
+                body:JSON.stringify(enviarSolicitacao)
+              }
+              fetch('https://utf-io-staging.herokuapp.com/solicitacao/cadastro',params
+              ).then(function(response) {
+                if(response.status!=200){
                   alert("Dados não gerado, falar com o suporte!");
                 } else {
                   window.history.back();

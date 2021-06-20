@@ -32,7 +32,7 @@ const Home = () => {
 
   useEffect(() => {
     try {
-      api.get("departamento").then((response) => {
+      api.get("departamento").then((response:any) => {
         setDepartamentos(response.data.departamentos);
       });
     } catch (err) {
