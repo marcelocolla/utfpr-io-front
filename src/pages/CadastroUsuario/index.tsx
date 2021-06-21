@@ -2,8 +2,17 @@ import { capitalize } from "@material-ui/core";
 import { useState, useEffect } from "react";
 import { RouteComponentProps } from "react-router";
 
+import { FieldArray, Form, Formik, useFormik } from "formik";
+
 import { useHistory } from "react-router";
 import { Button } from "../../components/Button/Button";
+import { Modal } from "../../components/Modal";
+import { FormBody } from "../../components/Form/FormSection/FormBody";
+import { FormLine } from "../../components/Form/FormSection/FormLine";
+import { FormFooter } from "../../components/Form/FormSection/FormFooter";
+import InputField from "../../components/Form/InputField";
+
+import Professor from "./model/Professor";
 
 import { api } from "../../services/api";
 import * as S from "./styles";
@@ -11,65 +20,109 @@ import * as S from "./styles";
 // peguei de um livro, não sei como desconstruir
 type UserProps = RouteComponentProps<{tipo:string}>;
 
-type Pessoa = {
-    nome_pessoa: string;
-    email: string;
-    tipo_usuario: number;
+type PessoaProps = {
+  nome_pessoa: string;
+  email: string;
+  tipo_usuario: number;
 }
 
-type Turno = {
+type TurnoProps = {
   id_turno: number;
   nome_turno: string;
 }
 
-type User = {
-    id_pessoa: number;
-    id_professor?: number;
-    id_vigilante?: number;
-    id_deseg?: number;
-    matricula: number;
-    Pessoa: Pessoa;
-    Turno?: Turno;
-};
-
-// deve ter algum Design Pattern que trata isso
-const getInfoProfessor = ( professor: User ) => {
-    return (
-      <div>
-        <span>{professor.Pessoa.email}</span>
-        <strong></strong>
-      </div>)
+type UsuarioProps = {
+  id_pessoa: number;
+  id_deseg?: number;
+  id_professor?: number;
+  id_vigilante?: number;
+  matricula: number;
+  Pessoa: PessoaProps;
+  Turno?: TurnoProps;
 }
 
-const getInfoDeseg = ( deseg: User ) => {
-  return (
-    <div>
-      <span>{deseg.Pessoa.email}</span>
-      <strong>{deseg.matricula}</strong>
-    </div>)
+type Values = {
+  props: Array<any>;
 }
 
-const getInfoVigilante = ( vigilante: User ) => {
-  return (
-    <div>
-      <span>Turno</span>
-      <strong>{vigilante.Turno?.nome_turno}</strong>
-    </div>)
+const getUsuario = ( usuario: UsuarioProps ) => {
+  if (usuario.Pessoa.tipo_usuario === 0) return new Professor(usuario);
+
 }
+
+const getUsuarioPeloTipo = ( tipoUsuario: string ) => {
+  let usuario = {
+    id_pessoa: 0, 
+    matricula: 0, 
+    Pessoa: {
+      nome_pessoa: "",
+      email: "",
+      tipo_usuario: 0
+    }};
+
+  if (tipoUsuario === "professor") return new Professor(usuario);
+}
+
+// const getInfoDeseg = ( deseg: User ) => {
+//   return (
+//     <div>
+//       <span>{deseg.Pessoa.email}</span>
+//       <strong>{deseg.matricula}</strong>
+//     </div>)
+// }
+
+// const getInfoVigilante = ( vigilante: User ) => {
+//   return (
+//     <div>
+//       <span>Turno</span>
+//       <strong>{vigilante.Turno?.nome_turno}</strong>
+//     </div>)
+// }
 
 const CadastroUsuario = (params: UserProps) => {
 
     const tipoUsuario = params.match.params.tipo;
     const history = useHistory();
 
-    const [usuarios, setUsuarios] = useState<User[]>();
+    const [usuarios, setUsuarios] = useState<UsuarioProps[]>();
+
+    const [open, setOpen] = useState(false);
+    const [viewOnly, setViewOnly] = useState(false);
     
     function abrirCadastro() {
-        // abrir modal pra cadastro
+        setViewOnly(false);
+        setOpen(true);
     }
 
-    function exibirCadastro( tipo_usuario: number, user: User ) {
-        // abrir modal para exibição
+    function exibirCadastro( tipo_usuario: number, user: UsuarioProps ) {
+        let id = 0;
+        if(tipo_usuario === 0) id = user.id_professor?? user.id_pessoa;
+
+        getUsuarioAPI(id);
+    }
+
+    async function getUsuarioAPI( id: number ) {
+      await api.get(tipoUsuario + "/" + id).then((response:any) => {
+        console.log(response.data[tipoUsuario][0].id_professor);
+        for (let prop of getUsuarioPeloTipo(tipoUsuario)?.getFormValues() ?? []) {
+          console.log(prop[0] + " " + response.data[tipoUsuario][0][prop[3]]);
+          formik.setFieldValue(prop[0], response.data[tipoUsuario][0]);
+        }
+
+        setViewOnly(true);
+        setOpen(true);
+      });
+    }
+
+    const formik = useFormik({
+      initialValues: {
+        props: [],
+      },
+      onSubmit: values => {},
+    });
+
+    async function handleSubmit(values: Values) {
+      //console.log(values); // cadastro de professor não é necessário
     }
 
     useEffect(() => {
@@ -81,7 +134,6 @@ const CadastroUsuario = (params: UserProps) => {
           console.error(err);
         }
       }, [tipoUsuario]);
-    console.log(usuarios);
 
     return (
         <S.UsuarioWrapper>
@@ -100,9 +152,7 @@ const CadastroUsuario = (params: UserProps) => {
                 {/* parte direita, informações gerais */}
                 <div>
                 <h1>{el.Pessoa.nome_pessoa}</h1>
-                  {el.id_vigilante && (getInfoVigilante(el))}
-                  {el.id_professor && (getInfoProfessor(el))}
-                  {el.id_deseg && (getInfoDeseg(el))}
+                  {getUsuario(el)?.getShortInfo()}
                 </div>
             </S.Card>
             ))}
@@ -113,6 +163,32 @@ const CadastroUsuario = (params: UserProps) => {
             onClickFunction={abrirCadastro}>
             Cadastrar {tipoUsuario}
           </Button>
+
+          <Modal visible={open} close={() => setOpen(false)}>
+              <h2>{!viewOnly && "Novo"} {capitalize(tipoUsuario)}</h2>
+              <br />
+              <Formik initialValues={formik.initialValues} onSubmit={handleSubmit}>
+                <Form>
+                  <FormBody>
+                    <FieldArray name="props">
+                      {() => (getUsuarioPeloTipo(tipoUsuario)?.getFormValues().map((prop, i) => {
+                        return (
+                          <FormLine key={i}>
+                            <InputField
+                              name={prop[0]}
+                              type={prop[1]}
+                              label={prop[2]}
+                              disabled={viewOnly} />
+                          </FormLine>
+                        )}))}
+                    </FieldArray>
+                  </FormBody>
+                  <FormFooter>
+                    <Button name="cadastroButton">Cadastrar</Button>
+                  </FormFooter>
+                </Form>
+              </Formik>
+          </Modal>
         </S.UsuarioWrapper>
       );
 

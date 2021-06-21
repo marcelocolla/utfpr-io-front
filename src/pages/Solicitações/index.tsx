@@ -66,7 +66,7 @@ const getPermissaoUsuarioProfessor = async (id: number) => {
 }
 
 
-let mock = Array();
+let mock = Array<any>();
 /*
 * limpa o mock para que ele não duplique ou apareça lixo de outra lista
 */
