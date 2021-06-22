@@ -52,6 +52,7 @@ type GetDeseg = {
 
 const cadastroSolicitacao = () => {
   let tipo_pessoa = 0;
+  let codigo_pessoa = 87;
 
   const professor = (id: number) => {
     return fetch(`https://utf-io-staging.herokuapp.com/professor/${id}`).then(
@@ -94,8 +95,9 @@ const cadastroSolicitacao = () => {
         }
       });
     } else {
-      professor(27).then((dados) => {
+      professor(codigo_pessoa).then((dados) => {
         if (dados.professor.length === 0) {
+          console.log(dados.professor);
           alert("Professor não encontrado!");
         } else {
           dados.professor.forEach((item: GetProfessor) => {
