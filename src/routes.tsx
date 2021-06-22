@@ -46,7 +46,7 @@ function Routes() {
       <CustomRoute
         isPrivate
         exact
-        path="/CadastroSolicitacao"
+        path="/cadastro_solicitacao"
         component={CadastroSolicitacao}
       />
       <CustomRoute
