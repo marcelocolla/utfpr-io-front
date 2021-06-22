@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link, Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
