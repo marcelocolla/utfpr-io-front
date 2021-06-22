@@ -2,17 +2,9 @@ import { capitalize } from "@material-ui/core";
 import { useState, useEffect } from "react";
 import { RouteComponentProps } from "react-router";
 
-// import { FieldArray, Form, Formik,  } from "formik";
-
-import { useFormik } from 'formik'
-
 import { useHistory } from "react-router";
 import { Button } from "../../components/Button/Button";
 import { Modal } from "../../components/Modal";
-// import { FormBody } from "../../components/Form/FormSection/FormBody";
-// import { FormLine } from "../../components/Form/FormSection/FormLine";
-// import { FormFooter } from "../../components/Form/FormSection/FormFooter";
-// import InputField from "../../components/Form/InputField";
 
 import Professor from "./model/Professor";
 
@@ -45,26 +37,9 @@ type UsuarioProps = {
   Turno?: TurnoProps;
 }
 
-// type Values = {
-//   props: Array<any>;
-// }
-
 const getUsuario = ( usuario: UsuarioProps ) => {
   if (usuario.Pessoa.tipo_usuario === 0) return new Professor(usuario);
 
-}
-
-const getUsuarioPeloTipo = ( tipoUsuario: string ) => {
-  let usuario = {
-    id_pessoa: 0, 
-    matricula: 0, 
-    Pessoa: {
-      nome_pessoa: "",
-      email: "",
-      tipo_usuario: 0
-    }};
-
-  if (tipoUsuario === "professor") return new Professor(usuario);
 }
 
 // const getInfoDeseg = ( deseg: User ) => {
@@ -92,42 +67,30 @@ const CadastroUsuario = (params: UserProps) => {
 
   const [open, setOpen] = useState(false);
   const [viewOnly, setViewOnly] = useState(false);
+  const [selection, setSelection] = useState(0);
   
   function abrirCadastro() {
+    if (tipoUsuario !== "professor") {
       setViewOnly(false);
       setOpen(true);
+    }
   }
 
   function exibirCadastro( tipo_usuario: number, user: UsuarioProps ) {
-      let id = 0;
-      if(tipo_usuario === 0) id = user.id_professor?? user.id_pessoa;
+    let id = 0;
+    if(tipo_usuario === 0) id = user.id_professor?? user.id_pessoa;
+    if(tipo_usuario === 1) id = user.id_deseg?? user.id_pessoa;
+    if(tipo_usuario === 3) id = user.id_vigilante?? user.id_pessoa;
 
-      getUsuarioAPI(id);
+    setSelection(id);
+    setViewOnly(true);
+    setOpen(true);
   }
 
-  async function getUsuarioAPI( id: number ) {
-    await api.get(tipoUsuario + "/" + id).then((response:any) => {
-      // console.log(response.data[tipoUsuario][0].id_professor);
-      for (let prop of getUsuarioPeloTipo(tipoUsuario)?.getFormValues() ?? []) {
-        // console.log(prop[0] + " " + response.data[tipoUsuario][0][prop[3]]);
-        formik.setFieldValue(prop[0], response.data[tipoUsuario][0]);
-      }
-
-      setViewOnly(true);
-      setOpen(true);
-    });
+  function fecharCadastro() {
+    setOpen(false);
+    setSelection(0);
   }
-
-  const formik = useFormik({
-    initialValues: {
-      props: [],
-    },
-    onSubmit: values => {},
-  });
-
-  // async function handleSubmit(values: Values) {
-  //   //console.log(values); // cadastro de professor não é necessário
-  // }
 
   useEffect(() => {
     try {
@@ -165,19 +128,19 @@ const CadastroUsuario = (params: UserProps) => {
         type="button"
         name="criarUsuario"
         onClickFunction={abrirCadastro}>
-        Cadastrar {tipoUsuario}
+        Cadastrar {capitalize(tipoUsuario)}
       </Button>
 
-      <Modal visible={open} close={() => setOpen(false)}>
+      <Modal visible={open} close={() => fecharCadastro()}>
         <h2>{!viewOnly && "Novo"} {capitalize(tipoUsuario)}</h2>
         <br />
 
         { tipoUsuario === "professor" ? (
             <h1>Professor não tem cadastro</h1>
           ) : "deseg" ? (
-            <DesegForm viewOnly={false} />
+            <DesegForm viewOnly={viewOnly} id_usuario={selection} />
           ) : (
-            <DesegForm viewOnly={false} />
+            <DesegForm viewOnly={viewOnly} id_usuario={selection} />
           )}
         {/* <Formik initialValues={formik.initialValues} onSubmit={handleSubmit}>
           <Form>

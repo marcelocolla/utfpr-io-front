@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Formik, Form } from "formik"
 
 import * as Yup from "yup";
@@ -13,8 +14,9 @@ import { FormFooter } from '../Form/FormSection/FormFooter';
 import { api } from "../../services/api";
 import history from "../../history";
 
-type DesegFormProps = {
+type FormProps = {
   viewOnly?: boolean;
+  id_usuario?: number;
 }
 
 type DesegValues = {
@@ -24,22 +26,34 @@ type DesegValues = {
   senha?: string;
 }
 
-export default function DesegForm( viewOnly: DesegFormProps ) {
+export default function DesegForm( props: FormProps ) {
 
-  // useEffect(() => {
-  //   api.get(`deseg/${}`)
-  // }, [])
-
-  const initialValues: DesegValues = {
+  const [deseg, setDeseg] = useState<DesegValues>({
     nome_pessoa: "",
     email: "",
     matricula: "",
     senha: ""
-  }
+  });
+
+  useEffect(() => {
+    try {
+      if (props.id_usuario !== 0) {
+        api.get("deseg/" + props.id_usuario).then((response) => {
+          console.log(response);
+          setDeseg({
+            nome_pessoa: response.data.deseg[0].Pessoa.nome_pessoa,
+            email: response.data.deseg[0].Pessoa.email,
+            matricula: response.data.deseg[0].matricula
+          });
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, [props])
 
   async function handleSubmit( values: DesegValues ) {
-    console.log("lá vem o post");
-    const response = await api.post("/deseg", {
+    await api.post("/deseg", {
       nome_pessoa: values.nome_pessoa,
       email: values.email,
       matricula: values.matricula,
@@ -47,7 +61,6 @@ export default function DesegForm( viewOnly: DesegFormProps ) {
       tipo_usuario: 1,
       senha: values.senha
     });
-    console.log(response);
     history.go(0);
   }
   
@@ -57,28 +70,29 @@ export default function DesegForm( viewOnly: DesegFormProps ) {
 
   return (
     <Formik 
-      initialValues={{...initialValues}}
+      initialValues={{...deseg}}
       validationSchema={validationSchema}
-      onSubmit={handleSubmit}>
+      onSubmit={handleSubmit}
+      enableReinitialize>
       <Form>
         <FormBody>
           <FormLine>
-            <InputField name="nome_pessoa" label="Nome"/>
+            <InputField name="nome_pessoa" label="Nome" disabled={props.viewOnly}/>
           </FormLine>
           <FormLine>
-            <InputField name="email" label="Email"/>
+            <InputField name="email" label="Email" disabled={props.viewOnly}/>
           </FormLine>
           <FormLine>
-            <InputField name="matricula" label="Matricula"/>
+            <InputField name="matricula" label="Matricula" disabled={props.viewOnly}/>
           </FormLine>
-          {!viewOnly && (
+          {!props.viewOnly && (
             <FormLine>
               <PasswordField name="senha" label="Senha" />
           </FormLine>)}
         </FormBody>
         <FormFooter>
           <Button name="cadastroButton">
-            {viewOnly ? "Atualizar" : "Cadastrar"}
+            {props.viewOnly ? "Atualizar" : "Cadastrar"}
           </Button>
         </FormFooter>
       </Form>
