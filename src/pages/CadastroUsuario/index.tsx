@@ -174,11 +174,11 @@ const CadastroUsuario = (params: UserProps) => {
 
         { tipoUsuario === "professor" ? (
             <h1>Professor não tem cadastro</h1>
-          ) : "deseg" ?(
-          <DesegForm />
-        ) : (
-          <DesegForm />
-        )}
+          ) : "deseg" ? (
+            <DesegForm viewOnly={false} />
+          ) : (
+            <DesegForm viewOnly={false} />
+          )}
         {/* <Formik initialValues={formik.initialValues} onSubmit={handleSubmit}>
           <Form>
             <FormBody>
