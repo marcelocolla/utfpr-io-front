@@ -76,21 +76,20 @@ export default function VigilanteForm( props: FormProps ) {
   }, [props])
 
   async function handleSubmit( values: VigilanteValues ) {
-    console.log(values);
-    // await api.post("/vigilante", {
-    //   nome_pessoa: values.nome_pessoa,
-    //   email: values.email,
-    //   matricula: values.matricula,
-    //   codigo_barra: "02940294",
-    //   tipo_usuario: 1,
-    //   senha: values.senha
-    // });
+    await api.post("/vigilante", {
+      nome_pessoa: values.nome_pessoa,
+      email: values.email,
+      matricula: values.matricula,
+      tipo_usuario: 3,
+      id_turno: values.turno,
+      senha: values.senha
+    });
     history.go(0);
   }
   
   const validationSchema = Yup.object().shape({
     email: Yup.string().required("Required"),
-    password: Yup.string().required("Required"),
+    senha: Yup.string().required("Required"),
   });
 
   return (
@@ -107,7 +106,7 @@ export default function VigilanteForm( props: FormProps ) {
           <FormLine>
             <InputField name="matricula" label="Matricula" disabled={props.viewOnly}/>
           </FormLine>
-          <FormLine mt="1rem">
+          <FormLine mt="1rem" mb="1rem">
             <InputField name="turno" label="Turno" select disabled={props.viewOnly}>
               {turnos?.map((turno) => (
                 <MenuItem
