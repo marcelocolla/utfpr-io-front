@@ -39,12 +39,14 @@ export default function DesegForm( props: FormProps ) {
     try {
       if (props.id_usuario !== 0) {
         api.get("deseg/" + props.id_usuario).then((response) => {
-          console.log(response);
-          setDeseg({
-            nome_pessoa: response.data.deseg[0].Pessoa.nome_pessoa,
-            email: response.data.deseg[0].Pessoa.email,
-            matricula: response.data.deseg[0].matricula
-          });
+          if (response.data.deseg.length !== 0) {
+            let getDeseg = response.data.deseg[0];
+            setDeseg({
+              nome_pessoa: getDeseg.Pessoa.nome_pessoa,
+              email: getDeseg.Pessoa.email,
+              matricula: getDeseg.matricula
+            });
+          } 
         });
       }
     } catch (err) {
@@ -66,6 +68,7 @@ export default function DesegForm( props: FormProps ) {
   
   const validationSchema = Yup.object().shape({
     email: Yup.string().required("Required"),
+    senha: Yup.string().required("Required"),
   });
 
   return (

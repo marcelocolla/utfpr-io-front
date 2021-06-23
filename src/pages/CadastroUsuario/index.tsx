@@ -1,19 +1,19 @@
 import { capitalize } from "@material-ui/core";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { RouteComponentProps } from "react-router";
 
 import { useHistory } from "react-router";
 import { Button } from "../../components/Button/Button";
 import { Modal } from "../../components/Modal";
 
-import Professor from "./model/Professor";
-
 import { api } from "../../services/api";
+import { AuthContext } from "../../contexts/AuthContext";
 import * as S from "./styles";
 
-import DesegForm from "../../components/Forms";
+import DesegForm from "../../components/Forms/DesegForm";
+import ProfessorForm from "../../components/Forms/ProfessorForm";
+import VigilanteForm from "../../components/Forms/VigilanteForm";
 
-// peguei de um livro, não sei como desconstruir
 type UserProps = RouteComponentProps<{tipo:string}>;
 
 type PessoaProps = {
@@ -37,31 +37,11 @@ type UsuarioProps = {
   Turno?: TurnoProps;
 }
 
-const getUsuario = ( usuario: UsuarioProps ) => {
-  if (usuario.Pessoa.tipo_usuario === 0) return new Professor(usuario);
-
-}
-
-// const getInfoDeseg = ( deseg: User ) => {
-//   return (
-//     <div>
-//       <span>{deseg.Pessoa.email}</span>
-//       <strong>{deseg.matricula}</strong>
-//     </div>)
-// }
-
-// const getInfoVigilante = ( vigilante: User ) => {
-//   return (
-//     <div>
-//       <span>Turno</span>
-//       <strong>{vigilante.Turno?.nome_turno}</strong>
-//     </div>)
-// }
-
 const CadastroUsuario = (params: UserProps) => {
 
   const tipoUsuario = params.match.params.tipo;
   const history = useHistory();
+  useContext(AuthContext); // caso necessite de token
 
   const [usuarios, setUsuarios] = useState<UsuarioProps[]>();
 
@@ -119,50 +99,45 @@ const CadastroUsuario = (params: UserProps) => {
             {/* parte direita, informações gerais */}
             <div>
             <h1>{el.Pessoa.nome_pessoa}</h1>
-              {getUsuario(el)?.getShortInfo()}
+              { tipoUsuario === "professor" ? (
+                (<div>
+                  <span>{el.Pessoa.email}</span>
+                  <strong>{el.matricula}</strong>
+                </div>)
+              ) : "deseg" ? (
+                (<div>
+                  <span>{el.Pessoa.email}</span>
+                  <strong>{el.matricula}</strong>
+                </div>)
+              ) : (
+                (<div>
+                  <span>Turno</span>
+                  <strong>{el.Turno?.nome_turno}</strong>
+                </div>)
+              )}
             </div>
           </S.Card>
         ))}
       </div>
-      <Button 
-        type="button"
-        name="criarUsuario"
-        onClickFunction={abrirCadastro}>
-        Cadastrar {capitalize(tipoUsuario)}
-      </Button>
+      {tipoUsuario !== "professor" && (
+        <Button 
+          type="button"
+          name="criarUsuario"
+          onClickFunction={abrirCadastro}>
+          Cadastrar {capitalize(tipoUsuario)}
+        </Button>
+      )}
 
       <Modal visible={open} close={() => fecharCadastro()}>
         <h2>{!viewOnly && "Novo"} {capitalize(tipoUsuario)}</h2>
         <br />
 
-        { tipoUsuario === "professor" ? (
-            <h1>Professor não tem cadastro</h1>
-          ) : "deseg" ? (
-            <DesegForm viewOnly={viewOnly} id_usuario={selection} />
-          ) : (
-            <DesegForm viewOnly={viewOnly} id_usuario={selection} />
-          )}
-        {/* <Formik initialValues={formik.initialValues} onSubmit={handleSubmit}>
-          <Form>
-            <FormBody>
-              <FieldArray name="props">
-                {() => (getUsuarioPeloTipo(tipoUsuario)?.getFormValues().map((prop, i) => {
-                  return (
-                    <FormLine key={i}>
-                      <InputField
-                        name={prop[0]}
-                        type={prop[1]}
-                        label={prop[2]}
-                        disabled={viewOnly} />
-                    </FormLine>
-                  )}))}
-              </FieldArray>
-            </FormBody>
-            <FormFooter>
-              <Button name="cadastroButton">Cadastrar</Button>
-            </FormFooter>
-          </Form>
-        </Formik> */}
+        { tipoUsuario === "professor" && (
+          <ProfessorForm viewOnly={viewOnly} id_usuario={selection} />)}
+        { tipoUsuario === "deseg" && (
+          <DesegForm viewOnly={viewOnly} id_usuario={selection} />)}
+        { tipoUsuario === "vigilante" && (
+          <VigilanteForm viewOnly={viewOnly} id_usuario={selection} />)}
       </Modal>
     </S.UsuarioWrapper>
   );
