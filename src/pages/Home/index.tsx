@@ -40,8 +40,6 @@ const Home = () => {
     }
   }, []);
 
-  console.log(user);
-
   /// quando selecionar o departamento, enviar requisição
   function handleSubmit() {
     // Envio de dados pro backend

@@ -29,7 +29,7 @@ type VigilanteValues = {
   nome_pessoa: string;
   email: string;
   matricula: string;
-  turno: TurnoValues;
+  turno: number;
   senha?: string;
 }
 
@@ -40,10 +40,7 @@ export default function VigilanteForm( props: FormProps ) {
     nome_pessoa: "",
     email: "",
     matricula: "",
-    turno: {
-      id_turno: 0,
-      nome_turno: "",
-    },
+    turno: 1,
     senha: ""
   });
 
@@ -64,19 +61,11 @@ export default function VigilanteForm( props: FormProps ) {
           if (response.data.vigilante.length !== 0) {
             let getVigilante = response.data.vigilante[0];
 
-            api.get("turno/"+getVigilante.id_turno).then((turnoResponse) => {
-              let idTurno = getVigilante.id_turno ?? 0;
-              let getTurno = turnos ? turnos[idTurno] : {id_turno:0,nome_turno:""};
-
-              setVigilante({
-                nome_pessoa: getVigilante.Pessoa.nome_pessoa,
-                email: getVigilante.Pessoa.email,
-                matricula: getVigilante.matricula,
-                turno: {
-                  id_turno: getTurno?.id_turno,
-                  nome_turno: getTurno?.nome_turno,
-                },
-              });
+            setVigilante({
+              nome_pessoa: getVigilante.Pessoa.nome_pessoa,
+              email: getVigilante.Pessoa.email,
+              matricula: getVigilante.matricula,
+              turno: getVigilante.id_turno,
             });
           } 
         });
@@ -84,7 +73,7 @@ export default function VigilanteForm( props: FormProps ) {
     } catch (err) {
       console.error(err);
     }
-  }, [props, turnos])
+  }, [props])
 
   async function handleSubmit( values: VigilanteValues ) {
     console.log(values);
@@ -106,7 +95,7 @@ export default function VigilanteForm( props: FormProps ) {
 
   return (
     <Formik 
-      initialValues={{...vigilante}}
+      initialValues={{...vigilante, turnos: turnos}}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
       enableReinitialize>
