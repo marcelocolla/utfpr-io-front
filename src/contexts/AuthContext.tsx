@@ -66,7 +66,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function addProfessor({email, password}: SignInCredentials, professor: Professor) {
     try {
-      const infoProfessor = {
+      await api.post("professor", {
         nome_pessoa: professor.nome,
         email,
         tipo_usuario: 0,
@@ -75,9 +75,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         permissao_deseg: 1,
         id_departamento: professor.id_departamento,
         senha: password
-      };
-      console.log(infoProfessor);
-      await api.post("professor", infoProfessor)
+      })
         .then((response) => {
           signIn({email, password});
       }); 
@@ -94,11 +92,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
 
       setIsAuthenticated(true);
-
       const token = response.data.token;
       const { nome_pessoa, id_pessoa, tipo_usuario } = response.data.pessoa;
 
-      const { id_deseg, matricula } = response.data?.deseg;
+      // ammbos os perfis Deseg e Professor tem uma prop "matricula"
+      const { matricula } = ('deseg' in response.data)
+        ? response.data?.deseg :
+        (('professor' in response.data) ? response.data?.professor : { matricula: 0 });
+      
+      const { id_deseg } = ('deseg' in response.data)
+        ? response.data?.deseg
+        : { id_deseg: 0 };
+
+      const { id_professor, id_departamento } = ('professor' in response.data)
+        ? response.data?.professor
+        : { id_professor: 0, id_departamento: "" };
 
       Cookies.set("utfprio.token", token, { expires: 1 });
       api.defaults.headers["Autorization"] = `Bearer ${token}`;
@@ -113,8 +121,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           matricula: matricula,
         },
         professor: {
-          id_professor: 0,
-          id_departamento: 0,
+          id_professor: id_professor,
+          id_departamento: id_departamento,
           matricula: matricula,
           nome: nome_pessoa,
           codigo_barra: "0",
@@ -124,8 +132,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       history.push("/");
     } catch (error) {
       // erro 401 pode ser login ou senha incorreta
+      console.log(error);
       if (error.response.status === 401) {
-        const errorData = error.response.data;
+        let errorData = error.response.data;
 
         // No caso de professor não cadastrado, adicionar um novo professor
         if (errorData.retorno === "Professor não cadastrado") {

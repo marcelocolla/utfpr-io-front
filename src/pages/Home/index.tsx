@@ -1,53 +1,33 @@
-import { useContext, useEffect } from "react";
-import { Form, Formik } from "formik";
+import { useContext } from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { AuthContext } from "../../contexts/AuthContext";
 
 import { Button } from "../../components/Button/Button";
-
-import { FormBody } from "../../components/Form/FormSection/FormBody";
-import { FormLine } from "../../components/Form/FormSection/FormLine";
-import { FormFooter } from "../../components/Form/FormSection/FormFooter";
 import { Modal } from "../../components/Modal";
-import InputField from "../../components/Form/InputField";
-import { MenuItem } from "@material-ui/core";
+import DepartamentoForm from "../../components/Forms/DepartamentoForm";
 
 import * as S from "./styles";
-import { api } from "../../services/api";
-
-type Departamento = {
-  id_departamento: number;
-  nome_departamento: string;
-  sigla_departamento: string;
-};
 
 const Home = () => {
   const history = useHistory();
+  const { user } = useContext(AuthContext);
+
   const [open, setOpen] = useState(false);
   const [openDeseg, setOpenDeseg] = useState(false);
-  const { user } = useContext(AuthContext);
-  const [departamentos, setDepartamentos] = useState<Departamento[]>();
-
-  useEffect(() => {
-    try {
-      api.get("departamento").then((response:any) => {
-        setDepartamentos(response.data.departamentos);
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-
-  /// quando selecionar o departamento, enviar requisição
-  function handleSubmit() {
-    // Envio de dados pro backend
-    setOpen(false);
-  }
 
   function abrirCadastro() {
     setOpenDeseg(true);
+  }
+
+  // o perfil Professor seleciona sua coordenação no primeiro login,
+  // o que atualiza seu perfil e consequentemente, atualiza a página
+  function atualizarCadastro() {
+    // teria que ter uma forma de pegar o professor com o id novo.
+    // talvez o /me?
+    history.goBack();
+    setOpen(false);  
   }
 
   return (
@@ -99,38 +79,11 @@ const Home = () => {
           </S.VerticalButtonWrapper>
         </Modal>
 
-        {user?.professor?.id_departamento === 0 && (
-        <Modal visible={open}>
-          <h2>Professor, por favor selecione seu departamento.</h2>
+        <Modal visible={open || user?.professor?.id_departamento === 0}>
+          <h2>Professor, por favor selecione sua coordenação.</h2>
           <br />
-          <Formik
-            onSubmit={handleSubmit}
-            initialValues={{ departamentos: departamentos }}
-          >
-            <Form>
-              <FormBody>
-                <FormLine mt="1rem">
-                  <InputField name="departamento" label="Departamento" select>
-                    {departamentos?.map((dep) => (
-                      <MenuItem
-                        key={dep.id_departamento}
-                        value={dep.id_departamento}
-                      >
-                        {dep.sigla_departamento}
-                      </MenuItem>
-                    ))}
-                  </InputField>
-                </FormLine>
-              </FormBody>
-              <FormFooter mt="3rem">
-                <Button name="loginButton" mw="315px">
-                  Confirmar
-                </Button>
-              </FormFooter>
-            </Form>
-          </Formik>
+          <DepartamentoForm user={user} onConfirm={atualizarCadastro}/>
         </Modal>
-        )}
       </S.Content>
     </S.HomeSection>
   );
