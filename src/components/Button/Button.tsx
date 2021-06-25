@@ -3,12 +3,12 @@ import { useHistory } from "react-router";
 import styled, { css } from "styled-components";
 
 type ButtonProps = {
-  mw?: string;
   type?: any;
   name: string;
-  children: ReactNode;
-  small?: boolean;
   path?: string;
+  small?: boolean;
+  disabled?: boolean;
+  children: ReactNode;
   onClickFunction?: () => void;
 };
 
@@ -22,7 +22,7 @@ export const ButtonStyled = styled.button<ButtonProps>`
 
   border: none;
   background: var(--color-orange-default);
-  box-shadow: 0px 4px 8px var(--color-orange-box-shadow-dark);
+  box-shadow: 0px 4px 12px var(--color-orange-box-shadow-dark);
 
   color: white;
   font-size: 1.7rem;
@@ -34,12 +34,17 @@ export const ButtonStyled = styled.button<ButtonProps>`
 
   &:hover {
     background: var(--color-orange-dark-10);
-    box-shadow: 0px 4px 8px var(--color-orange-box-shadow-dark-hover);
+    box-shadow: 0px 4px 12px var(--color-orange-box-shadow-dark-hover);
   }
 
   &:focus {
     outline: 2px solid var(--color-orange-dark-20);
     outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 
   ${({ small }) =>
@@ -55,12 +60,12 @@ export const ButtonStyled = styled.button<ButtonProps>`
 `;
 
 export const Button = ({
-  type,
   name,
-  children,
-  small,
+  type,
   path,
-  mw,
+  small,
+  disabled,
+  children,
   onClickFunction,
   ...props
 }: ButtonProps) => {
@@ -77,6 +82,7 @@ export const Button = ({
       id={name}
       name={name}
       small={small}
+      disabled={disabled}
       type={type ?? "submit"}
       onClick={onClickFunction ?? handleAction}
       {...props}

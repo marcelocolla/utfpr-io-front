@@ -154,11 +154,13 @@ const cadastroSolicitacao = () => {
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body:JSON.stringify(enviarSolicitacao)
-              }
-              fetch('https://utf-io-staging.herokuapp.com/solicitacao/cadastro',params
-              ).then(function(response) {
-                if(response.status!==200){
+                body: JSON.stringify(enviarSolicitacao),
+              };
+              fetch(
+                "https://utf-io-staging.herokuapp.com/solicitacao/cadastro",
+                params
+              ).then(function (response) {
+                if (response.status !== 200) {
                   alert("Dados não gerado, falar com o suporte!");
                 } else {
                   window.history.back();
@@ -248,7 +250,9 @@ const cadastroSolicitacao = () => {
               </FormLine>
             </FormBody>
             <FormFooter>
-              <Button name="loginButton">Salvar</Button>
+              <Button name="loginButton" disabled={isSubmitting}>
+                Salvar
+              </Button>
             </FormFooter>
           </Form>
         )}

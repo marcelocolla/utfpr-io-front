@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 
+import { useField, useFormikContext } from "formik";
+
+import styled from "styled-components";
+
 import {
   FormControl,
   FormHelperText,
@@ -10,9 +14,6 @@ import {
 } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 
-import { useField, useFormikContext } from "formik";
-
-import styled from "styled-components";
 
 const StyledFormControl = styled(FormControl)`
   label {
@@ -45,12 +46,15 @@ const StyledFormControl = styled(FormControl)`
   }
 ` as typeof FormControl;
 
+
 type PasswordFieldProps = {
   name: string;
   label: string;
+  required?: boolean;
+  disabled?: boolean;
 };
 
-const PasswordField = ({ name, label, ...props }: PasswordFieldProps) => {
+const PasswordField = ({ name, label, required, ...props }: PasswordFieldProps) => {
   const { setFieldValue } = useFormikContext();
   const [field, meta] = useField(name);
   const [showPassword, setShowPassword] = useState(false);
@@ -65,6 +69,7 @@ const PasswordField = ({ name, label, ...props }: PasswordFieldProps) => {
     ...field,
     error: false,
     onChange: handleChange,
+    required: required ? true : false,
   };
 
   if (meta && meta.touched && meta.error) {

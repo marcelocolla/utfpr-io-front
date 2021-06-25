@@ -11,7 +11,7 @@ export const LoginWrapper = styled.div`
 
 export const Header = styled.div`
   width: 100%;
-  height: 45%;
+  height: 36.7rem;
 
   background-color: #fff;
   border-bottom-left-radius: 3rem;
@@ -47,7 +47,7 @@ export const Header = styled.div`
 
       border-radius: 40px;
       background-color: var(--color-orange-default);
-      box-shadow: 0px 4px 4px rgba(196, 63, 21, 0.1);
+      box-shadow: 0px 4px 12px var(--color-orange-box-shadow-dark);
     }
   }
 `;
@@ -55,10 +55,17 @@ export const Header = styled.div`
 export const Body = styled.div`
   width: 100%;
   height: 55%;
-  padding: 4rem 5rem;
+  padding: 5.4rem 5rem 4rem;
   position: relative;
 
   @media (max-height: 568px) {
     padding-bottom: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    form {
+      margin: 0 auto;
+      width: 50%;
+    }
   }
 `;
