@@ -30,17 +30,17 @@ const StyledTextField = styled(TextField)`
 ` as typeof TextField;
 
 type InputFieldProps = {
-  name: string;
-  label?: string;
-  type?: string;
-  required?: boolean;
-  select?: boolean;
-  children?: React.ReactNode;
   onBlur?:any;
-  disabled?:any;
+  name: string;
+  type?: string;
+  label?: string;
+  select?: boolean;
+  disabled?: boolean;
+  required?: boolean;
+  children?: React.ReactNode;
 };
 
-const InputField = ({ name, select, children, ...props }: InputFieldProps) => {
+const InputField = ({ name, select, children, disabled, ...props }: InputFieldProps) => {
   const [field, meta] = useField(name);
 
   const configTextField = {
@@ -50,6 +50,7 @@ const InputField = ({ name, select, children, ...props }: InputFieldProps) => {
     error: false,
     helperText: "",
     fullWidth: true,
+    disabled: disabled ? true : false,
   };
 
   if (meta && meta.touched && meta.error) {

@@ -52,21 +52,36 @@ const Login = () => {
             initialValues={{ ...initialValues }}
             validationSchema={validationSchema}
           >
-            <Form>
-              <FormBody>
-                <FormLine mb="2rem">
-                  <InputField name="email" label="Email" type="text" required />
-                </FormLine>
-                <FormLine mb="2rem">
-                  <PasswordField name="password" label="Senha" />
-                </FormLine>
-                <strong>Esqueceu a senha?</strong>
-              </FormBody>
+            {({ isSubmitting }) => (
+              <Form noValidate>
+                <FormBody>
+                  <FormLine mb="2rem">
+                    <InputField
+                      name="email"
+                      label="Email"
+                      type="text"
+                      disabled={isSubmitting}
+                      required
+                    />
+                  </FormLine>
+                  <FormLine mb="2rem">
+                    <PasswordField
+                      name="password"
+                      label="Senha"
+                      disabled={isSubmitting}
+                      required
+                    />
+                  </FormLine>
+                  <strong>Esqueceu a senha?</strong>
+                </FormBody>
 
-              <FormFooter>
-                <Button name="loginButton">Entrar</Button>
-              </FormFooter>
-            </Form>
+                <FormFooter mt="6rem">
+                  <Button disabled={isSubmitting} name="loginButton">
+                    Entrar
+                  </Button>
+                </FormFooter>
+              </Form>
+            )}
           </Formik>
         </S.Body>
       </S.LoginWrapper>
