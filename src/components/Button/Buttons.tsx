@@ -3,7 +3,8 @@ import { Button } from "./Button";
 import * as S from "./styles";
 
 type ButtonProps = {
-  onClick?: () => void;
+  onClickLeft?: () => void;
+  onClickRight?: () => void;
 }
 
 export const ButtonDeseg = ( props: ButtonProps ) => {
@@ -12,7 +13,8 @@ export const ButtonDeseg = ( props: ButtonProps ) => {
       {/* não sei adicionar icone*/}
       <Button
         type="button"
-        name="relatorioButton">
+        name="relatorioButton"
+        onClickFunction={props.onClickLeft}>
         R
       </Button>
 
@@ -26,7 +28,7 @@ export const ButtonDeseg = ( props: ButtonProps ) => {
       <Button
         type="button"
         name="cadastroButton"
-        onClickFunction={props.onClick}>
+        onClickFunction={props.onClickRight}>
         +
       </Button>
     </S.ButtonWrapper>

@@ -127,7 +127,7 @@ const Solicitacoes = () => {
   * ele não estava pegando o que esta selecionado no radio button
   * Assim aqui trás as lista dos pendentes do professor ou do deseg
   */
-  if (mock.length == 0) {
+  if (mock.length === 0) {
     if (tipo_pessoa === 1) {
       getPermissaoUsuarioDeseg(0).then((res) => {
         res.cadastroSolicitacao.rows.forEach((element: any) => {
@@ -206,7 +206,7 @@ const Solicitacoes = () => {
       setOpen(true);
     }
 
-  }, [editar]);
+  }, [formik, editar, status]);
 
 
   /*
@@ -287,7 +287,7 @@ const Solicitacoes = () => {
         mock = mock.filter(json => (json.permissao_acesso < 1));
     }
 
-  }, [jsonObj]);
+  }, [jsonObj, status]);
 
   return (
     <S.SolicitacoesWrapper>
