@@ -4,6 +4,9 @@ import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 
 import { Button } from "../../components/Button/Button";
+import { ButtonDeseg, ButtonProfessor, ButtonVigilante }
+  from "../../components/Button/Buttons";
+
 import { Modal } from "../../components/Modal";
 import DepartamentoForm from "../../components/Forms/DepartamentoForm";
 
@@ -24,6 +27,8 @@ const Home = () => {
     history.go(0);
   }
 
+  // abre a opção de visualização de cadastros para o perfil DESEG
+  // DESEG pode adicionar Deseg e Vigilante, e visualizar Professor
   function abrirCadastro() {
     setOpenDeseg(true);
   }
@@ -47,24 +52,12 @@ const Home = () => {
         </S.Card>
 
         <S.ButtonWrapper>
-          {/* não sei adicionar icone*/}
           {user?.deseg && (
-            <Button type="button" name="relatorioButton">
-              R
-            </Button>
-          )}
-          <Button type="button" name="solicitacoesButton" path="/solicitacoes">
-            Solicitações
-          </Button>
-          {user?.deseg && (
-            <Button
-              type="button"
-              name="cadastroButton"
-              onClickFunction={abrirCadastro}
-            >
-              +
-            </Button>
-          )}
+            <ButtonDeseg onClick={abrirCadastro} />)}
+          {user?.professor && (
+            <ButtonProfessor />)}
+          {user?.vigilante && (
+            <ButtonVigilante />)}
         </S.ButtonWrapper>
 
         <Modal visible={openDeseg} close={() => setOpenDeseg(false)}>
