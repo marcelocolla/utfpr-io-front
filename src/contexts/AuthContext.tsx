@@ -42,10 +42,15 @@ type Professor = {
   id_departamento: number;
 };
 
+type Vigilante = {
+  matricula: string;
+}
+
 type User = {
   pessoa: Pessoa;
   deseg?: Deseg;
   professor?: Professor;
+  vigilante?: Vigilante;
 };
 
 export const AuthContext = createContext({} as AuthContextData);
@@ -64,7 +69,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       api.defaults.headers.authentication = `${token}`;
 
       api.post("auth/me").then((response) => {
-        const { deseg, pessoa, professor } = response.data.data;
+        const { deseg, pessoa, professor, vigilante } = response.data.data;
 
         if (deseg) {
           setUser({ pessoa, deseg });
@@ -73,10 +78,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (professor) {
           setUser({ pessoa, professor });
         }
+
+        if (vigilante) {
+          setUser({ pessoa, vigilante });
+        }
       });
     }
-
-    // console.log(user);
 
     setLoading(false);
   }, []);
@@ -116,7 +123,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       const token = response.data.token;
 
-      const { deseg, pessoa, professor } = response.data;
+      const { deseg, pessoa, professor, vigilante } = response.data;
 
       if (deseg) {
         setUser({ pessoa, deseg });
@@ -124,6 +131,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       if (professor) {
         setUser({ pessoa, professor });
+      }
+
+      if (vigilante) {
+        setUser({ pessoa, vigilante });
       }
 
       Cookies.set("utfprio.token", token, { expires: 1 });

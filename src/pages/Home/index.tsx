@@ -1,55 +1,27 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
-
-import { Form, Formik } from "formik";
-
-import { AxiosResponse } from "axios";
-
-import { api } from "../../services/api";
 
 import { AuthContext } from "../../contexts/AuthContext";
 
 import { Button } from "../../components/Button/Button";
-
-import { MenuItem } from "@material-ui/core";
-
 import { Modal } from "../../components/Modal";
-import InputField from "../../components/Form/InputField";
-import { FormBody } from "../../components/Form/FormSection/FormBody";
-import { FormLine } from "../../components/Form/FormSection/FormLine";
-import { FormFooter } from "../../components/Form/FormSection/FormFooter";
+import DepartamentoForm from "../../components/Forms/DepartamentoForm";
 
 import * as S from "./styles";
-
-type Departamento = {
-  id_departamento: number;
-  nome_departamento: string;
-  sigla_departamento: string;
-};
 
 const Home = () => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
   const { user } = useContext(AuthContext);
   const [openDeseg, setOpenDeseg] = useState(false);
-  const [departamentos, setDepartamentos] = useState<Departamento[]>();
 
   console.log(user);
 
-  useEffect(() => {
-    try {
-      api.get("departamento").then((response: AxiosResponse) => {
-        setDepartamentos(response.data.departamentos);
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-
-  /// quando selecionar o departamento, enviar requisição
-  function handleSubmit() {
-    // Envio de dados pro backend
-    setOpen(false);
+  // o perfil Professor seleciona sua coordenação no primeiro login,
+  // o que atualiza seu perfil e consequentemente, atualiza a página
+  function atualizar() {
+    setOpen(false); 
+    history.go(0);
   }
 
   function abrirCadastro() {
@@ -67,7 +39,10 @@ const Home = () => {
           </div>
           <strong>{user?.pessoa?.nome_pessoa}</strong>
           <span>
-            Matrícula: <strong>{user?.deseg?.matricula}</strong>
+            Matrícula: <strong>{
+              (user?.deseg && user?.deseg?.matricula)
+              || (user?.professor && user?.professor?.matricula)
+              || (user?.vigilante && user?.vigilante?.matricula)}</strong>
           </span>
         </S.Card>
 
@@ -117,36 +92,11 @@ const Home = () => {
           </S.VerticalButtonWrapper>
         </Modal>
 
-        {user?.professor?.id_departamento === 0 && (
-          <Modal visible={open}>
-            <h2>Professor, por favor selecione seu departamento.</h2>
-            <br />
-            <Formik
-              onSubmit={handleSubmit}
-              initialValues={{ departamentos: departamentos }}
-            >
-              <Form>
-                <FormBody>
-                  <FormLine mt="1rem">
-                    <InputField name="departamento" label="Departamento" select>
-                      {departamentos?.map((dep) => (
-                        <MenuItem
-                          key={dep.id_departamento}
-                          value={dep.id_departamento}
-                        >
-                          {dep.sigla_departamento}
-                        </MenuItem>
-                      ))}
-                    </InputField>
-                  </FormLine>
-                </FormBody>
-                <FormFooter mt="3rem">
-                  <Button name="loginButton">Confirmar</Button>
-                </FormFooter>
-              </Form>
-            </Formik>
-          </Modal>
-        )}
+        <Modal visible={open || user?.professor?.id_departamento === 0}>
+        <h2>Professor, por favor selecione sua coordenação.</h2>
+          <br />
+          <DepartamentoForm user={user} onConfirm={atualizar}/>
+        </Modal>
       </S.Content>
     </S.HomeSection>
   );
