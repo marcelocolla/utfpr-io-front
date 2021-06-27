@@ -70,8 +70,8 @@ let mock = Array<any>();
 /*
 * limpa o mock para que ele não duplique ou apareça lixo de outra lista
 */
-function clearAllArray(arr:any){
-  while(arr.length>0){
+function clearAllArray(arr: any) {
+  while (arr.length > 0) {
     arr.pop();
   }
 }
@@ -79,7 +79,7 @@ function clearAllArray(arr:any){
 * serve para preencher o mock com o json que vem do backend
 */
 function getMock(res: any) {
-  if(mock.length>0){
+  if (mock.length > 0) {
     clearAllArray(mock);
   }
   res.cadastroSolicitacao.rows.forEach((element: any) => {
@@ -116,7 +116,7 @@ const Solicitacoes = () => {
   * serve para preencher o formulario 
   * e notificar que ele deve aparecer
   */
-    const [editar, setEditar] = useState();
+  const [editar, setEditar] = useState();
   /*
   * se deve ou não aparecer o formulario de edição
   */
@@ -127,49 +127,48 @@ const Solicitacoes = () => {
   * ele não estava pegando o que esta selecionado no radio button
   * Assim aqui trás as lista dos pendentes do professor ou do deseg
   */
-  if (tipo_pessoa === 1) {
-    getPermissaoUsuarioDeseg(0).then((res) => {
-      res.cadastroSolicitacao.rows.forEach((element: any) => {
-        //   let data_inicio = moment(new Date(element.data_inicio), "dd/MM/yyyy").format();
-        //    let data_fim = moment(new Date(element.data_fim), "dd/MM/yyyy").format();
-        getAluno(element.Aluno.ra_aluno).then((alu) => {
-          mock.push({
-            "id": element.id_cadastro_solicitacao,
-            "nome": alu.aluno[0].Pessoa.nome_pessoa,
-            "email": alu.aluno[0].Pessoa.email,
-            "dataEntrada": element.data_inicio,
-            "dataSaida": element.data_fim,
-            "ra_aluno": element.Aluno.ra_aluno,
-            "permissao_acesso": element.permissao_acesso,
-            "data_permissao": element.data_permissao,
+  if (mock.length == 0) {
+    if (tipo_pessoa === 1) {
+      getPermissaoUsuarioDeseg(0).then((res) => {
+        res.cadastroSolicitacao.rows.forEach((element: any) => {
+          getAluno(element.Aluno.ra_aluno).then((alu) => {
+            mock.push({
+              "id": element.id_cadastro_solicitacao,
+              "nome": alu.aluno[0].Pessoa.nome_pessoa,
+              "email": alu.aluno[0].Pessoa.email,
+              "dataEntrada": element.data_inicio,
+              "dataSaida": element.data_fim,
+              "ra_aluno": element.Aluno.ra_aluno,
+              "permissao_acesso": element.permissao_acesso,
+              "data_permissao": element.data_permissao,
+            });
           });
-        });
 
+        });
+        setJson(mock);
       });
-      setJson(mock);
-    });
-  } else {
-    getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-      res.cadastroSolicitacao.rows.forEach((element: any) => {
-        //        let data_inicio = moment(new Date(element.data_inicio), "dd/MM/yyyy").format();
-        //        let data_fim = moment(new Date(element.data_fim), "dd/MM/yyyy").format();
-        getAluno(element.Aluno.ra_aluno).then((alu) => {
-          mock.push({
-            "id": element.id_cadastro_solicitacao,
-            "nome": alu.aluno[0].Pessoa.nome_pessoa,
-            "email": alu.aluno[0].Pessoa.email,
-            "dataEntrada": element.data_inicio,
-            "dataSaida": element.data_fim,
-            "ra_aluno": element.Aluno.ra_aluno,
-            "permissao_acesso": element.permissao_acesso,
-            "data_permissao": element.data_permissao,
+    } else {
+      getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
+        res.cadastroSolicitacao.rows.forEach((element: any) => {
+          getAluno(element.Aluno.ra_aluno).then((alu) => {
+            mock.push({
+              "id": element.id_cadastro_solicitacao,
+              "nome": alu.aluno[0].Pessoa.nome_pessoa,
+              "email": alu.aluno[0].Pessoa.email,
+              "dataEntrada": element.data_inicio,
+              "dataSaida": element.data_fim,
+              "ra_aluno": element.Aluno.ra_aluno,
+              "permissao_acesso": element.permissao_acesso,
+              "data_permissao": element.data_permissao,
+            });
           });
-        });
 
+        });
+        setJson(mock);
       });
-      setJson(mock);
-    });
+    }
   }
+
 
   /*
   * O uso do formik assim é para conseguir preencher 
@@ -199,7 +198,6 @@ const Solicitacoes = () => {
     if (mock.length > 0 && Number(status) === 1) {
       let editando = mock.filter(json => (json.id === editar));
       let edit = editando[0] as jsonValor;
-      console.log(edit.email);
       formik.setFieldValue("ra_aluno", edit.ra_aluno);
       formik.setFieldValue("nome", edit.nome);
       formik.setFieldValue("email", edit.email);
@@ -207,11 +205,9 @@ const Solicitacoes = () => {
       formik.setFieldValue("data_fim", edit.dataSaida);
       setOpen(true);
     }
-    if (mock.length > 0 && Number(status) !== 1) {
-      alert("Somente visualização");
-    }
 
-  }, [editar, formik, status]);
+  }, [editar]);
+
 
   /*
   * preencher a lista de acordo o radio button selecionado 
@@ -255,17 +251,17 @@ const Solicitacoes = () => {
         }
         break;
       default:
-        if (tipo_pessoa === 1) {
-          getPermissaoUsuarioDeseg(0).then((res) => {
-            mock = getMock(res);
-            setJson(mock);
-          });
-        } else {
-          getPermissaoUsuarioProfessor(145).then((res) => {
-            mock = getMock(res);
-            setJson(mock);
-          });
-        }
+          if (tipo_pessoa === 1) {
+            getPermissaoUsuarioDeseg(0).then((res) => {
+              mock = getMock(res);
+              setJson(mock);
+            });
+          } else {
+            getPermissaoUsuarioProfessor(145).then((res) => {
+              mock = getMock(res);
+              setJson(mock);
+            });
+          }
     }
   }, [status]);
 
@@ -291,7 +287,7 @@ const Solicitacoes = () => {
         mock = mock.filter(json => (json.permissao_acesso < 1));
     }
 
-  }, [jsonObj, status]);
+  }, [jsonObj]);
 
   return (
     <S.SolicitacoesWrapper>

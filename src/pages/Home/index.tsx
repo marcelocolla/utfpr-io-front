@@ -32,10 +32,13 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const { user } = useContext(AuthContext);
   const [openDeseg, setOpenDeseg] = useState(false);
+  const [openRelatorio, setRelatorio] = useState(false);
   const [departamentos, setDepartamentos] = useState<Departamento[]>();
 
   console.log(user);
+  initialValues:{
 
+  }
   useEffect(() => {
     try {
       api.get("departamento").then((response: AxiosResponse) => {
@@ -50,6 +53,10 @@ const Home = () => {
   function handleSubmit() {
     // Envio de dados pro backend
     setOpen(false);
+  }
+
+  function relatorioSubmit() {
+
   }
 
   function abrirCadastro() {
@@ -74,7 +81,7 @@ const Home = () => {
         <S.ButtonWrapper>
           {/* não sei adicionar icone*/}
           {user?.deseg && (
-            <Button type="button" name="relatorioButton">
+            <Button type="button" name="relatorioButton" onClickFunction={()=>{setRelatorio(true)}} >
               R
             </Button>
           )}
@@ -91,7 +98,40 @@ const Home = () => {
             </Button>
           )}
         </S.ButtonWrapper>
+        <Modal visible = {openRelatorio} close = {()=>setRelatorio(false)}>
+          <h2>Geração de Relatório</h2>
+          <br/>
+          <S.VerticalButtonWrapper>
+            <Formik
+              onSubmit={relatorioSubmit}
+              initialValues={{data_inicial:'',data_final:''}}
+            >
+            <Form>
+              <FormBody>
+                <FormLine>
+                  <InputField
+                    name="data_inicio"
+                    type="date"
+                    label="Data Inicial"
+                  />
 
+                  <InputField
+                    name="data_final"
+                    type="date"
+                    label="Data Final"
+                  />  
+
+                </FormLine>
+                <br/>
+                <Button name="loginButton">
+                  Gerar
+                </Button>
+              </FormBody>
+            </Form>
+
+            </Formik>
+          </S.VerticalButtonWrapper>
+        </Modal>
         <Modal visible={openDeseg} close={() => setOpenDeseg(false)}>
           <h2>Cadastros</h2>
           <br />
