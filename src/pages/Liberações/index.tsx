@@ -18,7 +18,7 @@ type LiberacaoProps = {
   Aluno: AlunoProps;
 }
 
-const Solicitacoes = () => {
+const Liberacoes = () => {
 
   const history = useHistory();
   const [liberacoes, setLiberacoes] = useState<LiberacaoProps[]>();
@@ -70,4 +70,4 @@ const Solicitacoes = () => {
   );
 };
 
-export default Solicitacoes;
+export default Liberacoes;

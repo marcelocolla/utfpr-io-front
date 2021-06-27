@@ -3,12 +3,14 @@ import { Redirect, Route, Switch } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import CadastroUsuario from "./pages/CadastroUsuario";
+
+import CadastroSolicitacao from "./pages/CadastroSolicitacao";
 import Solicitacoes from "./pages/Solicitações";
 import Liberacoes from "./pages/Liberações";
-import CadastroSolicitacao from "./pages/CadastroSolicitacao";
+import Liberacao from "./pages/Liberação";
 
 import { AuthContext } from "./contexts/AuthContext";
-import CadastroUsuario from "./pages/CadastroUsuario";
 
 type CustomRouteProps = {
   path?: string;
@@ -49,6 +51,11 @@ function Routes() {
         exact
         path="/liberacoes"
         component={Liberacoes}
+      />
+      <CustomRoute
+        isPrivate
+        path="/liberacao/:id"
+        component={Liberacao}
       />
       <CustomRoute
         isPrivate

@@ -9,9 +9,9 @@ import { ButtonDeseg, ButtonProfessor, ButtonVigilante }
 
 import { Modal } from "../../components/Modal";
 import DepartamentoForm from "../../components/Forms/DepartamentoForm";
+import RelatorioForm from "../../components/Forms/RelatorioForm";
 
 import * as S from "./styles";
-import RelatorioForm from "../../components/Forms/RelatorioForm";
 
 const Home = () => {
   const history = useHistory();
