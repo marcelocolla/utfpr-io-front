@@ -8,36 +8,53 @@ import * as S from "./styles";
 
 type LiberacaoParams = RouteComponentProps<{id:string}>;
 
+type PessoaProps = {
+  nome_pessoa: string;
+}
+
 type AlunoProps = {
   id_aluno: number;
   id_pessoa: number;
   ra_aluno: string;
-  nome_aluno: string;
+  Pessoa: PessoaProps;
 }
 
 type LiberacaoProps = {
   id_cadastro_solicitacao: number;
   data_inicio: string;
   data_fim: string;
-  Aluno: AlunoProps;
+  pessoaCadastro: PessoaProps;
+}
+
+type CadastroSolicitacaoProps = {
+  rows: LiberacaoProps[];
+}
+
+type RetornoProps = {
+  cadastroSolicitacao: CadastroSolicitacaoProps;
+  pessoaAluno: AlunoProps;
 }
 
 export const Liberacao = ( params: LiberacaoParams ) => {
 
   const id_liberacao = params.match.params.id;
   const history = useHistory();
-  const [liberacao, setLiberacao] = useState<LiberacaoProps>();
+  const [liberacao, setLiberacao] = useState<RetornoProps>();
   const [openVisita, setOpenVisita] = useState(false);
 
   useEffect(() => {
     try {
       api.get("solicitacao/cadastro/"+id_liberacao).then((response) => {
-        setLiberacao(response.data.cadastroSolicitacao.rows[0]);
+        setLiberacao(response.data);
       });
     } catch (err) {
       console.error(err);
     }
   }, [id_liberacao]);
+
+  function toLocaleString( dateString: any ) {
+    return new Date(dateString).toLocaleDateString('pt-BR');
+  }
 
   return (
     <S.HomeSection>
@@ -47,20 +64,23 @@ export const Liberacao = ( params: LiberacaoParams ) => {
           <div>
             <img src="/Ellipse 2.png" alt="Avatar" />
           </div>
-          <strong>{liberacao?.Aluno.nome_aluno}</strong>
+          <strong>{liberacao?.pessoaAluno.Pessoa.nome_pessoa}</strong>
           <span>
-            RA: <strong>{liberacao?.Aluno.ra_aluno}</strong>
+            RA: <strong>{liberacao?.pessoaAluno.ra_aluno}</strong>
           </span>
         </S.Card>
         <S.DetailedCard>
           <div>
             <div>Início:</div>
-            <div>{liberacao?.data_inicio}</div>
+            <div>{toLocaleString(liberacao?.cadastroSolicitacao
+              .rows[0].data_inicio)}</div>
             <div>Fim:</div>
-            <div>{liberacao?.data_fim}</div>
+            <div>{toLocaleString(liberacao?.cadastroSolicitacao
+              .rows[0].data_fim)}</div>
             <div /><div />
-            <div>Local:</div>
-            <div><strong>?????</strong></div>
+            <div>Professor Responsável:</div>
+            <div><strong>{liberacao?.cadastroSolicitacao.rows[0]
+              .pessoaCadastro.nome_pessoa}</strong></div>
           </div>
         </S.DetailedCard>
 

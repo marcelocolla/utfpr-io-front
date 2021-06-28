@@ -59,8 +59,8 @@ const Liberacoes = () => {
             <div>
             <h1>{el.Aluno.nome_aluno}</h1>
             <div>
-              <span>{el.data_inicio}</span>
-              <strong>{el.data_fim}</strong>
+              <span>De: {new Date(el.data_inicio).toLocaleDateString('pt-BR')}</span>
+              <strong>Até: {new Date(el.data_fim).toLocaleDateString('pt-BR')}</strong>
             </div>
             </div>
           </S.Card>

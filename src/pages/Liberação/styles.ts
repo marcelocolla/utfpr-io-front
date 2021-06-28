@@ -91,7 +91,7 @@ export const Card = styled.div`
 
   strong {
     font-size: 2.4rem;
-    line-height: 3.2rem;
+    line-height: 2.5rem;
     font-weight: 700;
     text-align: center;
 
@@ -135,19 +135,19 @@ export const DetailedCard = styled.div`
   div {
     display: grid;
     justify-items: start;
-    grid-template-columns: 5rem 15rem;
-    grid-template-rows: repeat(4, 2rem);
+    grid-template-columns: 10rem 14rem;
+    grid-template-rows: 2rem 2rem 2rem 4rem;
 
     div {
       display: flex;
       font-weight: normal;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       line-height: 2rem;
       color: var(--color-label);
 
       strong {
         line-height: 2rem;
-        font-size: 1.2rem;
+        font-size: 1.4rem;
       }
     }
   }
