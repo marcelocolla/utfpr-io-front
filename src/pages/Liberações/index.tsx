@@ -4,11 +4,15 @@ import { useHistory } from "react-router";
 import { api } from "../../services/api";
 import * as S from "./styles";
 
+type PessoaProps = {
+  nome_pessoa: string;
+}
+
 type AlunoProps = {
   id_aluno: number;
   id_pessoa: number;
   ra_aluno: string;
-  nome_aluno: string;
+  Pessoa: PessoaProps;
 }
 
 type LiberacaoProps = {
@@ -57,7 +61,7 @@ const Liberacoes = () => {
 
             {/* parte direita, informações gerais */}
             <div>
-            <h1>{el.Aluno.nome_aluno}</h1>
+            <h1>{el.Aluno.Pessoa.nome_pessoa}</h1>
             <div>
               <span>De: {new Date(el.data_inicio).toLocaleDateString('pt-BR')}</span>
               <strong>Até: {new Date(el.data_fim).toLocaleDateString('pt-BR')}</strong>
