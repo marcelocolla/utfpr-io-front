@@ -37,10 +37,11 @@ type InputFieldProps = {
   select?: boolean;
   disabled?: boolean;
   required?: boolean;
+  helperText?: string;
   children?: React.ReactNode;
 };
 
-const InputField = ({ name, select, children, disabled, ...props }: InputFieldProps) => {
+const InputField = ({ name, select, children, disabled, helperText, ...props }: InputFieldProps) => {
   const [field, meta] = useField(name);
 
   const configTextField = {
@@ -48,7 +49,7 @@ const InputField = ({ name, select, children, disabled, ...props }: InputFieldPr
     ...props,
     select,
     error: false,
-    helperText: "",
+    helperText: helperText,
     fullWidth: true,
     disabled: disabled ? true : false,
   };
