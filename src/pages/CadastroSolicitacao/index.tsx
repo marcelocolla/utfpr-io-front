@@ -1,10 +1,12 @@
-import { Form, Formik } from "formik";
+import { Form, Formik, Field } from "formik";
 
 import { Button } from "../../components/Button/Button";
 import InputField from "../../components/Form/InputField";
 import { FormBody } from "../../components/Form/FormSection/FormBody";
 import { FormLine } from "../../components/Form/FormSection/FormLine";
 import { FormFooter } from "../../components/Form/FormSection/FormFooter";
+import { FormLabel } from '@material-ui/core';
+import { api } from "../../services/api";
 
 import * as S from "./styles";
 
@@ -52,26 +54,22 @@ type GetDeseg = {
 
 const cadastroSolicitacao = () => {
   let tipo_pessoa = 0;
-  let codigo_pessoa = 87;
+  let codigo_pessoa = 225;
 
   const professor = (id: number) => {
-    return fetch(`https://utf-io-staging.herokuapp.com/professor/${id}`).then(
-      (res) => res.json()
-    );
+    return api.get(`https://utf-io-staging.herokuapp.com/professor/${id}`) ;
   };
 
   const deseg = (id: number) => {
-    return fetch(`https://utf-io-staging.herokuapp.com/deseg/${id}`).then(
-      (res) => res.json()
-    );
+    return api.get(`https://utf-io-staging.herokuapp.com/deseg/${id}`);
   };
   async function handleSubmit(values: Values) {
     if (tipo_pessoa === 1) {
       deseg(2).then((dados) => {
-        if (dados.deseg.length === 0) {
+        if (dados.data.deseg.length === 0) {
           alert("Deseg não encontrado!");
         } else {
-          dados.deseg.forEach((item: GetDeseg) => {
+          dados.data.deseg.forEach((item: GetDeseg) => {
             var newArray = [];
 
             newArray.push({
@@ -96,11 +94,11 @@ const cadastroSolicitacao = () => {
       });
     } else {
       professor(codigo_pessoa).then((dados) => {
-        if (dados.professor.length === 0) {
-          console.log(dados.professor);
+        if (dados.data.professor.length === 0) {
+          console.log(dados.data.professor);
           alert("Professor não encontrado!");
         } else {
-          dados.professor.forEach((item: GetProfessor) => {
+          dados.data.professor.forEach((item: GetProfessor) => {
             const newArray = [];
 
             if (item.permissao_deseg === 1) {
@@ -150,16 +148,10 @@ const cadastroSolicitacao = () => {
             }
             newArray.forEach((enviarSolicitacao) => {
               const params: RequestInit = {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
+
                 body: JSON.stringify(enviarSolicitacao),
               };
-              fetch(
-                "https://utf-io-staging.herokuapp.com/solicitacao/cadastro",
-                params
-              ).then(function (response) {
+              api.post("solicitacao/cadastro",params).then(function (response) {
                 if (response.status !== 200) {
                   alert("Dados não gerado, falar com o suporte!");
                 } else {
@@ -181,16 +173,14 @@ const cadastroSolicitacao = () => {
       alert("Informe um RA valido");
       return;
     }
-
-    fetch(`https://utf-io-staging.herokuapp.com/aluno/${value}`)
-      .then((res) => res.json())
+    api.get(`https://utf-io-staging.herokuapp.com/aluno/${value}`)
       .then((data) => {
-        if (data.aluno.length === 0) {
+        if (data.data.aluno.length === 0) {
           setSubmitting(false);
           setFieldValue("email", "");
           setFieldValue("nome", "");
         } else {
-          data.aluno.forEach((item: GetAluno) => {
+          data.data.aluno.forEach((item: GetAluno) => {
             setSubmitting(true);
             setFieldValue("email", item.Pessoa.email);
             setFieldValue("nome", item.Pessoa.nome_pessoa);
@@ -235,29 +225,33 @@ const cadastroSolicitacao = () => {
               <FormLine>
                 <InputField name="nome" label="Nome" disabled={isSubmitting} />
               </FormLine>
+              <FormLabel>Data Inicio</FormLabel>
               <FormLine>
-                <InputField
-                  name="data_inicio"
-                  type="date"
-                  label="Data Inicial"
-                />
+                
+                  <InputField
+                    name="data_inicio"
+                    type="date"
+                    label=""
+                  />
+
               </FormLine>
+              <FormLabel>Data Fim</FormLabel>
               <FormLine>
-                <InputField name="data_fim" type="date" label="Data Final" />
+                <InputField name="data_fim" type="date" label="" />
               </FormLine>
               <FormLine>
                 <InputField name="local" label="Local" />
               </FormLine>
             </FormBody>
             <FormFooter>
-              <Button name="loginButton" disabled={isSubmitting}>
+              <Button name="loginButton" >
                 Salvar
               </Button>
             </FormFooter>
           </Form>
         )}
       </Formik>
-    </S.SolicitacoesWrapper>
+    </S.SolicitacoesWrapper >
   );
 };
 

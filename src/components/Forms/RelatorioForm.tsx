@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Formik, Form } from "formik";
-
+import InputField from "../../components/Form/InputField";
 import { Button } from "../Button/Button";
-import InputField from "../Form/InputField";
-
 import { FormBody } from "../Form/FormSection/FormBody";
 import { FormLine } from "../Form/FormSection/FormLine";
 import { FormFooter } from "../Form/FormSection/FormFooter";
+import { FormLabel } from '@material-ui/core';
 
 type FormProps = {
   onConfirm?: () => void;
@@ -29,33 +28,35 @@ export default function DepartamentoForm(props: FormProps) {
   }
 
   return (
-    <Formik 
+    <Formik
       onSubmit={handleSubmit}
-      initialValues={ relatorio }>
-        <Form>
-          <FormBody>
-            <FormLine>
-              <InputField 
+      initialValues={relatorio}>
+      <Form>
+        <FormBody>
+          <FormLine>
+            <FormBody>
+              <FormLabel>Data Inicio</FormLabel>
+              <InputField
                 name="data_inicio"
                 type="date"
-                label="Data Inicial"
               />
-
+            </FormBody>
+            <FormBody>
+              <FormLabel>Data Fim</FormLabel>
               <InputField
                 name="data_final"
                 type="date"
-                label="Data Final"
-              />  
-
-            </FormLine>
-            <br/>
-            <FormFooter mt="3rem">
-              <Button name="loginButton">
-                Gerar Relatório
-              </Button>
-            </FormFooter>
-          </FormBody>
-        </Form>
+              />
+            </FormBody>
+          </FormLine>
+          <br />
+          <FormFooter mt="3rem">
+            <Button name="loginButton">
+              Gerar Relatório
+            </Button>
+          </FormFooter>
+        </FormBody>
+      </Form>
     </Formik>
   );
 }
