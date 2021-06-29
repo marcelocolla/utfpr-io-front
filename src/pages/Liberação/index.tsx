@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useHistory, RouteComponentProps } from "react-router";
 import { Button } from "../../components/Button/Button";
-import { Modal } from "../../components/Modal";
 
+import { Modal } from "../../components/Modal";
+import VisitaForm from "../../components/Forms/VisitaForm";
+
+import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import * as S from "./styles";
 
@@ -31,6 +34,7 @@ export const Liberacao = ( params: LiberacaoParams ) => {
 
   const id_liberacao = params.match.params.id;
   const history = useHistory();
+  const { user } = useContext(AuthContext);
   const [liberacao, setLiberacao] = useState<LiberacaoProps>();
   const [openVisita, setOpenVisita] = useState(false);
 
@@ -83,6 +87,12 @@ export const Liberacao = ( params: LiberacaoParams ) => {
         </S.ButtonWrapper>
 
         <Modal visible={openVisita} close={() => setOpenVisita(false)}>
+          <h2>Registro de Entrada</h2>
+          <br />
+          <VisitaForm
+            viewOnly={false}
+            id_liberacao={liberacao?.id_cadastro_solicitacao}
+            vigilante={user?.vigilante}/>
         </Modal>
       </S.Content>
     </S.HomeSection>
