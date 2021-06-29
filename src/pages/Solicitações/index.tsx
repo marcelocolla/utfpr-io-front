@@ -12,6 +12,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import { api } from "../../services/api";
 import * as S from "./styles";
 
 /*
@@ -22,7 +23,7 @@ let tipo_pessoa = 1;
 /*
 * aqui é o codigo da pessoa que esta logada
 */
-let codigo_pessoa = 214;
+let codigo_pessoa = 225;
 /*
 * Type criado para formatar os dados no momento do preenchimento automatico
 * Dessa forma o javascript reconhece os campos e não da erro de copilação
@@ -37,13 +38,48 @@ type jsonValor = {
   permissao_acesso: number;
   data_permissao: string;
 };
+type cadastroSolicitacao = {
+  id_cadastro_solicitaccao: Number;
+  data_inicio: string;
+  data_fim: string;
+  permissao_acesso: number;
+  data_permissao: string;
+  hora_permissao: string;
+  id_pessoa_cadastro: number;
+  id_pessoa_permitiu: number;
+  id_aluno: number;
+  pessoaCadastro: {
+    id_pessoa: number;
+    nome_pessoa: string;
+    email: string;
+    tipo_usuario: number;
+    codigo_barra: string;
+  };
+  Aluno: {
+    id_aluno: number;
+    id_pessoa: number;
+    ra_aluno: string;
+    Pessoa: {
+      nome_pessoa: string;
+      email: string;
+    }
+  }
+};
+type linha = Array<[cadastroSolicitacao]>;
+type jsonSolicitacao = {
+  retorno: string;
+  cadastroSolicitacao: {
+    count: Number;
+    rows: linha;
+  };
+
+};
 
 /*
 * Trás todas as informações do aluno
 */
 const getAluno = async (ra: string) => {
-  return fetch(`https://utf-io-staging.herokuapp.com/aluno/${ra}`)
-    .then((res) => res.json());
+  return api.get(`aluno/${ra}`);
 }
 // function executeAsync(func: any) {
 //   setTimeout(func, 10);
@@ -53,16 +89,14 @@ const getAluno = async (ra: string) => {
 * Trás todas as solicitações de cadastro pelo parametro de esta ou não pendente
 */
 const getPermissaoUsuarioDeseg = async (id: number) => {
-  return fetch(`https://utf-io-staging.herokuapp.com/solicitacao/cadastro/getByPermissao/${id}`)
-    .then((res) => res.json());
+  return api.get(`solicitacao/cadastro/getByPermissao/${id}`);
 }
 
 /*
 * Trás a lista de todas as solicitação de cadastro por um codigo de professor
 */
 const getPermissaoUsuarioProfessor = async (id: number) => {
-  return fetch(`https://utf-io-staging.herokuapp.com/solicitacao/cadastro/getByIdPessoaCadastro/${id}`)
-    .then((res) => res.json());
+  return api.get(`solicitacao/cadastro/getByIdPessoaCadastro/${id}`);
 }
 
 
@@ -78,25 +112,22 @@ function clearAllArray(arr: any) {
 /*
 * serve para preencher o mock com o json que vem do backend
 */
-function getMock(res: any) {
+function getMock(res: jsonSolicitacao) {
   if (mock.length > 0) {
     clearAllArray(mock);
   }
   res.cadastroSolicitacao.rows.forEach((element: any) => {
     //   let data_inicio = moment(new Date(element.data_inicio), "dd/MM/yyyy").format();
     //  let data_fim = moment(new Date(element.data_fim), "dd/MM/yyyy").format();
-    getAluno(element.Aluno.ra_aluno).then((alu) => {
-      console.log(alu.aluno[0].Pessoa.email);
-      mock.push({
-        "id": element.id_cadastro_solicitacao,
-        "nome": alu.aluno[0].Pessoa.nome_pessoa,
-        "email": alu.aluno[0].Pessoa.email,
-        "dataEntrada": element.data_inicio,
-        "dataSaida": element.data_fim,
-        "ra_aluno": element.Aluno.ra_aluno,
-        "permissao_acesso": element.permissao_acesso,
-        "data_permissao": element.data_permissao,
-      });
+    mock.push({
+      "id": element.id_cadastro_solicitacao,
+      "nome": element.Aluno.Pessoa.nome_pessoa,
+      "email": element.Aluno.Pessoa.email,
+      "dataEntrada": element.data_inicio,
+      "dataSaida": element.data_fim,
+      "ra_aluno": element.Aluno.ra_aluno,
+      "permissao_acesso": element.permissao_acesso,
+      "data_permissao": element.data_permissao,
     });
   });
   return mock;
@@ -130,39 +161,35 @@ const Solicitacoes = () => {
   if (mock.length === 0) {
     if (tipo_pessoa === 1) {
       getPermissaoUsuarioDeseg(0).then((res) => {
-        res.cadastroSolicitacao.rows.forEach((element: any) => {
-          getAluno(element.Aluno.ra_aluno).then((alu) => {
-            mock.push({
-              "id": element.id_cadastro_solicitacao,
-              "nome": alu.aluno[0].Pessoa.nome_pessoa,
-              "email": alu.aluno[0].Pessoa.email,
-              "dataEntrada": element.data_inicio,
-              "dataSaida": element.data_fim,
-              "ra_aluno": element.Aluno.ra_aluno,
-              "permissao_acesso": element.permissao_acesso,
-              "data_permissao": element.data_permissao,
-            });
+        res.data.cadastroSolicitacao.rows.forEach((element: any) => {
+          //   let data_inicio = moment(new Date(element.data_inicio), "dd/MM/yyyy").format();
+          //  let data_fim = moment(new Date(element.data_fim), "dd/MM/yyyy").format();
+          mock.push({
+            "id": element.id_cadastro_solicitacao,
+            "nome": element.Aluno.Pessoa.nome_pessoa,
+            "email": element.Aluno.Pessoa.email,
+            "dataEntrada": element.data_inicio,
+            "dataSaida": element.data_fim,
+            "ra_aluno": element.Aluno.ra_aluno,
+            "permissao_acesso": element.permissao_acesso,
+            "data_permissao": element.data_permissao,
           });
-
         });
         setJson(mock);
       });
     } else {
       getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-        res.cadastroSolicitacao.rows.forEach((element: any) => {
-          getAluno(element.Aluno.ra_aluno).then((alu) => {
-            mock.push({
-              "id": element.id_cadastro_solicitacao,
-              "nome": alu.aluno[0].Pessoa.nome_pessoa,
-              "email": alu.aluno[0].Pessoa.email,
-              "dataEntrada": element.data_inicio,
-              "dataSaida": element.data_fim,
-              "ra_aluno": element.Aluno.ra_aluno,
-              "permissao_acesso": element.permissao_acesso,
-              "data_permissao": element.data_permissao,
-            });
+        res.data.cadastroSolicitacao.rows.forEach((element: any) => {
+          mock.push({
+            "id": element.id_cadastro_solicitacao,
+            "nome": element.Aluno.Pessoa.nome_pessoa,
+            "email": element.Aluno.Pessoa.email,
+            "dataEntrada": element.data_inicio,
+            "dataSaida": element.data_fim,
+            "ra_aluno": element.Aluno.ra_aluno,
+            "permissao_acesso": element.permissao_acesso,
+            "data_permissao": element.data_permissao,
           });
-
         });
         setJson(mock);
       });
@@ -189,25 +216,6 @@ const Solicitacoes = () => {
     },
 
   });
-  /*
-  * verifica qual radio button esta, 
-  * se tiver no pendente, quando da um click e preencher todos os campos 
-  * Assim possibilitando editar, se não aparece mensagem
-  */
-  useEffect(() => {
-    if (mock.length > 0 && Number(status) === 1) {
-      let editando = mock.filter(json => (json.id === editar));
-      let edit = editando[0] as jsonValor;
-      formik.setFieldValue("ra_aluno", edit.ra_aluno);
-      formik.setFieldValue("nome", edit.nome);
-      formik.setFieldValue("email", edit.email);
-      formik.setFieldValue("data_inicio", edit.dataEntrada);
-      formik.setFieldValue("data_fim", edit.dataSaida);
-      setOpen(true);
-    }
-
-  }, [formik, editar, status]);
-
 
   /*
   * preencher a lista de acordo o radio button selecionado 
@@ -219,12 +227,12 @@ const Solicitacoes = () => {
       case 1:
         if (tipo_pessoa === 1) {
           getPermissaoUsuarioDeseg(0).then((res) => {
-            mock = getMock(res);
+            mock = getMock(res.data);
             setJson(mock);
           });
         } else {
           getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-            mock = getMock(res);
+            mock = getMock(res.data);
             setJson(mock);
           });
         }
@@ -232,7 +240,7 @@ const Solicitacoes = () => {
       case 2:
         if (tipo_pessoa === 0) {
           getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-            mock = getMock(res);
+            mock = getMock(res.data);
             setJson(mock);
           });
         }
@@ -240,28 +248,28 @@ const Solicitacoes = () => {
       case 3:
         if (tipo_pessoa === 1) {
           getPermissaoUsuarioDeseg(1).then((res) => {
-            mock = getMock(res);
+            mock = getMock(res.data);
             setJson(mock);
           });
         } else {
           getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-            mock = getMock(res);
+            mock = getMock(res.data);
             setJson(mock);
           });
         }
         break;
       default:
-          if (tipo_pessoa === 1) {
-            getPermissaoUsuarioDeseg(0).then((res) => {
-              mock = getMock(res);
-              setJson(mock);
-            });
-          } else {
-            getPermissaoUsuarioProfessor(145).then((res) => {
-              mock = getMock(res);
-              setJson(mock);
-            });
-          }
+        if (tipo_pessoa === 1) {
+          getPermissaoUsuarioDeseg(0).then((res) => {
+            mock = getMock(res.data);
+            setJson(mock);
+          });
+        } else {
+          getPermissaoUsuarioProfessor(145).then((res) => {
+            mock = getMock(res.data);
+            setJson(mock);
+          });
+        }
     }
   }, [status]);
 
@@ -287,7 +295,29 @@ const Solicitacoes = () => {
         mock = mock.filter(json => (json.permissao_acesso < 1));
     }
 
-  }, [jsonObj, status]);
+  }, [jsonObj]);
+
+  /*
+* verifica qual radio button esta, 
+* se tiver no pendente, quando da um click e preencher todos os campos 
+* Assim possibilitando editar, se não aparece mensagem
+*/
+  useEffect(() => {
+    if (mock.length > 0 && Number(status) === 1) {
+
+      let editando = mock.filter(json => (json.id === editar));
+      if (editando === undefined) {
+        let edit = editando[0] as jsonValor;
+        formik.setFieldValue("ra_aluno", edit.ra_aluno);
+        formik.setFieldValue("nome", edit.nome);
+        formik.setFieldValue("email", edit.email);
+        formik.setFieldValue("data_inicio", edit.dataEntrada);
+        formik.setFieldValue("data_fim", edit.dataSaida);
+        setOpen(true);
+      }
+    }
+
+  }, [formik, editar, status]);
 
   return (
     <S.SolicitacoesWrapper>
@@ -363,14 +393,22 @@ const Solicitacoes = () => {
                 <InputField name="nome" label="Nome" />
               </FormLine>
               <FormLine>
-                <InputField
-                  name="data_inicio"
-                  type="date"
-                  label="Data Inicial"
-                />
+                <FormBody>
+                  <FormLabel>Data Inicio</FormLabel>
+                  <InputField
+                    name="data_inicio"
+                    type="date"
+                  />
+                </FormBody>
               </FormLine>
               <FormLine>
-                <InputField name="data_fim" type="date" label="Data Final" />
+                <FormBody>
+                  <FormLabel>Data Inicio</FormLabel>
+                  <InputField
+                    name="data_fim"
+                    type="date"
+                  />
+                </FormBody>
               </FormLine>
               <FormLine>
                 <InputField name="local" label="Local" />
