@@ -7,6 +7,7 @@ import VisitaForm from "../../components/Forms/VisitaForm";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
+import { Card } from "../../components/CardList/styles";
 import * as S from "./styles";
 
 type LiberacaoParams = RouteComponentProps<{id:string}>;
@@ -54,7 +55,7 @@ export const Liberacao = ( params: LiberacaoParams ) => {
     <S.HomeSection>
       <strong onClick={() => history.goBack()}>Liberação</strong>
       <S.Content>
-        <S.Card>
+        <Card>
           <div>
             <img src="/Ellipse 2.png" alt="Avatar" />
           </div>
@@ -62,7 +63,7 @@ export const Liberacao = ( params: LiberacaoParams ) => {
           <span>
             RA: <strong>{liberacao?.Aluno.ra_aluno}</strong>
           </span>
-        </S.Card>
+        </Card>
         <S.DetailedCard>
           <div>
             <div>Início:</div>

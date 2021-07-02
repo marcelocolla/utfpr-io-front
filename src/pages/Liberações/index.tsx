@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 
 import { api } from "../../services/api";
-import * as S from "./styles";
+import * as S from "../../components/CardList/styles";
 
 type PessoaProps = {
   nome_pessoa: string;
@@ -40,7 +40,7 @@ const Liberacoes = () => {
   }, []);
 
   return (
-    <S.SolicitacoesWrapper>
+    <S.CardsWrapper>
       <strong onClick={() => history.goBack()}>Liberações</strong>
       <span>Clique no cartão para ver mais informações</span> 
       <br />
@@ -65,7 +65,7 @@ const Liberacoes = () => {
           </S.Card>
         ))}
       </div>
-    </S.SolicitacoesWrapper>
+    </S.CardsWrapper>
   );
 };
 
