@@ -11,6 +11,7 @@ import Liberacoes from "./pages/Liberações";
 import Liberacao from "./pages/Liberação";
 
 import { AuthContext } from "./contexts/AuthContext";
+import Visitas from "./pages/Visitas";
 
 type CustomRouteProps = {
   path?: string;
@@ -67,6 +68,12 @@ function Routes() {
         isPrivate
         path="/usuarios/:tipo"
         component={CadastroUsuario}
+      />
+      <CustomRoute
+        isPrivate
+        exact
+        path="/visitas"
+        component={Visitas}
       />
     </Switch>
   );

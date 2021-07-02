@@ -12,13 +12,8 @@ import { api } from "../../services/api";
 import history from "../../history";
 
 type VisitaValues = {
-  data_entrada: string;
-  hora_entrada: string;
-  data_saida: string;
-  hora_saida: string;
-  id_liberacao: number;
-  id_vigilante_entrada: number;
-  id_vigilante_saida: number;
+  data_registro: string;
+  hora_registro: string;
   placa_veiculo: string;
   observacoes: string;
 }
@@ -36,21 +31,16 @@ type LiberacaoValues = {
 type FormProps = {
   isEntrada: boolean;
   id_liberacao?: number;
-  id_visita?: string;
+  visita?: any;
   vigilante: any;
 }
 
 export default function VisitaForm( props: FormProps ) {
 
   const [visita, setVisita] = useState<VisitaValues>({
-    data_entrada: new Date().toLocaleDateString('fr-CA'),
-    hora_entrada: new Date().toLocaleTimeString([],
+    data_registro: new Date().toLocaleDateString('fr-CA'),
+    hora_registro: new Date().toLocaleTimeString([],
       {hour: '2-digit', minute:'2-digit', hour12: false}),
-    data_saida: "",
-    hora_saida: "",
-    id_liberacao: 0,
-    id_vigilante_entrada: 0,
-    id_vigilante_saida: 0,
     placa_veiculo: "",
     observacoes: "",
   });
@@ -68,21 +58,29 @@ export default function VisitaForm( props: FormProps ) {
   const vigilante = props.vigilante;
 
   useEffect(() => {
-    // Criar uma visita a partir de uma liberação
-    if (props.id_liberacao) {
-      try {
+    try {
+      if (props.isEntrada) {
+        // Criar uma visita a partir de uma liberação
         api.get("solicitacao/cadastro/"+props.id_liberacao)
           .then((response:any) => {
             setLiberacao(response.data.cadastroSolicitacao.rows[0]);
         });
-      } catch (err) {
-        console.error(err);
+      } else {
+        // Exibir uma visita já existente
+        setVisita({
+          data_registro: new Date().toLocaleDateString('fr-CA'),
+          hora_registro: new Date().toLocaleTimeString([],
+            {hour: '2-digit', minute:'2-digit', hour12: false}),
+          placa_veiculo: props.visita?.placa_veiculo,
+          observacoes: props.visita?.observacoes,
+        });
+
+        setLiberacao(props.visita?.liberacaoAcesso);
       }
+    } catch (err) {
+      console.error(err);
     }
-
-    // Receber dados de uma visita para edição
   }, [props])
-
 
   async function registrarEntrada( values: any ) {
     await api.post("/visita", {
@@ -96,18 +94,18 @@ export default function VisitaForm( props: FormProps ) {
       placa_veiculo: values.placa_veiculo,
       observacoes: values.observacoes
     });
-    history.go(0); 
+    history.push("/visitas"); 
   }
 
   async function registrarSaida( values: any ) {
-//     PUT:
-// {
-//     "id_visita": 10,
-//   "data_saida": "2021-06-12",
-//   "hora_saida": "17:50",
-//   "id_vigilante_saida": 43,
-//   "observacoes": "Aluno encontrou documento"
-// }
+    await api.put("/visita", {
+      id_visita: props.visita?.id_visita,
+      data_saida: values.data_entrada,
+      hora_saida: values.hora_entrada,
+      id_vigilante_saida: values.vigilante.vigilante.id_vigilante,
+      observacoes: values.observacoes
+    });
+    history.go(0);
   }
 
   return (
@@ -129,11 +127,11 @@ export default function VisitaForm( props: FormProps ) {
           </FormLine>
           <FormLine>
             <InputField
-              name="data_entrada"
+              name="data_registro"
               label="Data"
               disabled={true}/>
             <InputField
-              name="hora_entrada"
+              name="hora_registro"
               label="Horário" disabled={true}/>
           </FormLine>
           <FormLine>
@@ -145,7 +143,7 @@ export default function VisitaForm( props: FormProps ) {
             <InputField
               name="placa_veiculo"
               label="Informe a placa do veículo"
-              required />
+              required disabled={!props.isEntrada} />
           </FormLine>
           <FormLine>
             <InputField
