@@ -9,47 +9,34 @@ import { FormLine } from '../Form/FormSection/FormLine';
 import { FormFooter } from '../Form/FormSection/FormFooter';
 
 import { api } from "../../services/api";
+import history from "../../history";
 
 type VisitaValues = {
   data_entrada: string;
   hora_entrada: string;
   data_saida: string;
   hora_saida: string;
-  id_solicitacao: number;
+  id_liberacao: number;
   id_vigilante_entrada: number;
   id_vigilante_saida: number;
+  placa_veiculo: string;
   observacoes: string;
-}
-// POST:
-// {
-//   "data_entrada": "2021-06-12",
-//   "hora_entrada": "12:00",
-//   "data_saida": "2021-06-12",
-//   "hora_saida": "17:00",
-//   "id_solicitacao": 338,
-//   "id_vigilante_entrada": 43,
-//   "id_vigilante_saida": 43,
-//   "observacoes": "O aluno esqueceu o documento de identidade"
-// }
-
-type PessoaValues = {
-  nome_pessoa: string;
-}
-
-type AlunoValues = {
-  ra_aluno: string;
-  Pessoa: PessoaValues;
 }
 
 type LiberacaoValues = {
-  id_cadastro_solicitacao: number;
-  Aluno: AlunoValues;
+  id_liberacao: number;
+  Aluno: {
+    ra_aluno: string;
+    Pessoa: {
+      nome_pessoa: string;
+    }
+  };
 }
 
 type FormProps = {
-  viewOnly: boolean;
+  isEntrada: boolean;
   id_liberacao?: number;
-  visita?: string;
+  id_visita?: string;
   vigilante: any;
 }
 
@@ -61,13 +48,15 @@ export default function VisitaForm( props: FormProps ) {
       {hour: '2-digit', minute:'2-digit', hour12: false}),
     data_saida: "",
     hora_saida: "",
-    id_solicitacao: 0,
+    id_liberacao: 0,
     id_vigilante_entrada: 0,
     id_vigilante_saida: 0,
+    placa_veiculo: "",
     observacoes: "",
   });
+
   const [liberacao, setLiberacao] = useState<LiberacaoValues>({
-    id_cadastro_solicitacao: 0,
+    id_liberacao: 0,
     Aluno: {
       ra_aluno: "",
       Pessoa: {
@@ -75,6 +64,8 @@ export default function VisitaForm( props: FormProps ) {
       },
     },
   });
+
+  const vigilante = props.vigilante;
 
   useEffect(() => {
     // Criar uma visita a partir de uma liberação
@@ -93,22 +84,36 @@ export default function VisitaForm( props: FormProps ) {
   }, [props])
 
 
-  async function handleSubmit( values: VisitaValues ) {
-    // await api.post("/vigilante", {
-    //   nome_pessoa: values.nome_pessoa,
-    //   email: values.email,
-    //   matricula: values.matricula,
-    //   tipo_usuario: 3,
-    //   id_turno: values.turno,
-    //   senha: values.senha
-    // });
-    // history.go(0);
+  async function registrarEntrada( values: any ) {
+    await api.post("/visita", {
+      data_entrada: values.data_entrada,
+      hora_entrada: values.hora_entrada,
+      data_saida: null,
+      hora_saida: null,
+      id_liberacao: values.liberacao.id_liberacao,
+      id_vigilante_entrada: values.vigilante.vigilante.id_vigilante,
+      id_vigilante_saida: 0,
+      placa_veiculo: values.placa_veiculo,
+      observacoes: values.observacoes
+    });
+    history.go(0); 
+  }
+
+  async function registrarSaida( values: any ) {
+//     PUT:
+// {
+//     "id_visita": 10,
+//   "data_saida": "2021-06-12",
+//   "hora_saida": "17:50",
+//   "id_vigilante_saida": 43,
+//   "observacoes": "Aluno encontrou documento"
+// }
   }
 
   return (
     <Formik 
-      initialValues={{ ...visita, liberacao: liberacao }}
-      onSubmit={handleSubmit}
+      initialValues={{ ...visita, liberacao: liberacao, vigilante: vigilante }}
+      onSubmit={props.isEntrada ? registrarEntrada : registrarSaida}
       enableReinitialize>
       <Form>
         <FormBody>
@@ -133,19 +138,24 @@ export default function VisitaForm( props: FormProps ) {
           </FormLine>
           <FormLine>
             <InputField
-              name="observacoes"
+              name="vigilante.pessoa.nome_pessoa"
               label="Vigilante Responsável" disabled={true}/>
           </FormLine>
           <FormLine>
             <InputField
+              name="placa_veiculo"
+              label="Informe a placa do veículo"
+              required />
+          </FormLine>
+          <FormLine>
+            <InputField
               name="observacoes"
-              label="Observações"
-              helperText="Informe a placa do veículo, etc." />
+              label="Observações"/>
           </FormLine>
         </FormBody>
-        <FormFooter>
+        <FormFooter mt="3rem">
           <Button name="registroButton">
-            Registrar {props.viewOnly ? "Saída" : "Entrada"}
+            Registrar {props.isEntrada ? "Entrada" : "Saída"}
           </Button>
         </FormFooter>
       </Form>

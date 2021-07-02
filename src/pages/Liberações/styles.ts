@@ -39,7 +39,7 @@ export const SolicitacoesWrapper = styled.section`
 export const Card = styled.div`
   width: 100%;
   max-width: 40rem;
-  height: 100%;
+  height: 10rem;
 
   background: #ffffff;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);

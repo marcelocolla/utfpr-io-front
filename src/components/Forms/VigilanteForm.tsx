@@ -125,7 +125,7 @@ export default function VigilanteForm( props: FormProps ) {
               <PasswordField name="senha" label="Senha" />
           </FormLine>)}
         </FormBody>
-        <FormFooter>
+        <FormFooter mt="3rem">
           <Button name="cadastroButton">
             {props.viewOnly ? "Atualizar" : "Cadastrar"}
           </Button>
