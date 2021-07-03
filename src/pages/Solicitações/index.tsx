@@ -1,357 +1,66 @@
-import { Form, useFormik, FormikProvider } from "formik";
-import { useEffect, useState } from "react";
+import { useState, useContext } from "react";
 import { useHistory } from "react-router";
+
 import { Button } from "../../components/Button/Button";
-import InputField from "../../components/Form/InputField";
-import { FormBody } from "../../components/Form/FormSection/FormBody";
-import { FormLine } from "../../components/Form/FormSection/FormLine";
-import { FormFooter } from "../../components/Form/FormSection/FormFooter";
 import { Modal } from "../../components/Modal";
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
-import { api } from "../../services/api";
-import * as S from "./styles";
 
-/*
-* Quem esta logado
-* 'tipo_usuario 0: Professor; 1 = Deseg; 3 = Vigilante';
-*/
-let tipo_pessoa = 1;
-/*
-* aqui é o codigo da pessoa que esta logada
-*/
-let codigo_pessoa = 225;
-/*
-* Type criado para formatar os dados no momento do preenchimento automatico
-* Dessa forma o javascript reconhece os campos e não da erro de copilação
-*/
-type jsonValor = {
-  id: number;
-  nome: string;
-  email: string;
-  dataEntrada: string;
-  dataSaida: string;
-  ra_aluno: string;
-  permissao_acesso: number;
-  data_permissao: string;
-};
-type cadastroSolicitacao = {
-  id_cadastro_solicitaccao: Number;
+import { AuthContext } from "../../contexts/AuthContext";
+
+import * as S from "../../components/CardList/styles";
+import SolicitacaoRadioGroup from "../../components/SolicitaçãoRadioGroup";
+import SolicitacaoForm from "../../components/Forms/SolicitacaoForm";
+
+type SolicitacaoProps = {
+  id_liberacao: number;
   data_inicio: string;
   data_fim: string;
-  permissao_acesso: number;
-  data_permissao: string;
-  hora_permissao: string;
-  id_pessoa_cadastro: number;
-  id_pessoa_permitiu: number;
-  id_aluno: number;
-  pessoaCadastro: {
-    id_pessoa: number;
-    nome_pessoa: string;
-    email: string;
-    tipo_usuario: number;
-    codigo_barra: string;
-  };
   Aluno: {
-    id_aluno: number;
-    id_pessoa: number;
-    ra_aluno: string;
     Pessoa: {
       nome_pessoa: string;
-      email: string;
     }
   }
 };
-type linha = Array<[cadastroSolicitacao]>;
-type jsonSolicitacao = {
-  retorno: string;
-  cadastroSolicitacao: {
-    count: Number;
-    rows: linha;
-  };
 
-};
-
-/*
-* Trás todas as informações do aluno
-*/
-const getAluno = async (ra: string) => {
-  return api.get(`aluno/${ra}`);
-}
-// function executeAsync(func: any) {
-//   setTimeout(func, 10);
-// }
-
-/*
-* Trás todas as solicitações de cadastro pelo parametro de esta ou não pendente
-*/
-const getPermissaoUsuarioDeseg = async (id: number) => {
-  return api.get(`solicitacao/cadastro/getByPermissao/${id}`);
-}
-
-/*
-* Trás a lista de todas as solicitação de cadastro por um codigo de professor
-*/
-const getPermissaoUsuarioProfessor = async (id: number) => {
-  return api.get(`solicitacao/cadastro/getByIdPessoaCadastro/${id}`);
-}
-
-
-let mock = Array<any>();
-/*
-* limpa o mock para que ele não duplique ou apareça lixo de outra lista
-*/
-function clearAllArray(arr: any) {
-  while (arr.length > 0) {
-    arr.pop();
-  }
-}
-/*
-* serve para preencher o mock com o json que vem do backend
-*/
-function getMock(res: jsonSolicitacao) {
-  if (mock.length > 0) {
-    clearAllArray(mock);
-  }
-  res.cadastroSolicitacao.rows.forEach((element: any) => {
-    //   let data_inicio = moment(new Date(element.data_inicio), "dd/MM/yyyy").format();
-    //  let data_fim = moment(new Date(element.data_fim), "dd/MM/yyyy").format();
-    mock.push({
-      "id": element.id_cadastro_solicitacao,
-      "nome": element.Aluno.Pessoa.nome_pessoa,
-      "email": element.Aluno.Pessoa.email,
-      "dataEntrada": element.data_inicio,
-      "dataSaida": element.data_fim,
-      "ra_aluno": element.Aluno.ra_aluno,
-      "permissao_acesso": element.permissao_acesso,
-      "data_permissao": element.data_permissao,
-    });
-  });
-  return mock;
-}
 const Solicitacoes = () => {
+
   const history = useHistory();
-  /*
-  * serve para registrar a seleção do radio button
-  */
-  const [status, setStatus] = useState();
-  /*
-  * Uso do mock ou a lista de json
-  * Aqui é para controle dela
-  */
-  const [jsonObj, setJson] = useState([{}]);
-  /*
-  * serve para preencher o formulario 
-  * e notificar que ele deve aparecer
-  */
-  const [editar, setEditar] = useState();
-  /*
-  * se deve ou não aparecer o formulario de edição
-  */
+  useContext(AuthContext);
+  const [solicitacoes, setSolicitacoes] = useState<SolicitacaoProps[]>();
+
+  const [selection, setSelection] = useState(0);
   const [open, setOpen] = useState(false);
-  /*
-  * Esse aqui é o preenchimento inicial,
-  * pois no momento do carregamento inicial
-  * ele não estava pegando o que esta selecionado no radio button
-  * Assim aqui trás as lista dos pendentes do professor ou do deseg
-  */
-  if (mock.length === 0) {
-    if (tipo_pessoa === 1) {
-      getPermissaoUsuarioDeseg(0).then((res) => {
-        res.data.cadastroSolicitacao.rows.forEach((element: any) => {
-          //   let data_inicio = moment(new Date(element.data_inicio), "dd/MM/yyyy").format();
-          //  let data_fim = moment(new Date(element.data_fim), "dd/MM/yyyy").format();
-          mock.push({
-            "id": element.id_cadastro_solicitacao,
-            "nome": element.Aluno.Pessoa.nome_pessoa,
-            "email": element.Aluno.Pessoa.email,
-            "dataEntrada": element.data_inicio,
-            "dataSaida": element.data_fim,
-            "ra_aluno": element.Aluno.ra_aluno,
-            "permissao_acesso": element.permissao_acesso,
-            "data_permissao": element.data_permissao,
-          });
-        });
-        setJson(mock);
-      });
-    } else {
-      getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-        res.data.cadastroSolicitacao.rows.forEach((element: any) => {
-          mock.push({
-            "id": element.id_cadastro_solicitacao,
-            "nome": element.Aluno.Pessoa.nome_pessoa,
-            "email": element.Aluno.Pessoa.email,
-            "dataEntrada": element.data_inicio,
-            "dataSaida": element.data_fim,
-            "ra_aluno": element.Aluno.ra_aluno,
-            "permissao_acesso": element.permissao_acesso,
-            "data_permissao": element.data_permissao,
-          });
-        });
-        setJson(mock);
-      });
-    }
+  const [viewOnly, setViewOnly] = useState(false);
+
+  function exibirCadastro( id: number ) {
+    setSelection(id);
+    setViewOnly(true);
+    setOpen(true);
   }
 
-
-  /*
-  * O uso do formik assim é para conseguir preencher 
-  * a lista no formato que esta atualmente.
-  * Sem isso ficaria dificil usar o setFieldValue
-  */
-  const formik = useFormik({
-    initialValues: {
-      ra: "",
-      email: "",
-      nome: "",
-      dataInicio: "",
-      dataFim: "",
-      local: "",
-    },
-    onSubmit: values => {
-      alert(JSON.stringify(values));
-    },
-
-  });
-
-  /*
-  * preencher a lista de acordo o radio button selecionado 
-  * com default da primeira lista que é a lista de pendentes
-  */
-  useEffect(() => {
-    let valor = status;
-    switch (Number(valor)) {
-      case 1:
-        if (tipo_pessoa === 1) {
-          getPermissaoUsuarioDeseg(0).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
-          });
-        } else {
-          getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
-          });
-        }
-        break;
-      case 2:
-        if (tipo_pessoa === 0) {
-          getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
-          });
-        }
-        break;
-      case 3:
-        if (tipo_pessoa === 1) {
-          getPermissaoUsuarioDeseg(1).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
-          });
-        } else {
-          getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
-          });
-        }
-        break;
-      default:
-        if (tipo_pessoa === 1) {
-          getPermissaoUsuarioDeseg(0).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
-          });
-        } else {
-          getPermissaoUsuarioProfessor(145).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
-          });
-        }
-    }
-  }, [status]);
-
-  /*
-  * usa o filter para poder identificar que o mock teve modificação
-  * o filter realmente é necessario no caso de professor,
-  * pois o json dele vem tanto permissao acesso pendente e permitido
-  * Já no caso do deseg o json vem de acordo a permissão, 
-  * sendo irrelevante esse filter
-  */
-  useEffect(() => {
-    switch (Number(status)) {
-      case 1:
-        mock = mock.filter(json => (json.permissao_acesso < 1));
-        break;
-      case 2:
-        mock = mock.filter(json => (json.data_permissao !== null));
-        break;
-      case 3:
-        mock = mock.filter(json => (json.permissao_acesso > 0));
-        break;
-      default:
-        mock = mock.filter(json => (json.permissao_acesso < 1));
-    }
-
-  }, [jsonObj]);
-
-  /*
-* verifica qual radio button esta, 
-* se tiver no pendente, quando da um click e preencher todos os campos 
-* Assim possibilitando editar, se não aparece mensagem
-*/
-  useEffect(() => {
-    if (mock.length > 0 && Number(status) === 1) {
-
-      let editando = mock.filter(json => (json.id === editar));
-      if (editando === undefined) {
-        let edit = editando[0] as jsonValor;
-        formik.setFieldValue("ra_aluno", edit.ra_aluno);
-        formik.setFieldValue("nome", edit.nome);
-        formik.setFieldValue("email", edit.email);
-        formik.setFieldValue("data_inicio", edit.dataEntrada);
-        formik.setFieldValue("data_fim", edit.dataSaida);
-        setOpen(true);
-      }
-    }
-
-  }, [formik, editar, status]);
+  function fecharCadastro() {
+    setOpen(false);
+    setViewOnly(false);
+    setSelection(0);
+  }
 
   return (
-    <S.SolicitacoesWrapper>
+    <S.CardsWrapper>
       <strong onClick={() => history.goBack()}>Solicitações</strong>
       <div>
         <FormControl component="fieldset">
           <FormLabel component="legend"></FormLabel>
-          <RadioGroup row aria-label="position" name="position" defaultValue="1" onChange={(ev: any) => setStatus(ev.target.value)}>
-            <FormControlLabel
-              value="1"
-              control={<Radio color="primary" />}
-              label="Pendentes"
-              labelPlacement="top"
-            />
-            <FormControlLabel
-              value="2"
-              control={<Radio color="primary" />}
-              label="Cancelados"
-              labelPlacement="top"
-            />
-            <FormControlLabel
-              value="3"
-              control={<Radio color="primary" />}
-              label="Aprovada"
-              labelPlacement="top"
-            />
-          </RadioGroup>
+          <SolicitacaoRadioGroup callbackFunction={setSolicitacoes}/>
         </FormControl>
       </div>
       <br />
       <div className="cardsWrapper">
         <div className="cardsWrapper">
-          {mock.map((el) => (
-            <S.Card key={el.id} onClick={() => setEditar(el.id)}>
+          {solicitacoes?.map((el) => (
+            <S.Card
+              key={el.id_liberacao}
+              onClick={() => exibirCadastro(el.id_liberacao)}>
               {/* parte esquerda, avatar */}
               <div className="imageWrapper">
                 <img src="/dog.png" alt="foto solicitacao" />
@@ -359,10 +68,10 @@ const Solicitacoes = () => {
 
               {/* parte direita, infos */}
               <div>
-                <h1>{el.nome}</h1>
+                <h1>{el.Aluno.Pessoa.nome_pessoa}</h1>
                 <div>
-                  <span>{el.dataEntrada}</span>
-                  <strong>{el.dataSaida}</strong>
+                  <span>{el.data_inicio}</span>
+                  <strong>{el.data_fim}</strong>
                 </div>
               </div>
             </S.Card>
@@ -371,58 +80,18 @@ const Solicitacoes = () => {
         <Button
           type="button"
           name="criarSolicitacao"
-          path="/cadastro_solicitacao"
-        >
+          onClickFunction={()=>setOpen(true)}>
           Criar Solicitação
         </Button>
       </div>
 
-      <Modal visible={open} close={() => setOpen(false)}>
-        <h2>Solicitação</h2>
+      <Modal visible={open} close={() => fecharCadastro()}>
+        <h2>{!viewOnly && "Nova"} Solicitação</h2>
         <br />
-        <FormikProvider value={formik}>
-          <Form onSubmit={formik.handleSubmit}>
-            <FormBody>
-              <FormLine>
-                <InputField name="ra_aluno" label="RA" />
-              </FormLine>
-              <FormLine>
-                <InputField name="email" type="email" label="Email" />
-              </FormLine>
-              <FormLine>
-                <InputField name="nome" label="Nome" />
-              </FormLine>
-              <FormLine>
-                <FormBody>
-                  <FormLabel>Data Inicio</FormLabel>
-                  <InputField
-                    name="data_inicio"
-                    type="date"
-                  />
-                </FormBody>
-              </FormLine>
-              <FormLine>
-                <FormBody>
-                  <FormLabel>Data Inicio</FormLabel>
-                  <InputField
-                    name="data_fim"
-                    type="date"
-                  />
-                </FormBody>
-              </FormLine>
-              <FormLine>
-                <InputField name="local" label="Local" />
-              </FormLine>
-            </FormBody>
-            <FormFooter>
-              <Button name="loginButton">Salvar/Permitir</Button>
-            </FormFooter>
-          </Form>
-        </FormikProvider>
+        <SolicitacaoForm viewOnly={viewOnly} id_solicitacao={selection} />
       </Modal>
-    </S.SolicitacoesWrapper>
+    </S.CardsWrapper>
   );
-
 };
 
 export default Solicitacoes;

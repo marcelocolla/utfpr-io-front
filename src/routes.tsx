@@ -5,13 +5,12 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import CadastroUsuario from "./pages/CadastroUsuario";
 
-import CadastroSolicitacao from "./pages/CadastroSolicitacao";
 import Solicitacoes from "./pages/Solicitações";
 import Liberacoes from "./pages/Liberações";
 import Liberacao from "./pages/Liberação";
+import Visitas from "./pages/Visitas";
 
 import { AuthContext } from "./contexts/AuthContext";
-import Visitas from "./pages/Visitas";
 
 type CustomRouteProps = {
   path?: string;
@@ -57,12 +56,6 @@ function Routes() {
         isPrivate
         path="/liberacao/:id"
         component={Liberacao}
-      />
-      <CustomRoute
-        isPrivate
-        exact
-        path="/cadastro_solicitacao"
-        component={CadastroSolicitacao}
       />
       <CustomRoute
         isPrivate
