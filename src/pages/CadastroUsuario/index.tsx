@@ -8,7 +8,7 @@ import { Modal } from "../../components/Modal";
 
 import { api } from "../../services/api";
 import { AuthContext } from "../../contexts/AuthContext";
-import * as S from "./styles";
+import * as S from "../../components/CardList/styles";
 
 import DesegForm from "../../components/Forms/DesegForm";
 import ProfessorForm from "../../components/Forms/ProfessorForm";
@@ -83,7 +83,7 @@ const CadastroUsuario = (params: UserProps) => {
   }, [tipoUsuario]);
 
   return (
-    <S.UsuarioWrapper>
+    <S.CardsWrapper>
       <strong onClick={() => history.goBack()}>{capitalize(tipoUsuario)}</strong>
       <br />
       <div className="cardsWrapper">
@@ -139,7 +139,7 @@ const CadastroUsuario = (params: UserProps) => {
         { tipoUsuario === "vigilante" && (
           <VigilanteForm viewOnly={viewOnly} id_usuario={selection} />)}
       </Modal>
-    </S.UsuarioWrapper>
+    </S.CardsWrapper>
   );
 }
 

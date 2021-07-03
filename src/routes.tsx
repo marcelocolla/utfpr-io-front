@@ -5,10 +5,10 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import CadastroUsuario from "./pages/CadastroUsuario";
 
-import CadastroSolicitacao from "./pages/CadastroSolicitacao";
 import Solicitacoes from "./pages/Solicitações";
 import Liberacoes from "./pages/Liberações";
 import Liberacao from "./pages/Liberação";
+import Visitas from "./pages/Visitas";
 
 import { AuthContext } from "./contexts/AuthContext";
 
@@ -59,14 +59,14 @@ function Routes() {
       />
       <CustomRoute
         isPrivate
-        exact
-        path="/cadastro_solicitacao"
-        component={CadastroSolicitacao}
+        path="/usuarios/:tipo"
+        component={CadastroUsuario}
       />
       <CustomRoute
         isPrivate
-        path="/usuarios/:tipo"
-        component={CadastroUsuario}
+        exact
+        path="/visitas"
+        component={Visitas}
       />
     </Switch>
   );

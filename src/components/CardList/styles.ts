@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const UsuarioWrapper = styled.section`
+export const CardsWrapper = styled.section`
   width: 100%;
   height: 100vh;
 

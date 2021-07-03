@@ -7,6 +7,7 @@ import VisitaForm from "../../components/Forms/VisitaForm";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
+import { Card } from "../../components/CardList/styles";
 import * as S from "./styles";
 
 type LiberacaoParams = RouteComponentProps<{id:string}>;
@@ -15,19 +16,17 @@ type PessoaProps = {
   nome_pessoa: string;
 }
 
-type AlunoProps = {
-  id_aluno: number;
-  id_pessoa: number;
-  ra_aluno: string;
-  Pessoa: PessoaProps;
-}
-
 type LiberacaoProps = {
-  id_cadastro_solicitacao: number;
+  id_liberacao: number;
   data_inicio: string;
   data_fim: string;
   pessoaCadastro: PessoaProps;
-  Aluno: AlunoProps;
+  Aluno: {
+    id_aluno: number;
+    id_pessoa: number;
+    ra_aluno: string;
+    Pessoa: PessoaProps;
+  };
 }
 
 export const Liberacao = ( params: LiberacaoParams ) => {
@@ -56,7 +55,7 @@ export const Liberacao = ( params: LiberacaoParams ) => {
     <S.HomeSection>
       <strong onClick={() => history.goBack()}>Liberação</strong>
       <S.Content>
-        <S.Card>
+        <Card>
           <div>
             <img src="/Ellipse 2.png" alt="Avatar" />
           </div>
@@ -64,7 +63,7 @@ export const Liberacao = ( params: LiberacaoParams ) => {
           <span>
             RA: <strong>{liberacao?.Aluno.ra_aluno}</strong>
           </span>
-        </S.Card>
+        </Card>
         <S.DetailedCard>
           <div>
             <div>Início:</div>
@@ -90,9 +89,9 @@ export const Liberacao = ( params: LiberacaoParams ) => {
           <h2>Registro de Entrada</h2>
           <br />
           <VisitaForm
-            viewOnly={false}
-            id_liberacao={liberacao?.id_cadastro_solicitacao}
-            vigilante={user?.vigilante}/>
+            isEntrada={true}
+            id_liberacao={liberacao?.id_liberacao}
+            vigilante={user}/>
         </Modal>
       </S.Content>
     </S.HomeSection>

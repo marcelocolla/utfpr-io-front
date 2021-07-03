@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 
 import { api } from "../../services/api";
-import * as S from "./styles";
+import * as S from "../../components/CardList/styles";
 
 type PessoaProps = {
   nome_pessoa: string;
@@ -16,7 +16,7 @@ type AlunoProps = {
 }
 
 type LiberacaoProps = {
-  id_cadastro_solicitacao: number;
+  id_liberacao: number;
   data_inicio: string;
   data_fim: string;
   Aluno: AlunoProps;
@@ -31,13 +31,8 @@ const Liberacoes = () => {
   // final de liberação ainda está válida (data_fim >= hoje).
   useEffect(() => {
     try {
-      const hoje = new Date();
       api.get("solicitacao/cadastro/getByPermissao/1").then((response) => {
-        setLiberacoes(response.data.cadastroSolicitacao.rows.filter(
-          function(liberacao: LiberacaoProps) {
-            return new Date(liberacao.data_fim) >= hoje;
-          }
-        ));
+        setLiberacoes(response.data.cadastroSolicitacao.rows);
       });
     } catch (err) {
       console.error(err);
@@ -45,15 +40,15 @@ const Liberacoes = () => {
   }, []);
 
   return (
-    <S.SolicitacoesWrapper>
+    <S.CardsWrapper>
       <strong onClick={() => history.goBack()}>Liberações</strong>
       <span>Clique no cartão para ver mais informações</span> 
       <br />
       <div className="cardsWrapper">
         {liberacoes?.map((el) => (
           <S.Card 
-            key={el.id_cadastro_solicitacao} 
-            onClick={() => history.push("/liberacao/"+el.id_cadastro_solicitacao)}>
+            key={el.id_liberacao} 
+            onClick={() => history.push("/liberacao/"+el.id_liberacao)}>
             {/* parte esquerda, avatar */}
             <div className="imageWrapper">
             <img src="/dog.png" alt="foto solicitacao" />
@@ -70,7 +65,7 @@ const Liberacoes = () => {
           </S.Card>
         ))}
       </div>
-    </S.SolicitacoesWrapper>
+    </S.CardsWrapper>
   );
 };
 

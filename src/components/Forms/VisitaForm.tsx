@@ -9,65 +9,44 @@ import { FormLine } from '../Form/FormSection/FormLine';
 import { FormFooter } from '../Form/FormSection/FormFooter';
 
 import { api } from "../../services/api";
+import history from "../../history";
 
 type VisitaValues = {
-  data_entrada: string;
-  hora_entrada: string;
-  data_saida: string;
-  hora_saida: string;
-  id_solicitacao: number;
-  id_vigilante_entrada: number;
-  id_vigilante_saida: number;
+  data_registro: string;
+  hora_registro: string;
+  placa_veiculo: string;
   observacoes: string;
-}
-// POST:
-// {
-//   "data_entrada": "2021-06-12",
-//   "hora_entrada": "12:00",
-//   "data_saida": "2021-06-12",
-//   "hora_saida": "17:00",
-//   "id_solicitacao": 338,
-//   "id_vigilante_entrada": 43,
-//   "id_vigilante_saida": 43,
-//   "observacoes": "O aluno esqueceu o documento de identidade"
-// }
-
-type PessoaValues = {
-  nome_pessoa: string;
-}
-
-type AlunoValues = {
-  ra_aluno: string;
-  Pessoa: PessoaValues;
 }
 
 type LiberacaoValues = {
-  id_cadastro_solicitacao: number;
-  Aluno: AlunoValues;
+  id_liberacao: number;
+  Aluno: {
+    ra_aluno: string;
+    Pessoa: {
+      nome_pessoa: string;
+    }
+  };
 }
 
 type FormProps = {
-  viewOnly: boolean;
+  isEntrada: boolean;
   id_liberacao?: number;
-  visita?: string;
+  visita?: any;
   vigilante: any;
 }
 
 export default function VisitaForm( props: FormProps ) {
 
   const [visita, setVisita] = useState<VisitaValues>({
-    data_entrada: new Date().toLocaleDateString('fr-CA'),
-    hora_entrada: new Date().toLocaleTimeString([],
+    data_registro: new Date().toLocaleDateString('fr-CA'),
+    hora_registro: new Date().toLocaleTimeString([],
       {hour: '2-digit', minute:'2-digit', hour12: false}),
-    data_saida: "",
-    hora_saida: "",
-    id_solicitacao: 0,
-    id_vigilante_entrada: 0,
-    id_vigilante_saida: 0,
+    placa_veiculo: "",
     observacoes: "",
   });
+
   const [liberacao, setLiberacao] = useState<LiberacaoValues>({
-    id_cadastro_solicitacao: 0,
+    id_liberacao: 0,
     Aluno: {
       ra_aluno: "",
       Pessoa: {
@@ -76,39 +55,63 @@ export default function VisitaForm( props: FormProps ) {
     },
   });
 
+  const vigilante = props.vigilante;
+
   useEffect(() => {
-    // Criar uma visita a partir de uma liberação
-    if (props.id_liberacao) {
-      try {
+    try {
+      if (props.isEntrada) {
+        // Criar uma visita a partir de uma liberação
         api.get("solicitacao/cadastro/"+props.id_liberacao)
           .then((response:any) => {
             setLiberacao(response.data.cadastroSolicitacao.rows[0]);
         });
-      } catch (err) {
-        console.error(err);
-      }
-    }
+      } else {
+        // Exibir uma visita já existente
+        setVisita({
+          data_registro: new Date().toLocaleDateString('fr-CA'),
+          hora_registro: new Date().toLocaleTimeString([],
+            {hour: '2-digit', minute:'2-digit', hour12: false}),
+          placa_veiculo: props.visita?.placa_veiculo,
+          observacoes: props.visita?.observacoes,
+        });
 
-    // Receber dados de uma visita para edição
+        setLiberacao(props.visita?.liberacaoAcesso);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }, [props])
 
+  async function registrarEntrada( values: any ) {
+    await api.post("/visita", {
+      data_entrada: values.data_entrada,
+      hora_entrada: values.hora_entrada,
+      data_saida: null,
+      hora_saida: null,
+      id_liberacao: values.liberacao.id_liberacao,
+      id_vigilante_entrada: values.vigilante.vigilante.id_vigilante,
+      id_vigilante_saida: 0,
+      placa_veiculo: values.placa_veiculo,
+      observacoes: values.observacoes
+    });
+    history.push("/visitas"); 
+  }
 
-  async function handleSubmit( values: VisitaValues ) {
-    // await api.post("/vigilante", {
-    //   nome_pessoa: values.nome_pessoa,
-    //   email: values.email,
-    //   matricula: values.matricula,
-    //   tipo_usuario: 3,
-    //   id_turno: values.turno,
-    //   senha: values.senha
-    // });
-    // history.go(0);
+  async function registrarSaida( values: any ) {
+    await api.put("/visita", {
+      id_visita: props.visita?.id_visita,
+      data_saida: values.data_entrada,
+      hora_saida: values.hora_entrada,
+      id_vigilante_saida: values.vigilante.vigilante.id_vigilante,
+      observacoes: values.observacoes
+    });
+    history.go(0);
   }
 
   return (
     <Formik 
-      initialValues={{ ...visita, liberacao: liberacao }}
-      onSubmit={handleSubmit}
+      initialValues={{ ...visita, liberacao: liberacao, vigilante: vigilante }}
+      onSubmit={props.isEntrada ? registrarEntrada : registrarSaida}
       enableReinitialize>
       <Form>
         <FormBody>
@@ -124,28 +127,33 @@ export default function VisitaForm( props: FormProps ) {
           </FormLine>
           <FormLine>
             <InputField
-              name="data_entrada"
+              name="data_registro"
               label="Data"
               disabled={true}/>
             <InputField
-              name="hora_entrada"
+              name="hora_registro"
               label="Horário" disabled={true}/>
           </FormLine>
           <FormLine>
             <InputField
-              name="observacoes"
+              name="vigilante.pessoa.nome_pessoa"
               label="Vigilante Responsável" disabled={true}/>
           </FormLine>
           <FormLine>
             <InputField
+              name="placa_veiculo"
+              label="Informe a placa do veículo"
+              required disabled={!props.isEntrada} />
+          </FormLine>
+          <FormLine>
+            <InputField
               name="observacoes"
-              label="Observações"
-              helperText="Informe a placa do veículo, etc." />
+              label="Observações"/>
           </FormLine>
         </FormBody>
-        <FormFooter>
+        <FormFooter mt="3rem">
           <Button name="registroButton">
-            Registrar {props.viewOnly ? "Saída" : "Entrada"}
+            Registrar {props.isEntrada ? "Entrada" : "Saída"}
           </Button>
         </FormFooter>
       </Form>
