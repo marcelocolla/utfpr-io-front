@@ -54,7 +54,7 @@ type GetDeseg = {
 
 const cadastroSolicitacao = () => {
   let tipo_pessoa = 0;
-  let codigo_pessoa = 225;
+  let codigo_pessoa = 91;
 
   const professor = (id: number) => {
     return api.get(`https://utf-io-staging.herokuapp.com/professor/${id}`) ;
@@ -79,12 +79,7 @@ const cadastroSolicitacao = () => {
               nome: values.nome,
               data_inicio: values.data_inicio,
               data_fim: values.data_fim,
-              locais: [
-                {
-                  id_local: null,
-                  nome: values.local,
-                },
-              ],
+              local_visitado:values.local,
               permissao_acesso: 1,
               id_pessoa_permitiu: item.id_pessoa,
             });
@@ -98,6 +93,7 @@ const cadastroSolicitacao = () => {
           console.log(dados.data.professor);
           alert("Professor não encontrado!");
         } else {
+          console.log(dados.data);
           dados.data.professor.forEach((item: GetProfessor) => {
             const newArray = [];
 
@@ -107,51 +103,47 @@ const cadastroSolicitacao = () => {
                 ra_aluno: values.ra_aluno,
                 email: values.email,
                 nome: values.nome,
-                codigo_barra: null,
                 id_pessoa_cadastro: item.id_pessoa,
                 id_pessoa_permitiu: item.id_pessoa,
                 data_permissao: null,
                 hora_permissao: null,
-                tipo_usuario: 2,
                 data_inicio: values.data_inicio,
                 data_fim: values.data_fim,
                 permissao_acesso: 1,
-                locais: [
-                  {
-                    id_local: null,
-                    nome: values.local,
-                  },
-                ],
+                local_visitado:values.local
               });
             } else {
               newArray.push({
-                id_aluno: null,
-                ra_aluno: values.ra_aluno,
-                email: values.email,
-                nome: values.nome,
-                codigo_barra: null,
-                tipo_usuario: 2,
-                id_pessoa_cadastro: item.id_pessoa,
-                id_pessoa_permitiu: null,
-                data_permissao: null,
-                hora_permissao: null,
                 data_inicio: values.data_inicio,
                 data_fim: values.data_fim,
                 permissao_acesso: 0,
-                locais: [
-                  {
-                    id_local: null,
-                    nome: values.local,
-                  },
-                ],
+                data_permissao: null,
+                hora_permissao: null,
+                id_pessoa_cadastro: item.id_pessoa,
+                id_pessoa_permitiu: null,
+                id_aluno: null,
+                nome: values.nome,
+                ra_aluno: values.ra_aluno,
+                email: values.email,
+                codigo_barra:null,
+                tipo_usuario:2,
+                local_visitado:values.local
               });
             }
             newArray.forEach((enviarSolicitacao) => {
               const params: RequestInit = {
-
+                method: "POST",
+                headers:{
+                  "Content-Type": "application/json",
+                },
                 body: JSON.stringify(enviarSolicitacao),
               };
-              api.post("solicitacao/cadastro",params).then(function (response) {
+              console.log(JSON.stringify(enviarSolicitacao));
+              fetch(
+                "https://utf-io-staging.herokuapp.com/solicitacao/cadastro",
+                params
+              ).then(function (response) {
+           //   api.post("solicitacao/cadastro",enviarSolicitacao).then(function (response) {
                 if (response.status !== 200) {
                   alert("Dados não gerado, falar com o suporte!");
                 } else {

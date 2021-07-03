@@ -161,37 +161,42 @@ const Solicitacoes = () => {
   if (mock.length === 0) {
     if (tipo_pessoa === 1) {
       getPermissaoUsuarioDeseg(0).then((res) => {
-        res.data.cadastroSolicitacao.rows.forEach((element: any) => {
-          //   let data_inicio = moment(new Date(element.data_inicio), "dd/MM/yyyy").format();
-          //  let data_fim = moment(new Date(element.data_fim), "dd/MM/yyyy").format();
-          mock.push({
-            "id": element.id_cadastro_solicitacao,
-            "nome": element.Aluno.Pessoa.nome_pessoa,
-            "email": element.Aluno.Pessoa.email,
-            "dataEntrada": element.data_inicio,
-            "dataSaida": element.data_fim,
-            "ra_aluno": element.Aluno.ra_aluno,
-            "permissao_acesso": element.permissao_acesso,
-            "data_permissao": element.data_permissao,
+        console.log(res);
+        if (res.status === 200) {
+          res.data.cadastroSolicitacao.rows.forEach((element: any) => {
+            //   let data_inicio = moment(new Date(element.data_inicio), "dd/MM/yyyy").format();
+            //  let data_fim = moment(new Date(element.data_fim), "dd/MM/yyyy").format();
+            mock.push({
+              "id": element.id_liberacao,
+              "nome": element.Aluno.Pessoa.nome_pessoa,
+              "email": element.Aluno.Pessoa.email,
+              "dataEntrada": element.data_inicio,
+              "dataSaida": element.data_fim,
+              "ra_aluno": element.Aluno.ra_aluno,
+              "permissao_acesso": element.permissao_acesso,
+              "data_permissao": element.data_permissao,
+            });
           });
-        });
-        setJson(mock);
+          setJson(mock);
+        }
       });
     } else {
       getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-        res.data.cadastroSolicitacao.rows.forEach((element: any) => {
-          mock.push({
-            "id": element.id_cadastro_solicitacao,
-            "nome": element.Aluno.Pessoa.nome_pessoa,
-            "email": element.Aluno.Pessoa.email,
-            "dataEntrada": element.data_inicio,
-            "dataSaida": element.data_fim,
-            "ra_aluno": element.Aluno.ra_aluno,
-            "permissao_acesso": element.permissao_acesso,
-            "data_permissao": element.data_permissao,
+        if (res.status === 200) {
+          res.data.cadastroSolicitacao.rows.forEach((element: any) => {
+            mock.push({
+              "id": element.id_liberacao,
+              "nome": element.Aluno.Pessoa.nome_pessoa,
+              "email": element.Aluno.Pessoa.email,
+              "dataEntrada": element.data_inicio,
+              "dataSaida": element.data_fim,
+              "ra_aluno": element.Aluno.ra_aluno,
+              "permissao_acesso": element.permissao_acesso,
+              "data_permissao": element.data_permissao,
+            });
           });
-        });
-        setJson(mock);
+          setJson(mock);
+        }
       });
     }
   }
@@ -227,47 +232,62 @@ const Solicitacoes = () => {
       case 1:
         if (tipo_pessoa === 1) {
           getPermissaoUsuarioDeseg(0).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
+            if (res.status === 200) {
+              mock = getMock(res.data);
+              setJson(mock);
+            }
           });
         } else {
           getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
+            if (res.status === 200) {
+              mock = getMock(res.data);
+              setJson(mock);
+            }
+
           });
         }
         break;
       case 2:
         if (tipo_pessoa === 0) {
           getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
+            if (res.status === 200) {
+              mock = getMock(res.data);
+              setJson(mock);
+            }
           });
         }
         break;
       case 3:
         if (tipo_pessoa === 1) {
           getPermissaoUsuarioDeseg(1).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
+            if (res.status === 200) {
+              mock = getMock(res.data);
+              setJson(mock);
+            }
           });
         } else {
           getPermissaoUsuarioProfessor(codigo_pessoa).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
+            if (res.status === 200) {
+              mock = getMock(res.data);
+              setJson(mock);
+            }
           });
         }
         break;
       default:
         if (tipo_pessoa === 1) {
           getPermissaoUsuarioDeseg(0).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
+            if (res.status === 200) {
+              mock = getMock(res.data);
+              setJson(mock);
+            }
           });
         } else {
           getPermissaoUsuarioProfessor(145).then((res) => {
-            mock = getMock(res.data);
-            setJson(mock);
+            if (res.status === 200) {
+              mock = getMock(res.data);
+              setJson(mock);
+            }
           });
         }
     }
