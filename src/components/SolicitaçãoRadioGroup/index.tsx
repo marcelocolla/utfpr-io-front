@@ -118,13 +118,13 @@ export default function SolicitacaoRadioGroup( props: FormProps ) {
       <FormControlLabel
         value="2"
         control={<Radio color="primary" />}
-        label="Cancelados"
+        label="Canceladas"
         labelPlacement="top"
       />
       <FormControlLabel
         value="3"
         control={<Radio color="primary" />}
-        label="Aprovada"
+        label="Aprovadas"
         labelPlacement="top"
       />
     </RadioGroup>

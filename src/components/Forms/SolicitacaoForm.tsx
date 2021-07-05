@@ -14,6 +14,8 @@ import { api } from "../../services/api";
 import history from "../../history";
 import { AuthContext } from "../../contexts/AuthContext";
 
+import * as S from "../../components/Button/styles";
+
 type FormProps = {
   viewOnly?: boolean;
   novoRegistro?:boolean;
@@ -30,6 +32,15 @@ type SolicitacaoProps = {
   data_inicio: string;
   data_fim: string;
   local: string;
+}
+
+const dataAgora = () => {
+  return new Date().toLocaleDateString('fr-CA')
+}
+
+const horaAgora = (): String => {
+  return new Date().toLocaleTimeString([],
+    {hour: '2-digit', minute:'2-digit', hour12: false})
 }
 
 export default function SolicitacaoForm( props: FormProps ) {
@@ -77,7 +88,7 @@ export default function SolicitacaoForm( props: FormProps ) {
     }
   }, [props])
 
-  // Tenta recuperar o aluno no banco
+  // Tenta recuperar o aluno no banco, a partir do seu RA
   // Caso exista, preenche os campos de nome e email do aluno
   async function handleBlur(ev: any) {
     const { value } = ev.target;
@@ -99,75 +110,74 @@ export default function SolicitacaoForm( props: FormProps ) {
     });
   }
 
+  // Cadastro de uma nova solicitação
+  // A solicitação cadastrada pelo perfil DESEG já fica aprovada
   async function handleSubmit( values: any ) {
-    const solicitacao = {
-      id_aluno: null,
-      ra_aluno: values.aluno.ra_aluno,
-      email: values.aluno.email_aluno,
-      nome: values.aluno.nome_aluno,
-      codigo_barra: null,
-      id_pessoa_cadastro: user?.pessoa.id_pessoa,
-      id_pessoa_permitiu: (user?.deseg ? user?.pessoa.id_pessoa : null),
-      data_permissao: null,
-      hora_permissao: null,
-      tipo_usuario: user?.pessoa.tipo_usuario,
+    api.post("solicitacao/cadastro", {
       data_inicio: values.data_inicio,
       data_fim: values.data_fim,
-      permissao_acesso: values.permissao_acesso,
+      permissao_acesso: (user?.deseg ? 1 : 0),
+      data_permissao: (user?.deseg ? dataAgora() : null),
+      hora_permissao: (user?.deseg ? horaAgora() : null),
+      id_pessoa_cadastro: user?.pessoa.id_pessoa,
+      id_pessoa_permitiu: (user?.deseg ? user?.pessoa.id_pessoa : null),
+
+      nome_aluno: values.aluno.nome_aluno,
+      email: values.aluno.email_aluno,
+      tipo_usuario: user?.pessoa.tipo_usuario,
+      codigo_barra: null,
+      ra_aluno: values.aluno.ra_aluno,
+
+      origem_envio: 0,
       local_visitado: values.local,
-    };
-    console.log(solicitacao);
-    api.post("solicitacao/cadastro", solicitacao).then(function (response) {
+    }).then(function (response) {
       if (response.status !== 200) {
-        alert("Dados não gerado, falar com o suporte!");
+        alert("Houve um problema ao cadastrar, contate o suporte!");
       } else {
         history.go(0);
       }
     });
   }
 
+  // Atualização de uma solicitação
   async function handleUpdate( values: any ) {
-    console.log(values);
-    // await api.post("/vigilante", {
-    //   nome_pessoa: values.nome_pessoa,
-    //   email: values.email,
-    //   matricula: values.matricula,
-    //   tipo_usuario: 3,
-    //   id_turno: values.turno,
-    //   senha: values.senha
-    // });
-    // history.go(0);
+    api.put("solicitacao/cadastro/", {
+      id_liberacao: props.id_solicitacao,
+      data_inicio: values.data_inicio,
+      data_fim: values.data_fim,
+      local_visitado: values.local,
+    }).then(function(response) {
+      if (response.status !== 200) {
+        alert("Houve um problema ao salvar, contate o suporte!");
+      } else {
+        history.go(0);
+      }
+    });
+  }
+
+  // Perfil DESEG aprova ou cancela uma solicitação
+  function handleLiberacao( aprovou: boolean ) {
+    api.put("solicitacao/cadastro", {
+      id_liberacao: props.id_solicitacao,
+      id_pessoa_permitiu: (user?.deseg ? user?.pessoa.id_pessoa : null),
+      data_permissao: dataAgora(),
+      hora_permissao: horaAgora(),
+      permissao_acesso: (aprovou ? 1 : 0),
+    }).then(function (response) {
+      if (response.status !== 200) {
+        alert("Houve um problema ao aprovar, contate o suporte!");
+      } else {
+        history.go(0);
+      }
+    });
   }
 
   function handleApproval() {
-    const solicitacao = {
-      id_liberacao:props.id_solicitacao,
-      permissao_acesso: 1,
-      id_pessoa_permitiu: (user?.deseg ? user?.pessoa.id_pessoa : null)
-    };
-    api.put("solicitacao/cadastro", solicitacao).then(function (response) {
-      if (response.status !== 200) {
-        alert("Dados não gerado, falar com o suporte!");
-      } else {
-        history.go(0);
-      }
-    });
+    handleLiberacao(true);
   }
 
-  function handleReprovar() {
-    const solicitacao = {
-      id_liberacao:props.id_solicitacao,
-      permissao_acesso: 0,
-      id_pessoa_permitiu: (user?.deseg ? user?.pessoa.id_pessoa : null),
-      data_permissao: new Date().toLocaleDateString('fr-CA')
-    };
-    api.put("solicitacao/cadastro", solicitacao).then(function (response) {
-      if (response.status !== 200) {
-        alert("Dados não gerado, falar com o suporte!");
-      } else {
-        history.go(0);
-      }
-    });
+  function handleDisapproval() {
+    handleLiberacao(false);
   }
   
   const validationSchema = Yup.object({
@@ -223,23 +233,25 @@ export default function SolicitacaoForm( props: FormProps ) {
               disabled={liberado}/>
           </FormLine>
         </FormBody>
-        <FormFooter mt="3rem">
-          {!liberado && (<Button
-            name="loginButton" >
-            Salvar
-          </Button>)}
-          {user?.deseg && !props.novoRegistro && !liberado && (<Button
-            name="aprovarButton"
-            onClickFunction={handleApproval}>
-            Aprovar
-          </Button>)}
-          {user?.deseg && !props.novoRegistro && !liberado &&  (<Button
-            name="reprovarButton"
-            onClickFunction={handleReprovar}>
-            Reprovar
-          </Button>)}
+        <FormFooter>
+          <S.ButtonWrapper>
+            {(user?.deseg && !liberado) && (<Button
+              name="desaprovarButton" type="button"
+              onClickFunction={handleDisapproval}>
+              X
+            </Button>)}
+            {!liberado && (<Button
+              name="loginButton" >
+              Salvar
+            </Button>)}
+            {(user?.deseg && !liberado) && (<Button
+              name="aprovarButton" type="button"
+              onClickFunction={handleApproval}>
+              V
+            </Button>)}
+          </S.ButtonWrapper>
         </FormFooter>
       </Form>
     </Formik>
-    )
+  )
 }
