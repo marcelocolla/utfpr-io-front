@@ -58,7 +58,7 @@ type User = {
 export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [error, setError] = useState("");
+  const [error, setError] = useState();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | undefined>();
   const [isAuthenticated, setIsAuthenticated] = useState(!!user);
@@ -89,6 +89,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           }
         })
         .catch(() => {
+          setIsAuthenticated(false);
           Cookies.remove("utfprio.token");
           history.push("/login");
         });
@@ -172,7 +173,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   function signOut() {
-    setUser(undefined);
     setIsAuthenticated(false);
     Cookies.remove("utfprio.token");
     history.push("/login");

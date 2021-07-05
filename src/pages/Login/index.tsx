@@ -57,9 +57,6 @@ const Login = () => {
         <span>Login</span>
       </S.Header>
       <S.Body>
-        {/* <Button onClick={handleClickVariant("error")}>
-          Show success snackbar
-        </Button> */}
         <Formik
           onSubmit={handleSubmit}
           initialValues={{ ...initialValues }}

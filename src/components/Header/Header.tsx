@@ -88,8 +88,8 @@ export const Header = ({ header, ...props }: HeaderProps) => {
 
   return (
     <>
-      <HeaderStyled onClick={handleClick}>
-        <div>
+      <HeaderStyled>
+        <div onClick={handleClick}>
           <img src="/icon/arrow-left.svg" alt="Icone de voltar" />
         </div>
         <strong>{header}</strong>
