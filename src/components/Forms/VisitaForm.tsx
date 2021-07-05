@@ -35,14 +35,19 @@ type FormProps = {
   vigilante: any;
 };
 
+const dataAgora = () => {
+  return new Date().toLocaleDateString('fr-CA')
+}
+
+const horaAgora = () => {
+  return new Date().toLocaleTimeString([],
+    {hour: '2-digit', minute:'2-digit', hour12: false})
+}
+
 export default function VisitaForm(props: FormProps) {
   const [visita, setVisita] = useState<VisitaValues>({
-    data_registro: new Date().toLocaleDateString("fr-CA"),
-    hora_registro: new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }),
+    data_registro: dataAgora(),
+    hora_registro: horaAgora(),
     placa_veiculo: "",
     observacoes: "",
   });
@@ -71,17 +76,13 @@ export default function VisitaForm(props: FormProps) {
       } else {
         // Exibir uma visita já existente
         setVisita({
-          data_registro: new Date().toLocaleDateString("fr-CA"),
-          hora_registro: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-          }),
+          data_registro: dataAgora(),
+          hora_registro: horaAgora(),
           placa_veiculo: props.visita?.placa_veiculo,
           observacoes: props.visita?.observacoes,
         });
 
-        setLiberacao(props.visita?.liberacaoAcesso);
+        setLiberacao(props.visita?.liberacao);
       }
     } catch (err) {
       console.error(err);
@@ -106,12 +107,8 @@ export default function VisitaForm(props: FormProps) {
   async function registrarSaida(values: any) {
     await api.put("/visita", {
       id_visita: props.visita?.id_visita,
-      data_saida: new Date().toLocaleDateString("fr-CA"),
-      hora_saida: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }),
+      data_saida: dataAgora(),
+      hora_saida: horaAgora(),
       id_liberacao: values.liberacao.id_liberacao,
       id_vigilante_saida: values.vigilante.vigilante.id_vigilante,
       observacoes: values.observacoes,

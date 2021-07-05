@@ -24,7 +24,7 @@ type VisitaProps = {
   data_entrada: string;
   hora_entrada: string;
   placa_veiculo: string;
-  liberacaoAcesso: {
+  liberacao: {
     Aluno: AlunoProps;
   }
 }
@@ -70,7 +70,7 @@ const Visitas = () => {
 
             {/* parte direita, informações gerais */}
             <div>
-            <h1>{el.liberacaoAcesso.Aluno.Pessoa.nome_pessoa}</h1>
+            <h1>{el.liberacao.Aluno.Pessoa.nome_pessoa}</h1>
             <div>
               <span>Placa: {el.placa_veiculo}</span>
               <strong>Entrada às {el.hora_entrada.slice(0, 5)}</strong>
