@@ -33,6 +33,15 @@ type SolicitacaoProps = {
   local: string;
 }
 
+const dataAgora = () => {
+  return new Date().toLocaleDateString('fr-CA')
+}
+
+const horaAgora = (): String => {
+  return new Date().toLocaleTimeString([],
+    {hour: '2-digit', minute:'2-digit', hour12: false})
+}
+
 export default function SolicitacaoForm( props: FormProps ) {
 
   const { user } = useContext(AuthContext);
@@ -77,7 +86,7 @@ export default function SolicitacaoForm( props: FormProps ) {
     }
   }, [props])
 
-  // Tenta recuperar o aluno no banco
+  // Tenta recuperar o aluno no banco, a partir do seu RA
   // Caso exista, preenche os campos de nome e email do aluno
   async function handleBlur(ev: any) {
     const { value } = ev.target;
@@ -99,31 +108,36 @@ export default function SolicitacaoForm( props: FormProps ) {
     });
   }
 
+  // Cadastro de uma nova solicitação
+  // A solicitação cadastrada pelo perfil DESEG já fica aprovada
   async function handleSubmit( values: any ) {
     api.post("solicitacao/cadastro", {
-      id_aluno: null,
-      ra_aluno: values.aluno.ra_aluno,
-      email: values.aluno.email_aluno,
-      nome: values.aluno.nome_aluno,
-      codigo_barra: null,
-      id_pessoa_cadastro: user?.pessoa.id_pessoa,
-      id_pessoa_permitiu: (user?.deseg ? user?.pessoa.id_pessoa : null),
-      data_permissao: null,
-      hora_permissao: null,
-      tipo_usuario: user?.pessoa.tipo_usuario,
       data_inicio: values.data_inicio,
       data_fim: values.data_fim,
       permissao_acesso: (user?.deseg ? 1 : 0),
+      data_permissao: (user?.deseg ? dataAgora() : null),
+      hora_permissao: (user?.deseg ? horaAgora() : null),
+      id_pessoa_cadastro: user?.pessoa.id_pessoa,
+      id_pessoa_permitiu: (user?.deseg ? user?.pessoa.id_pessoa : null),
+
+      nome_aluno: values.aluno.nome_aluno,
+      email: values.aluno.email_aluno,
+      tipo_usuario: user?.pessoa.tipo_usuario,
+      codigo_barra: null,
+      ra_aluno: values.aluno.ra_aluno,
+
+      origem_envio: 0,
       local_visitado: values.local,
     }).then(function (response) {
       if (response.status !== 200) {
-        alert("Dados não gerado, falar com o suporte!");
+        alert("Houve um problema ao cadastrar, contate o suporte!");
       } else {
         history.go(0);
       }
     });
   }
 
+  // Atualização de uma solicitação
   async function handleUpdate( values: any ) {
     api.put("solicitacao/cadastro/", {
       id_liberacao: props.id_solicitacao,
@@ -139,15 +153,14 @@ export default function SolicitacaoForm( props: FormProps ) {
     });
   }
 
-  // Perfil DESEG aprova uma solicitação
-  function handleApproval() {
+  // Perfil DESEG aprova ou cancela uma solicitação
+  function handleLiberacao( aprovou: boolean ) {
     api.put("solicitacao/cadastro", {
       id_liberacao: props.id_solicitacao,
       id_pessoa_permitiu: (user?.deseg ? user?.pessoa.id_pessoa : null),
-      data_permissao: new Date().toLocaleDateString('fr-CA'),
-      hora_permissao: new Date().toLocaleTimeString([],
-        {hour: '2-digit', minute:'2-digit', hour12: false}),
-      permissao_acesso: 1,
+      data_permissao: dataAgora(),
+      hora_permissao: horaAgora(),
+      permissao_acesso: (aprovou ? 1 : 0),
     }).then(function (response) {
       if (response.status !== 200) {
         alert("Houve um problema ao aprovar, contate o suporte!");
@@ -157,22 +170,12 @@ export default function SolicitacaoForm( props: FormProps ) {
     });
   }
 
-  // Perfil DESEG "cancela", ou desaprova uma solicitação
+  function handleApproval() {
+    handleLiberacao(true);
+  }
+
   function handleDisapproval() {
-    api.put("solicitacao/cadastro", {
-      id_liberacao: props.id_solicitacao,
-      id_pessoa_permitiu: (user?.deseg ? user?.pessoa.id_pessoa : null),
-      data_permissao: new Date().toLocaleDateString('fr-CA'),
-      hora_permissao: new Date().toLocaleTimeString([],
-        {hour: '2-digit', minute:'2-digit', hour12: false}),
-      permissao_acesso: 0,
-    }).then(function (response) {
-      if (response.status !== 200) {
-        alert("Houve um problema ao aprovar, contate o suporte!");
-      } else {
-        history.go(0);
-      }
-    });
+    handleLiberacao(false);
   }
   
   const validationSchema = Yup.object({
@@ -231,7 +234,7 @@ export default function SolicitacaoForm( props: FormProps ) {
         <FormFooter>
           <S.ButtonWrapper>
             {(user?.deseg && !liberado) && (<Button
-              name="aprovarButton"
+              name="desaprovarButton" type="button"
               onClickFunction={handleDisapproval}>
               X
             </Button>)}
@@ -240,7 +243,7 @@ export default function SolicitacaoForm( props: FormProps ) {
               Salvar
             </Button>)}
             {(user?.deseg && !liberado) && (<Button
-              name="aprovarButton"
+              name="aprovarButton" type="button"
               onClickFunction={handleApproval}>
               V
             </Button>)}
@@ -248,5 +251,5 @@ export default function SolicitacaoForm( props: FormProps ) {
         </FormFooter>
       </Form>
     </Formik>
-    )
+  )
 }
