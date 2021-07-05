@@ -2,7 +2,6 @@ import { capitalize } from "@material-ui/core";
 import { useState, useEffect, useContext } from "react";
 import { RouteComponentProps } from "react-router";
 
-import { useHistory } from "react-router";
 import { Button } from "../../components/Button/Button";
 import { Modal } from "../../components/Modal";
 
@@ -13,6 +12,7 @@ import * as S from "../../components/CardList/styles";
 import DesegForm from "../../components/Forms/DesegForm";
 import ProfessorForm from "../../components/Forms/ProfessorForm";
 import VigilanteForm from "../../components/Forms/VigilanteForm";
+import { Header } from "../../components/Header/Header";
 
 type UserProps = RouteComponentProps<{tipo:string}>;
 
@@ -40,7 +40,6 @@ type UsuarioProps = {
 const CadastroUsuario = (params: UserProps) => {
 
   const tipoUsuario = params.match.params.tipo;
-  const history = useHistory();
   useContext(AuthContext); // caso necessite de token
 
   const [usuarios, setUsuarios] = useState<UsuarioProps[]>();
@@ -84,8 +83,7 @@ const CadastroUsuario = (params: UserProps) => {
 
   return (
     <S.CardsWrapper>
-      <strong onClick={() => history.goBack()}>{capitalize(tipoUsuario)}</strong>
-      <br />
+      <Header header={capitalize(tipoUsuario)} />
       <div className="cardsWrapper">
         {usuarios?.map((el) => (
           <S.Card 
@@ -99,22 +97,21 @@ const CadastroUsuario = (params: UserProps) => {
             {/* parte direita, informações gerais */}
             <div>
             <h1>{el.Pessoa.nome_pessoa}</h1>
-              { tipoUsuario === "professor" ? (
+              {(tipoUsuario === "professor") &&
                 (<div>
                   <span>{el.Pessoa.email}</span>
-                  <strong>{el.matricula}</strong>
-                </div>)
-              ) : "deseg" ? (
+                  {/*<strong>{el.matricula}</strong>*/}
+                </div>)}
+              {(tipoUsuario === "deseg") &&
                 (<div>
                   <span>{el.Pessoa.email}</span>
-                  <strong>{el.matricula}</strong>
-                </div>)
-              ) : (
+                  {/*<strong>{el.matricula}</strong>*/}
+                </div>)}
+              {(tipoUsuario === "vigilante") &&
                 (<div>
                   <span>Turno</span>
                   <strong>{el.Turno?.nome_turno}</strong>
-                </div>)
-              )}
+                </div>)}
             </div>
           </S.Card>
         ))}

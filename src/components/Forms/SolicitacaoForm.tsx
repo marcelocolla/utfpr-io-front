@@ -15,6 +15,8 @@ import history from "../../history";
 import { AuthContext } from "../../contexts/AuthContext";
 
 import * as S from "../../components/Button/styles";
+import { ApproveIcon } from "../Icons/ApproveIcon/ApproveIcon";
+import { DisapproveIcon } from "../Icons/DisapproveIcon/DisapproveIcon";
 
 type FormProps = {
   viewOnly?: boolean;
@@ -236,7 +238,7 @@ export default function SolicitacaoForm( props: FormProps ) {
             {(user?.deseg && !liberado) && (<Button
               name="desaprovarButton" type="button"
               onClickFunction={handleDisapproval}>
-              X
+              <DisapproveIcon color="white"/>
             </Button>)}
             {!liberado && (<Button
               name="loginButton" >
@@ -245,7 +247,7 @@ export default function SolicitacaoForm( props: FormProps ) {
             {(user?.deseg && !liberado) && (<Button
               name="aprovarButton" type="button"
               onClickFunction={handleApproval}>
-              V
+              <ApproveIcon color="white"/>
             </Button>)}
           </S.ButtonWrapper>
         </FormFooter>

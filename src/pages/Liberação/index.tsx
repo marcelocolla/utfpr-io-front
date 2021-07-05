@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useHistory, RouteComponentProps } from "react-router";
+import { RouteComponentProps } from "react-router";
 import { Button } from "../../components/Button/Button";
 
 import { Modal } from "../../components/Modal";
@@ -8,6 +8,7 @@ import VisitaForm from "../../components/Forms/VisitaForm";
 import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import * as S from "./styles";
+import { Header } from "../../components/Header/Header";
 
 type LiberacaoParams = RouteComponentProps<{id:string}>;
 
@@ -31,7 +32,6 @@ type LiberacaoProps = {
 export const Liberacao = ( params: LiberacaoParams ) => {
 
   const id_liberacao = params.match.params.id;
-  const history = useHistory();
   const { user } = useContext(AuthContext);
   const [liberacao, setLiberacao] = useState<LiberacaoProps>();
   const [openVisita, setOpenVisita] = useState(false);
@@ -52,7 +52,7 @@ export const Liberacao = ( params: LiberacaoParams ) => {
 
   return (
     <S.HomeSection>
-      <strong onClick={() => history.goBack()}>Liberação</strong>
+      <Header header="Liberação" />
       <S.Content>
         <S.Card>
           <div>

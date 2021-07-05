@@ -3,6 +3,7 @@ import { useHistory } from "react-router";
 
 import { api } from "../../services/api";
 import * as S from "../../components/CardList/styles";
+import { Header } from "../../components/Header/Header";
 
 type PessoaProps = {
   nome_pessoa: string;
@@ -41,7 +42,7 @@ const Liberacoes = () => {
 
   return (
     <S.CardsWrapper>
-      <strong onClick={() => history.goBack()}>Liberações</strong>
+      <Header header="Liberações" />
       <span>Clique no cartão para ver mais informações</span> 
       <br />
       <div className="cardsWrapper">

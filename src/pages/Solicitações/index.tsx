@@ -70,7 +70,6 @@ const Solicitacoes = () => {
 
               {/* parte direita, infos */}
               <div>
-                {console.log(el)}
                 <h1>{el.Aluno.Pessoa.nome_pessoa}</h1>
                 <div>
                   <span>{el.data_inicio}</span>

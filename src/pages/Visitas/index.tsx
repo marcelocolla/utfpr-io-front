@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext } from "react";
-import { useHistory } from "react-router";
 
 import { Modal } from "../../components/Modal/";
 import VisitaForm from "../../components/Forms/VisitaForm";
@@ -7,6 +6,7 @@ import VisitaForm from "../../components/Forms/VisitaForm";
 import { api } from "../../services/api";
 import { AuthContext } from "../../contexts/AuthContext";
 import * as S from "../../components/CardList/styles";
+import { Header } from "../../components/Header/Header";
 
 type PessoaProps = {
   nome_pessoa: string;
@@ -31,7 +31,6 @@ type VisitaProps = {
 
 const Visitas = () => {
 
-  const history = useHistory();
   const { user } = useContext(AuthContext);
   const [visitas, setVisitas] = useState<VisitaProps[]>();
 
@@ -56,7 +55,7 @@ const Visitas = () => {
 
   return (
     <S.CardsWrapper>
-      <strong onClick={() => history.goBack()}>Visitas</strong>
+      <Header header="Visitas" />
       <span>Clique no cartão para ver mais informações</span> 
       <br />
       <div className="cardsWrapper">
