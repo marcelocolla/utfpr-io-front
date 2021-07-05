@@ -32,17 +32,20 @@ const Solicitacoes = () => {
   const [selection, setSelection] = useState(0);
   const [open, setOpen] = useState(false);
   const [viewOnly, setViewOnly] = useState(false);
+  const [novoRegistro, setNovoRegistro] = useState(false);
 
   function exibirCadastro( id: number ) {
     setSelection(id);
     setViewOnly(true);
     setOpen(true);
+    setNovoRegistro(false);
   }
 
   function fecharCadastro() {
     setOpen(false);
     setViewOnly(false);
     setSelection(0);
+    setNovoRegistro(false);
   }
 
   return (
@@ -68,6 +71,7 @@ const Solicitacoes = () => {
 
               {/* parte direita, infos */}
               <div>
+                {console.log(el)}
                 <h1>{el.Aluno.Pessoa.nome_pessoa}</h1>
                 <div>
                   <span>{el.data_inicio}</span>
@@ -80,7 +84,10 @@ const Solicitacoes = () => {
         <Button
           type="button"
           name="criarSolicitacao"
-          onClickFunction={()=>setOpen(true)}>
+          onClickFunction={()=>{
+            setOpen(true)
+            setNovoRegistro(true)
+            }}>
           Criar Solicitação
         </Button>
       </div>
@@ -88,7 +95,7 @@ const Solicitacoes = () => {
       <Modal visible={open} close={() => fecharCadastro()}>
         <h2>{!viewOnly && "Nova"} Solicitação</h2>
         <br />
-        <SolicitacaoForm viewOnly={viewOnly} id_solicitacao={selection} />
+        <SolicitacaoForm viewOnly={viewOnly} novoRegistro={novoRegistro} id_solicitacao={selection} />
       </Modal>
     </S.CardsWrapper>
   );

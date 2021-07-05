@@ -16,6 +16,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 
 type FormProps = {
   viewOnly?: boolean;
+  novoRegistro?:boolean;
   id_solicitacao?: number;
 }
 
@@ -35,6 +36,7 @@ export default function SolicitacaoForm( props: FormProps ) {
 
   const { user } = useContext(AuthContext);
   const [liberado, setLiberado] = useState(false);
+  const [liberacao, setLiberacao] = useState();
   const [aluno, setAluno] = useState<AlunoProps>({
     ra_aluno: "",
     nome_aluno: "",
@@ -45,7 +47,7 @@ export default function SolicitacaoForm( props: FormProps ) {
     data_fim: "",
     local: "",
   });
-
+  
   // Recupera os dados da solicitação, se existir
   useEffect(() => {
     try {
@@ -65,8 +67,8 @@ export default function SolicitacaoForm( props: FormProps ) {
               data_fim: getSolicitacao.data_fim,
               local: getSolicitacao.local_visitado,
             });
-
             setLiberado(getSolicitacao.permissao_acesso === 1);
+            setLiberacao(getSolicitacao);
           } 
         });
       }
@@ -111,7 +113,7 @@ export default function SolicitacaoForm( props: FormProps ) {
       tipo_usuario: user?.pessoa.tipo_usuario,
       data_inicio: values.data_inicio,
       data_fim: values.data_fim,
-      permissao_acesso: (user?.deseg ? 1 : 0),
+      permissao_acesso: values.permissao_acesso,
       local_visitado: values.local,
     };
     console.log(solicitacao);
@@ -138,7 +140,34 @@ export default function SolicitacaoForm( props: FormProps ) {
   }
 
   function handleApproval() {
-    console.log("oi");
+    const solicitacao = {
+      id_liberacao:props.id_solicitacao,
+      permissao_acesso: 1,
+      id_pessoa_permitiu: (user?.deseg ? user?.pessoa.id_pessoa : null)
+    };
+    api.put("solicitacao/cadastro", solicitacao).then(function (response) {
+      if (response.status !== 200) {
+        alert("Dados não gerado, falar com o suporte!");
+      } else {
+        history.go(0);
+      }
+    });
+  }
+
+  function handleReprovar() {
+    const solicitacao = {
+      id_liberacao:props.id_solicitacao,
+      permissao_acesso: 0,
+      id_pessoa_permitiu: (user?.deseg ? user?.pessoa.id_pessoa : null),
+      data_permissao: new Date().toLocaleDateString('fr-CA')
+    };
+    api.put("solicitacao/cadastro", solicitacao).then(function (response) {
+      if (response.status !== 200) {
+        alert("Dados não gerado, falar com o suporte!");
+      } else {
+        history.go(0);
+      }
+    });
   }
   
   const validationSchema = Yup.object({
@@ -199,10 +228,15 @@ export default function SolicitacaoForm( props: FormProps ) {
             name="loginButton" >
             Salvar
           </Button>)}
-          {user?.deseg && (<Button
+          {user?.deseg && !props.novoRegistro && !liberado && (<Button
             name="aprovarButton"
             onClickFunction={handleApproval}>
             Aprovar
+          </Button>)}
+          {user?.deseg && !props.novoRegistro && !liberado &&  (<Button
+            name="reprovarButton"
+            onClickFunction={handleReprovar}>
+            Reprovar
           </Button>)}
         </FormFooter>
       </Form>
