@@ -1,16 +1,16 @@
 import { useState, useContext } from "react";
-import { useHistory } from "react-router";
 
-import { Button } from "../../components/Button/Button";
 import { Modal } from "../../components/Modal";
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+import FormLabel from "@material-ui/core/FormLabel";
+import { Header } from "../../components/Header/Header";
+import { Button } from "../../components/Button/Button";
+import FormControl from "@material-ui/core/FormControl";
+import SolicitacaoForm from "../../components/Forms/SolicitacaoForm";
+import SolicitacaoRadioGroup from "../../components/SolicitaçãoRadioGroup";
 
 import { AuthContext } from "../../contexts/AuthContext";
 
 import * as S from "../../components/CardList/styles";
-import SolicitacaoRadioGroup from "../../components/SolicitaçãoRadioGroup";
-import SolicitacaoForm from "../../components/Forms/SolicitacaoForm";
 
 type SolicitacaoProps = {
   id_liberacao: number;
@@ -19,13 +19,11 @@ type SolicitacaoProps = {
   Aluno: {
     Pessoa: {
       nome_pessoa: string;
-    }
-  }
+    };
+  };
 };
 
 const Solicitacoes = () => {
-
-  const history = useHistory();
   useContext(AuthContext);
   const [solicitacoes, setSolicitacoes] = useState<SolicitacaoProps[]>();
 
@@ -34,7 +32,7 @@ const Solicitacoes = () => {
   const [viewOnly, setViewOnly] = useState(false);
   const [novoRegistro, setNovoRegistro] = useState(false);
 
-  function exibirCadastro( id: number ) {
+  function exibirCadastro(id: number) {
     setSelection(id);
     setViewOnly(true);
     setOpen(true);
@@ -50,11 +48,11 @@ const Solicitacoes = () => {
 
   return (
     <S.CardsWrapper>
-      <strong onClick={() => history.goBack()}>Solicitações</strong>
+      <Header header="Solicitações" />
       <div>
         <FormControl component="fieldset">
           <FormLabel component="legend"></FormLabel>
-          <SolicitacaoRadioGroup callbackFunction={setSolicitacoes}/>
+          <SolicitacaoRadioGroup callbackFunction={setSolicitacoes} />
         </FormControl>
       </div>
       <br />
@@ -63,7 +61,8 @@ const Solicitacoes = () => {
           {solicitacoes?.map((el) => (
             <S.Card
               key={el.id_liberacao}
-              onClick={() => exibirCadastro(el.id_liberacao)}>
+              onClick={() => exibirCadastro(el.id_liberacao)}
+            >
               {/* parte esquerda, avatar */}
               <div className="imageWrapper">
                 <img src="/dog.png" alt="foto solicitacao" />
@@ -84,10 +83,11 @@ const Solicitacoes = () => {
         <Button
           type="button"
           name="criarSolicitacao"
-          onClickFunction={()=>{
-            setOpen(true)
-            setNovoRegistro(true)
-            }}>
+          onClickFunction={() => {
+            setOpen(true);
+            setNovoRegistro(true);
+          }}
+        >
           Criar Solicitação
         </Button>
       </div>
@@ -95,7 +95,11 @@ const Solicitacoes = () => {
       <Modal visible={open} close={() => fecharCadastro()}>
         <h2>{!viewOnly && "Nova"} Solicitação</h2>
         <br />
-        <SolicitacaoForm viewOnly={viewOnly} novoRegistro={novoRegistro} id_solicitacao={selection} />
+        <SolicitacaoForm
+          viewOnly={viewOnly}
+          novoRegistro={novoRegistro}
+          id_solicitacao={selection}
+        />
       </Modal>
     </S.CardsWrapper>
   );

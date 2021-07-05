@@ -5,10 +5,10 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import CadastroUsuario from "./pages/CadastroUsuario";
 
-import Solicitacoes from "./pages/Solicitações";
-import Liberacoes from "./pages/Liberações";
-import Liberacao from "./pages/Liberação";
 import Visitas from "./pages/Visitas";
+import Liberacao from "./pages/Liberação";
+import Liberacoes from "./pages/Liberações";
+import Solicitacoes from "./pages/Solicitações";
 
 import { AuthContext } from "./contexts/AuthContext";
 
@@ -20,9 +20,7 @@ type CustomRouteProps = {
 };
 
 function CustomRoute({ isPrivate, ...params }: CustomRouteProps) {
-  const { loading, isAuthenticated, user } = useContext(AuthContext);
-
-  console.log(user);
+  const { loading, isAuthenticated } = useContext(AuthContext);
 
   if (loading) {
     return <h1>Loading...</h1>;
@@ -46,28 +44,14 @@ function Routes() {
         path="/solicitacoes"
         component={Solicitacoes}
       />
-      <CustomRoute
-        isPrivate
-        exact
-        path="/liberacoes"
-        component={Liberacoes}
-      />
-      <CustomRoute
-        isPrivate
-        path="/liberacao/:id"
-        component={Liberacao}
-      />
+      <CustomRoute isPrivate exact path="/liberacoes" component={Liberacoes} />
+      <CustomRoute isPrivate path="/liberacao/:id" component={Liberacao} />
       <CustomRoute
         isPrivate
         path="/usuarios/:tipo"
         component={CadastroUsuario}
       />
-      <CustomRoute
-        isPrivate
-        exact
-        path="/visitas"
-        component={Visitas}
-      />
+      <CustomRoute isPrivate exact path="/visitas" component={Visitas} />
     </Switch>
   );
 }

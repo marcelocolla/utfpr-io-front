@@ -3,13 +3,16 @@ import { useHistory } from "react-router-dom";
 
 import { AuthContext } from "../../contexts/AuthContext";
 
-import { Button } from "../../components/Button/Button";
-import { ButtonDeseg, ButtonProfessor, ButtonVigilante }
-  from "../../components/Button/Buttons";
-
 import { Modal } from "../../components/Modal";
-import DepartamentoForm from "../../components/Forms/DepartamentoForm";
+import { Button } from "../../components/Button/Button";
+import { Header } from "../../components/Header/Header";
 import RelatorioForm from "../../components/Forms/RelatorioForm";
+import DepartamentoForm from "../../components/Forms/DepartamentoForm";
+import {
+  ButtonDeseg,
+  ButtonProfessor,
+  ButtonVigilante,
+} from "../../components/Button/Buttons";
 
 import * as S from "./styles";
 
@@ -20,12 +23,10 @@ const Home = () => {
   const [openDeseg, setOpenDeseg] = useState(false);
   const [openRelatorio, setRelatorio] = useState(false);
 
-  console.log(user);
-
   // o perfil Professor seleciona sua coordenação no primeiro login,
   // o que atualiza seu perfil e consequentemente, atualiza a página
   function atualizar() {
-    setOpen(false); 
+    setOpen(false);
     history.go(0);
   }
 
@@ -41,8 +42,7 @@ const Home = () => {
 
   return (
     <S.HomeSection>
-      <strong onClick={() => history.goBack()}>Home</strong>
-
+      <Header header="Home" home />
       <S.Content>
         <S.Card>
           <div>
@@ -50,30 +50,34 @@ const Home = () => {
           </div>
           <strong>{user?.pessoa?.nome_pessoa}</strong>
           <span>
-            Matrícula: <strong>{
-              (user?.deseg && user?.deseg?.matricula)
-              || (user?.professor && user?.professor?.matricula)
-              || (user?.vigilante && user?.vigilante?.matricula)}</strong>
+            Matrícula:{" "}
+            <strong>
+              {(user?.deseg && user?.deseg?.matricula) ||
+                (user?.professor && user?.professor?.matricula) ||
+                (user?.vigilante && user?.vigilante?.matricula)}
+            </strong>
           </span>
         </S.Card>
 
         <S.ButtonWrapper>
           {user?.deseg && (
-            <ButtonDeseg onClickLeft={abrirRelatorio} onClickRight={abrirCadastro} />)}
-          {user?.professor && (
-            <ButtonProfessor />)}
-          {user?.vigilante && (
-            <ButtonVigilante />)}
+            <ButtonDeseg
+              onClickLeft={abrirRelatorio}
+              onClickRight={abrirCadastro}
+            />
+          )}
+          {user?.professor && <ButtonProfessor />}
+          {user?.vigilante && <ButtonVigilante />}
         </S.ButtonWrapper>
-        
-        <Modal visible = {openRelatorio} close = {()=>setRelatorio(false)}>
+
+        <Modal visible={openRelatorio} close={() => setRelatorio(false)}>
           <h2>Geração de Relatório</h2>
-          <br/>
+          <br />
           <S.VerticalButtonWrapper>
             <RelatorioForm />
           </S.VerticalButtonWrapper>
         </Modal>
-        
+
         <Modal visible={openDeseg} close={() => setOpenDeseg(false)}>
           <h2>Cadastros</h2>
           <br />
@@ -100,9 +104,9 @@ const Home = () => {
         </Modal>
 
         <Modal visible={open || user?.professor?.id_departamento === 0}>
-        <h2>Professor, por favor selecione sua coordenação.</h2>
+          <h2>Professor, por favor selecione sua coordenação.</h2>
           <br />
-          <DepartamentoForm user={user} onConfirm={atualizar}/>
+          <DepartamentoForm user={user} onConfirm={atualizar} />
         </Modal>
       </S.Content>
     </S.HomeSection>

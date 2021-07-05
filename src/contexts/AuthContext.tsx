@@ -12,10 +12,12 @@ type SignInCredentials = {
 };
 
 type AuthContextData = {
-  signIn(credentials: SignInCredentials): Promise<void>;
+  error: any;
   loading: boolean;
   user: User | undefined;
   isAuthenticated: boolean;
+  signIn(credentials: SignInCredentials): Promise<void>;
+  signOut: () => void;
 };
 
 type AuthProviderProps = {
@@ -44,7 +46,7 @@ type Professor = {
 
 type Vigilante = {
   matricula: string;
-}
+};
 
 type User = {
   pessoa: Pessoa;
@@ -56,9 +58,10 @@ type User = {
 export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | undefined>();
   const [isAuthenticated, setIsAuthenticated] = useState(!!user);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = Cookies.get("utfprio.token");
@@ -68,23 +71,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
       api.defaults.headers.Autorization = `Bearer ${token}`;
       api.defaults.headers.authentication = `${token}`;
 
-      api.post("auth/me").then((response) => {
-        const { deseg, pessoa, professor, vigilante } = response.data.data;
+      api
+        .post("auth/me")
+        .then((response) => {
+          const { deseg, pessoa, professor, vigilante } = response.data.data;
 
-        if (deseg) {
-          setUser({ pessoa, deseg });
-        }
+          if (deseg) {
+            setUser({ pessoa, deseg });
+          }
 
-        if (professor) {
-          setUser({ pessoa, professor });
-        }
+          if (professor) {
+            setUser({ pessoa, professor });
+          }
 
-        if (vigilante) {
-          setUser({ pessoa, vigilante });
-        }
-      });
+          if (vigilante) {
+            setUser({ pessoa, vigilante });
+          }
+        })
+        .catch(() => {
+          Cookies.remove("utfprio.token");
+          history.push("/login");
+        });
     }
-
     setLoading(false);
   }, []);
 
@@ -107,9 +115,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         .then(() => {
           signIn({ email, password });
         });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   async function signIn({ email, password }: SignInCredentials) {
@@ -118,8 +124,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         email,
         senha: password,
       });
-
-      setIsAuthenticated(true);
 
       const token = response.data.token;
 
@@ -137,7 +141,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUser({ pessoa, vigilante });
       }
 
+      setIsAuthenticated(true);
+
       Cookies.set("utfprio.token", token, { expires: 1 });
+
       api.defaults.headers["Autorization"] = `Bearer ${token}`;
 
       history.push("/");
@@ -160,12 +167,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
           );
         }
       }
-      console.log(error);
+      setError(error);
     }
   }
 
+  function signOut() {
+    setUser(undefined);
+    setIsAuthenticated(false);
+    Cookies.remove("utfprio.token");
+    history.push("/login");
+  }
+
   return (
-    <AuthContext.Provider value={{ signIn, user, isAuthenticated, loading }}>
+    <AuthContext.Provider
+      value={{ signIn, user, isAuthenticated, loading, error, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );

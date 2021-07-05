@@ -1,12 +1,14 @@
 import { ReactNode } from "react";
 import { useHistory } from "react-router";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
+
+import { Spinner } from "../Spinner/Spinner";
 
 type ButtonProps = {
   type?: any;
   name: string;
   path?: string;
-  small?: boolean;
+  loading?: boolean;
   disabled?: boolean;
   children: ReactNode;
   onClickFunction?: () => void;
@@ -17,7 +19,7 @@ export const ButtonStyled = styled.button<ButtonProps>`
   max-width: 315px;
   max-height: 70px;
   margin: 0 auto;
-  padding: 2.4rem 0;
+  padding: 1.9rem 0;
   border-radius: 30px;
 
   border: none;
@@ -29,8 +31,9 @@ export const ButtonStyled = styled.button<ButtonProps>`
   line-height: 2.3rem;
 
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  gap: 1rem;
 
   &:hover {
     background: var(--color-orange-dark-10);
@@ -47,12 +50,6 @@ export const ButtonStyled = styled.button<ButtonProps>`
     cursor: not-allowed;
   }
 
-  ${({ small }) =>
-    small &&
-    css`
-      padding: 1.9rem 0;
-    `}
-
   @media (min-width: 768px) {
     font-size: 2.3em;
     line-height: 3rem;
@@ -63,7 +60,7 @@ export const Button = ({
   name,
   type,
   path,
-  small,
+  loading,
   disabled,
   children,
   onClickFunction,
@@ -81,13 +78,13 @@ export const Button = ({
     <ButtonStyled
       id={name}
       name={name}
-      small={small}
       disabled={disabled}
+      loading={loading}
       type={type ?? "submit"}
       onClick={onClickFunction ?? handleAction}
       {...props}
     >
-      {children}
+      {loading ? <Spinner /> : children}
     </ButtonStyled>
   );
 };
