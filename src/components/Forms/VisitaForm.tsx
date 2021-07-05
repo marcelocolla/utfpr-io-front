@@ -90,18 +90,20 @@ export default function VisitaForm( props: FormProps ) {
       hora_saida: null,
       id_liberacao: values.liberacao.id_liberacao,
       id_vigilante_entrada: values.vigilante.vigilante.id_vigilante,
-      id_vigilante_saida: 0,
-      placa_veiculo: values.placa_veiculo,
+      id_vigilante_saida: null,
+      placa_veiculo:values.placa_veiculo,
       observacoes: values.observacoes
     });
     history.push("/visitas"); 
   }
 
   async function registrarSaida( values: any ) {
+    console.log(JSON.stringify(values));
     await api.put("/visita", {
       id_visita: props.visita?.id_visita,
-      data_saida: values.data_entrada,
-      hora_saida: values.hora_entrada,
+      data_saida: new Date().toLocaleDateString('fr-CA'),
+      hora_saida: new Date().toLocaleTimeString([],{hour: '2-digit', minute:'2-digit', hour12: false}),
+      id_liberacao: values.liberacao.id_liberacao,
       id_vigilante_saida: values.vigilante.vigilante.id_vigilante,
       observacoes: values.observacoes
     });

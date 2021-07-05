@@ -18,6 +18,7 @@ import * as S from "../../components/Button/styles";
 
 type FormProps = {
   viewOnly?: boolean;
+  novoRegistro?:boolean;
   id_solicitacao?: number;
 }
 
@@ -56,7 +57,7 @@ export default function SolicitacaoForm( props: FormProps ) {
     data_fim: "",
     local: "",
   });
-
+  
   // Recupera os dados da solicitação, se existir
   useEffect(() => {
     try {
@@ -76,7 +77,6 @@ export default function SolicitacaoForm( props: FormProps ) {
               data_fim: getSolicitacao.data_fim,
               local: getSolicitacao.local_visitado,
             });
-
             setLiberado(getSolicitacao.permissao_acesso === 1);
           } 
         });

@@ -40,7 +40,8 @@ const Visitas = () => {
   
   useEffect(() => {
     try {
-      api.get("visita").then((response) => {
+
+      api.get("visita/visitaDia").then((response) => {
         setVisitas(response.data.visita.rows);
       });
     } catch (err) {
@@ -73,7 +74,7 @@ const Visitas = () => {
             <h1>{el.liberacaoAcesso.Aluno.Pessoa.nome_pessoa}</h1>
             <div>
               <span>Placa: {el.placa_veiculo}</span>
-              <strong>Entrada às {el.hora_entrada.slice(0, -10)}</strong>
+              <strong>Entrada às {el.hora_entrada.slice(0, 5)}</strong>
             </div>
             </div>
           </S.Card>
