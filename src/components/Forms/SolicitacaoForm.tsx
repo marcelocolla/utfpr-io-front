@@ -47,7 +47,6 @@ export default function SolicitacaoForm( props: FormProps ) {
 
   const { user } = useContext(AuthContext);
   const [liberado, setLiberado] = useState(false);
-  const [liberacao, setLiberacao] = useState();
   const [aluno, setAluno] = useState<AlunoProps>({
     ra_aluno: "",
     nome_aluno: "",
@@ -79,7 +78,6 @@ export default function SolicitacaoForm( props: FormProps ) {
               local: getSolicitacao.local_visitado,
             });
             setLiberado(getSolicitacao.permissao_acesso === 1);
-            setLiberacao(getSolicitacao);
           } 
         });
       }

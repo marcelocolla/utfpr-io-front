@@ -21,9 +21,8 @@ const getSolicitacoesByStatus = async (status: string) => {
     })
   } else if (status === "2") {
     // Solicitações Canceladas??
-    await api.get("solicitacao/cadastro/getByPermissao/0").then((response) => {
+    await api.get("deseg/getSolicitacaoCanceladaDeseg").then((response) => {
       solicitacoes = response.data.cadastroSolicitacao.rows;
-      solicitacoes = solicitacoes.filter(solicitacao=> solicitacao.data_permissao!==null);
     })
 
   } else if (status === "3") { 
@@ -47,14 +46,9 @@ const getSolicitacoesByProfessorStatus = async (status: string,user:any) => {
     })
   } else if (status === "2") {
     // Solicitações Canceladas??
-    await api.post("solicitacao/cadastro/getByIdPessoaCadastro",{
-      idPessoaCadastro:user?.pessoa.id_pessoa,
-      permissaoAcesso:0
-    }).then((response) => {
+    await api.get(`solicitacao/cadastro/getSolicitacaoCancelada/${user?.pessoa.id_pessoa}`).then((response) => {
       solicitacoes = response.data.cadastroSolicitacao.rows;
-      solicitacoes = solicitacoes.filter(solicitacao=> solicitacao.data_permissao!==null);
     })
-
   } else if (status === "3") { 
     // Solicitações Aprovadas
     await api.post("solicitacao/cadastro/getByIdPessoaCadastro",{
