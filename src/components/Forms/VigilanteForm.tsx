@@ -26,6 +26,7 @@ type TurnoValues = {
 }
 
 type VigilanteValues = {
+  id_pessoa: number;
   nome_pessoa: string;
   email: string;
   matricula: string;
@@ -37,6 +38,7 @@ export default function VigilanteForm( props: FormProps ) {
 
   const [turnos, setTurnos] = useState<TurnoValues[]>();
   const [vigilante, setVigilante] = useState<VigilanteValues>({
+    id_pessoa: 0,
     nome_pessoa: "",
     email: "",
     matricula: "",
@@ -62,6 +64,7 @@ export default function VigilanteForm( props: FormProps ) {
             let getVigilante = response.data.vigilante[0];
 
             setVigilante({
+              id_pessoa: getVigilante.Pessoa.id_pessoa,
               nome_pessoa: getVigilante.Pessoa.nome_pessoa,
               email: getVigilante.Pessoa.email,
               matricula: getVigilante.matricula,
@@ -86,28 +89,48 @@ export default function VigilanteForm( props: FormProps ) {
     });
     history.go(0);
   }
+
+  async function handleUpdate( values: any ) {
+    console.log(values);
+    await api.put("/vigilante", {
+      id_vigilante: props.id_usuario,
+      id_pessoa: vigilante.id_pessoa,
+      nome_pessoa: values.nome_pessoa,
+      matricula: values.matricula,
+      id_turno: values.turno,
+    }).then(function(response) {
+      if (response.status !== 200) {
+        alert("Houve um problema ao atualizar, contate o suporte!");
+      } else {
+        history.go(0);
+      }
+    });
+  }
   
   const validationSchema = Yup.object().shape({
     email: Yup.string().required("Required"),
-    senha: Yup.string().required("Required"),
+    senha: Yup.string().when('props.viewOnly', {
+      is: false,
+      then: Yup.string().required('Required')
+    }),
   });
 
   return (
     <Formik 
       initialValues={{...vigilante, turnos: turnos}}
       validationSchema={validationSchema}
-      onSubmit={handleSubmit}
+      onSubmit={props.viewOnly ? handleUpdate : handleSubmit}
       enableReinitialize>
       <Form>
         <FormBody>
           <FormLine>
-            <InputField name="nome_pessoa" label="Nome" disabled={props.viewOnly}/>
+            <InputField name="nome_pessoa" label="Nome"/>
           </FormLine>
           <FormLine>
-            <InputField name="matricula" label="Matricula" disabled={props.viewOnly}/>
+            <InputField name="matricula" label="Matricula"/>
           </FormLine>
           <FormLine mt="1rem" mb="1rem">
-            <InputField name="turno" label="Turno" select disabled={props.viewOnly}>
+            <InputField name="turno" label="Turno" select>
               {turnos?.map((turno) => (
                 <MenuItem
                   key={turno.id_turno}

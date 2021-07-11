@@ -94,7 +94,7 @@ export default function DesegForm( props: FormProps ) {
           </FormLine>)}
         </FormBody>
         <FormFooter mt="3rem">
-          <Button name="cadastroButton">
+          <Button name="cadastroButton" disabled={props.viewOnly}>
             {props.viewOnly ? "Atualizar" : "Cadastrar"}
           </Button>
         </FormFooter>
