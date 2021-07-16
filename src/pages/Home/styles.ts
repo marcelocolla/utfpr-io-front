@@ -2,9 +2,8 @@ import styled from "styled-components";
 
 export const HomeSection = styled.section`
   width: 100%;
-  /* min-height: 100vmax; */
   height: 100vh;
-  padding: 6rem 5rem 4rem;
+  padding: 4rem 5rem 4rem;
 
   display: flex;
   flex-direction: column;
@@ -100,6 +99,4 @@ export const VerticalButtonWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   gap: 2rem;
-
-  padding-top: 3rem;
 `;

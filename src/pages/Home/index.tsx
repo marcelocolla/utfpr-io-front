@@ -70,17 +70,21 @@ const Home = () => {
           {user?.vigilante && <ButtonVigilante />}
         </S.ButtonWrapper>
 
-        <Modal visible={openRelatorio} close={() => setRelatorio(false)}>
-          <h2>Geração de Relatório</h2>
-          <br />
+        <Modal
+          visible={openRelatorio}
+          title="Geração de Relatório"
+          close={() => setRelatorio(false)}
+        >
           <S.VerticalButtonWrapper>
             <RelatorioForm />
           </S.VerticalButtonWrapper>
         </Modal>
 
-        <Modal visible={openDeseg} close={() => setOpenDeseg(false)}>
-          <h2>Cadastros</h2>
-          <br />
+        <Modal
+          visible={openDeseg}
+          title="Cadastros"
+          close={() => setOpenDeseg(false)}
+        >
           {/* não sei se é a melhor solução, criar um vertical*/}
           <S.VerticalButtonWrapper>
             <Button type="button" name="desegButton" path="/usuarios/deseg">

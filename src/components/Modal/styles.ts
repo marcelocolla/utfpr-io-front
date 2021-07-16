@@ -40,19 +40,57 @@ export const Modal = styled.div`
   max-height: 90%;
   max-width: 700px;
   z-index: 3;
-
-  padding: 3rem 4rem;
-
   background: white;
 
-  /* overflow: hidden; */
-  border-radius: "4px";
+  border-radius: 3rem;
 
-  box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.25);
   animation: ${fadeInAnimation} 0.5s linear;
+`;
+
+export const Header = styled.div`
+  width: 100%;
+  min-height: 6.6rem;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1.8rem 2.3rem 1.2rem 4.6rem;
+
+  border-top-left-radius: 3rem;
+  border-top-right-radius: 3rem;
+
+  background: rgba(237, 237, 237, 1);
+
+  h2 {
+    font-weight: 500;
+    font-size: 2rem;
+    line-height: 3rem;
+  }
+
+  > div {
+    width: 3.6rem;
+    height: 3.6rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    transition: 0.2s;
+
+    &:hover {
+      cursor: pointer;
+      background-color: rgba(221, 221, 223, 0.35);
+    }
+
+    svg {
+      transform: rotate(45deg);
+    }
+  }
 `;
 
 export const Content = styled.div`
   padding: 3rem 4rem;
-  margin-bottom: -6px;
 `;

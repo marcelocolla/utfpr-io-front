@@ -54,8 +54,6 @@ const LogoutModalStyled = styled.div`
   justify-content: center;
   align-items: center;
   gap: 1rem;
-
-  margin-top: 2rem;
 `;
 
 type HeaderProps = {
@@ -94,8 +92,7 @@ export const Header = ({ header, ...props }: HeaderProps) => {
         </div>
         <strong>{header}</strong>
       </HeaderStyled>
-      <Modal visible={open}>
-        <h2>Deseja sair?</h2>
+      <Modal visible={open} close={() => setOpen(false)} title="Deseja sair?">
         <LogoutModalStyled>
           <Button name="logoutBtnYes" onClickFunction={logOut}>
             Sim

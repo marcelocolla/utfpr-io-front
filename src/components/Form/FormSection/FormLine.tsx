@@ -12,7 +12,6 @@ type FormProps = {
 const FormLineStyled = styled.div<FormProps>`
   gap: 2rem;
   width: 100%;
-  display: flex;
 
   margin-top: ${({ mt }) => (mt ? mt : "0px")};
   margin-right: ${({ mr }) => (mr ? mr : "0px")};

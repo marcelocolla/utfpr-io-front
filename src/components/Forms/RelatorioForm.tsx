@@ -5,7 +5,7 @@ import { Button } from "../Button/Button";
 import { FormBody } from "../Form/FormSection/FormBody";
 import { FormLine } from "../Form/FormSection/FormLine";
 import { FormFooter } from "../Form/FormSection/FormFooter";
-import { FormLabel } from '@material-ui/core';
+import { FormLabel } from "@material-ui/core";
 
 type FormProps = {
   onConfirm?: () => void;
@@ -19,41 +19,27 @@ type RelatorioProps = {
 export default function DepartamentoForm(props: FormProps) {
   const [relatorio] = useState<RelatorioProps>({
     data_inicio: "",
-    data_final: ""
+    data_final: "",
   });
 
   // Envio de dados pro backend
-  function handleSubmit(values: RelatorioProps) {
-
-  }
+  function handleSubmit(values: RelatorioProps) {}
 
   return (
-    <Formik
-      onSubmit={handleSubmit}
-      initialValues={relatorio}>
+    <Formik onSubmit={handleSubmit} initialValues={relatorio}>
       <Form>
         <FormBody>
+          <FormLine mb="2rem">
+            <FormLabel>Data Inicio</FormLabel>
+            <InputField name="data_inicio" type="date" />
+          </FormLine>
           <FormLine>
-            <FormBody>
-              <FormLabel>Data Inicio</FormLabel>
-              <InputField
-                name="data_inicio"
-                type="date"
-              />
-            </FormBody>
-            <FormBody>
-              <FormLabel>Data Fim</FormLabel>
-              <InputField
-                name="data_final"
-                type="date"
-              />
-            </FormBody>
+            <FormLabel>Data Fim</FormLabel>
+            <InputField name="data_final" type="date" />
           </FormLine>
           <br />
           <FormFooter mt="3rem">
-            <Button name="loginButton">
-              Gerar Relatório
-            </Button>
+            <Button name="loginButton">Gerar Relatório</Button>
           </FormFooter>
         </FormBody>
       </Form>
