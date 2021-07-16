@@ -13,6 +13,7 @@ import DesegForm from "../../components/Forms/DesegForm";
 import ProfessorForm from "../../components/Forms/ProfessorForm";
 import VigilanteForm from "../../components/Forms/VigilanteForm";
 import { Header } from "../../components/Header/Header";
+import { Card } from "../../components/Card";
 
 type UserProps = RouteComponentProps<{tipo:string}>;
 
@@ -86,34 +87,14 @@ const CadastroUsuario = (params: UserProps) => {
       <Header header={capitalize(tipoUsuario)} />
       <div className="cardsWrapper">
         {usuarios?.map((el) => (
-          <S.Card 
-            key={el.id_pessoa} 
-            onClick={() => exibirCadastro(el.Pessoa.tipo_usuario, el)}>
-            {/* parte esquerda, avatar */}
-            <div className="imageWrapper">
-            <img src="/dog.png" alt="foto solicitacao" />
-            </div>
-
-            {/* parte direita, informações gerais */}
-            <div>
-            <h1>{el.Pessoa.nome_pessoa}</h1>
-              {(tipoUsuario === "professor") &&
-                (<div>
-                  <span>{el.Pessoa.email}</span>
-                  {/*<strong>{el.matricula}</strong>*/}
-                </div>)}
-              {(tipoUsuario === "deseg") &&
-                (<div>
-                  <span>{el.Pessoa.email}</span>
-                  {/*<strong>{el.matricula}</strong>*/}
-                </div>)}
-              {(tipoUsuario === "vigilante") &&
-                (<div>
-                  <span>Turno</span>
-                  <strong>{el.Turno?.nome_turno}</strong>
-                </div>)}
-            </div>
-          </S.Card>
+          <Card 
+            key={el.id_pessoa}
+            name={el.Pessoa.nome_pessoa}
+            leftInfo={(tipoUsuario === "vigilante") ?
+              "Turno" : el.Pessoa.email}
+            rightInfo={(tipoUsuario === "vigilante") ?
+              (el.Turno ? el.Turno.nome_turno : "") : ""}
+            onEdition={() => exibirCadastro(el.Pessoa.tipo_usuario, el)}/>
         ))}
       </div>
       {tipoUsuario !== "professor" && (
