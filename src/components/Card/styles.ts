@@ -4,9 +4,9 @@ export const Card = styled.div`
 
   width: 100%;
   max-width: 40rem;
-  display: flex;
+  display: inline-flex;
 
-  .card {
+  [class*="card-"] {
     width: 100%;
     height: 10rem;
   
@@ -97,20 +97,34 @@ export const Card = styled.div`
     }
   }
 
-  .closed {
-    position: absolute;
-    width: 0rem;
-    padding: 1rem;
-    z-index: -1;
-    height: 100vh;
+  .card-open {
+    position: relative;
+    left: -10rem;
+    transition: 0.2s all ease;
   }
 
-  .open {
-    width: 14rem;
+  .card-closed {
+    left: 0rem;
+    transition: 0.2s all ease;
+  }
+
+  [class*="options-"] {
+    padding-top: -2rem;
+  }
+
+  .options-open {
+    width: 15rem;
     transition: 0.3s all ease;
 
     display: flex;
     flex-direction: column;
     gap: 5px;
+  }
+
+  .options-closed {
+    width: 0rem;
+    transition: 0.3s all ease;
+
+    z-index: -1;
   }
 `;

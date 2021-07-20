@@ -8,8 +8,9 @@ export const EditIcon = ({ color }: EditIconProps) => {
       id="i-edit"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 32 32" 
-      fill={color}
-      stroke="#000"
+      fill="#000"
+      fill-opacity="0.1"
+      stroke={color}
       stroke-linecap="round"
       stroke-linejoin="round"
       stroke-width="2">
