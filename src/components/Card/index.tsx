@@ -1,13 +1,28 @@
 import { useState } from "react";
 
+import { Modal } from "../Modal";
 import { Button } from "../Button/Button";
 import { EditIcon } from "../Icons/EditIcon/EditIcon";
 import { DeleteIcon } from "../Icons/DeleteIcon/DeleteIcon";
 
 import * as S from "./styles";
-import * as Wrapper from "../../components/Button/styles";
 import styled from "styled-components";
-import { Modal } from "../Modal";
+
+export const ButtonWrapperStyled = styled.div`
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 2rem;
+`;
+
+const DeleteModalStyled = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+`;
 
 type CardProps = {
   imageUrl?: string;
@@ -18,13 +33,6 @@ type CardProps = {
   onEdition?: () => void;
   onRemoval?: () => void;
 };
-
-const DeleteModalStyled = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-`;
 
 export const Card = (props: CardProps) => {
 
@@ -55,7 +63,7 @@ export const Card = (props: CardProps) => {
 
       {/* botões de editar e deletar */}
       <div className={open ? "options-open" : "options-closed"}>
-        <Wrapper.ButtonWrapper>
+        <ButtonWrapperStyled>
           <Button
             name="editarButton" type="button"
             onClickFunction={props.onEdition}>
@@ -66,7 +74,7 @@ export const Card = (props: CardProps) => {
             onClickFunction={() => setConfirm(true)}>
             <DeleteIcon color="white"/>
           </Button>
-        </Wrapper.ButtonWrapper>
+        </ButtonWrapperStyled>
       </div>
     </S.Card>
 

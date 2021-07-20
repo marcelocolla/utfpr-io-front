@@ -4,16 +4,16 @@ import { RouteComponentProps } from "react-router";
 
 import { Button } from "../../components/Button/Button";
 import { Modal } from "../../components/Modal";
-
-import { api } from "../../services/api";
-import { AuthContext } from "../../contexts/AuthContext";
-import * as S from "../../components/CardList/styles";
+import { Header } from "../../components/Header/Header";
+import { Card } from "../../components/Card";
 
 import DesegForm from "../../components/Forms/DesegForm";
 import ProfessorForm from "../../components/Forms/ProfessorForm";
 import VigilanteForm from "../../components/Forms/VigilanteForm";
-import { Header } from "../../components/Header/Header";
-import { Card } from "../../components/Card";
+
+import { api } from "../../services/api";
+import { AuthContext } from "../../contexts/AuthContext";
+import * as S from "../../components/CardList/styles";
 
 type UserProps = RouteComponentProps<{tipo:string}>;
 
