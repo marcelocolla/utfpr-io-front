@@ -1,10 +1,47 @@
 import styled from "styled-components";
 
+export const CardsWrapper = styled.section`
+  width: 100%;
+  height: 100vh;
+
+  padding: 6rem 4.5rem 4rem;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  background: rgb(245, 245, 248);
+
+  strong {
+    font-size: 1.8rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 4rem;
+  }
+
+  .cardsWrapper {
+    width: 100%;
+    height: 80%;
+
+    padding: 0 0.5rem;
+
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 1.6rem;
+  }
+`;
+
 export const Card = styled.div`
 
   width: 100%;
   max-width: 40rem;
-  display: inline-flex;
+  position: relative;
+  display: flex;
 
   [class*="card-"] {
     width: 100%;
@@ -99,13 +136,13 @@ export const Card = styled.div`
 
   .card-open {
     position: relative;
-    left: -10rem;
+    left: -12rem;
     transition: 0.2s all ease;
   }
 
   .card-closed {
     left: 0rem;
-    transition: 0.2s all ease;
+    transition: 0.3s all ease;
   }
 
   [class*="options-"] {
@@ -113,7 +150,10 @@ export const Card = styled.div`
   }
 
   .options-open {
-    width: 15rem;
+    position: absolute;
+    right: 5px;
+    width: 10rem;
+    padding-right: 1rem;
     transition: 0.3s all ease;
 
     display: flex;
@@ -123,8 +163,7 @@ export const Card = styled.div`
 
   .options-closed {
     width: 0rem;
-    transition: 0.3s all ease;
-
+    transition: 0.2s all ease;
     z-index: -1;
   }
 `;

@@ -6,6 +6,7 @@ import { Button } from "../../components/Button/Button";
 import { Modal } from "../../components/Modal";
 import { Header } from "../../components/Header/Header";
 import { Card } from "../../components/Card";
+import { CardsWrapper } from "../../components/Card/styles";
 
 import DesegForm from "../../components/Forms/DesegForm";
 import ProfessorForm from "../../components/Forms/ProfessorForm";
@@ -13,7 +14,6 @@ import VigilanteForm from "../../components/Forms/VigilanteForm";
 
 import { api } from "../../services/api";
 import { AuthContext } from "../../contexts/AuthContext";
-import * as S from "../../components/CardList/styles";
 
 type UserProps = RouteComponentProps<{tipo:string}>;
 
@@ -83,7 +83,7 @@ const CadastroUsuario = (params: UserProps) => {
   }, [tipoUsuario]);
 
   return (
-    <S.CardsWrapper>
+    <CardsWrapper>
       <Header header={capitalize(tipoUsuario)} />
       <div className="cardsWrapper">
         {usuarios?.map((el) => (
@@ -94,6 +94,7 @@ const CadastroUsuario = (params: UserProps) => {
               "Turno" : el.Pessoa.email}
             rightInfo={(tipoUsuario === "vigilante") ?
               (el.Turno ? el.Turno.nome_turno : "") : ""}
+            removeDisabled={tipoUsuario === "professor"}
             onEdition={() => exibirCadastro(el.Pessoa.tipo_usuario, el)}/>
         ))}
       </div>
@@ -106,18 +107,18 @@ const CadastroUsuario = (params: UserProps) => {
         </Button>
       )}
 
-      <Modal visible={open} close={() => fecharCadastro()}>
-        <h2>{!viewOnly && "Novo"} {capitalize(tipoUsuario)}</h2>
-        <br />
-
-        { tipoUsuario === "professor" && (
-          <ProfessorForm viewOnly={viewOnly} id_usuario={selection} />)}
-        { tipoUsuario === "deseg" && (
-          <DesegForm viewOnly={viewOnly} id_usuario={selection} />)}
-        { tipoUsuario === "vigilante" && (
-          <VigilanteForm viewOnly={viewOnly} id_usuario={selection} />)}
+      <Modal
+        visible={open}
+        close={() => fecharCadastro()}
+        title={(!viewOnly && "Novo ") + capitalize(tipoUsuario)}>
+          { tipoUsuario === "professor" && (
+            <ProfessorForm viewOnly={viewOnly} id_usuario={selection} />)}
+          { tipoUsuario === "deseg" && (
+            <DesegForm viewOnly={viewOnly} id_usuario={selection} />)}
+          { tipoUsuario === "vigilante" && (
+            <VigilanteForm viewOnly={viewOnly} id_usuario={selection} />)}
       </Modal>
-    </S.CardsWrapper>
+    </CardsWrapper>
   );
 }
 

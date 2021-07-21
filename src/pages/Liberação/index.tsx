@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router";
-import { Button } from "../../components/Button/Button";
 
 import { Modal } from "../../components/Modal";
+import { Header } from "../../components/Header/Header";
+import { Button } from "../../components/Button/Button";
 import VisitaForm from "../../components/Forms/VisitaForm";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
+
 import * as S from "./styles";
-import { Header } from "../../components/Header/Header";
 
 type LiberacaoParams = RouteComponentProps<{id:string}>;
 
@@ -84,13 +85,14 @@ export const Liberacao = ( params: LiberacaoParams ) => {
           </Button>
         </S.ButtonWrapper>
 
-        <Modal visible={openVisita} close={() => setOpenVisita(false)}>
-          <h2>Registro de Entrada</h2>
-          <br />
-          <VisitaForm
-            isEntrada={true}
-            id_liberacao={liberacao?.id_liberacao}
-            vigilante={user}/>
+        <Modal
+          visible={openVisita}
+          close={() => setOpenVisita(false)}
+          title="Registro de Entrada">
+            <VisitaForm
+              isEntrada={true}
+              id_liberacao={liberacao?.id_liberacao}
+              vigilante={user}/>
         </Modal>
       </S.Content>
     </S.HomeSection>

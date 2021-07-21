@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 
 import { api } from "../../services/api";
-import * as S from "../../components/CardList/styles";
 import { Header } from "../../components/Header/Header";
+import { Card } from "../../components/Card/";
+import { CardsWrapper } from "../../components/Card/styles";
 
 type PessoaProps = {
   nome_pessoa: string;
@@ -41,32 +42,22 @@ const Liberacoes = () => {
   }, []);
 
   return (
-    <S.CardsWrapper>
+    <CardsWrapper>
       <Header header="Liberações" />
       <span>Clique no cartão para ver mais informações</span> 
       <br />
       <div className="cardsWrapper">
         {liberacoes?.map((el) => (
-          <S.Card 
-            key={el.id_liberacao} 
-            onClick={() => history.push("/liberacao/"+el.id_liberacao)}>
-            {/* parte esquerda, avatar */}
-            <div className="imageWrapper">
-            <img src="/dog.png" alt="foto solicitacao" />
-            </div>
-
-            {/* parte direita, informações gerais */}
-            <div>
-            <h1>{el.Aluno.Pessoa.nome_pessoa}</h1>
-            <div>
-              <span>De: {new Date(el.data_inicio).toLocaleDateString('pt-BR')}</span>
-              <strong>Até: {new Date(el.data_fim).toLocaleDateString('pt-BR')}</strong>
-            </div>
-            </div>
-          </S.Card>
+          <Card 
+            key={el.id_liberacao}
+            name={el.Aluno.Pessoa.nome_pessoa}
+            leftInfo={"De: " + new Date(el.data_inicio).toLocaleDateString('pt-BR')}
+            rightInfo={"Até: " + new Date(el.data_fim).toLocaleDateString('pt-BR')}
+            removeDisabled={true}
+            onEdition={() => history.push("/liberacao/"+el.id_liberacao)}/>
         ))}
       </div>
-    </S.CardsWrapper>
+    </CardsWrapper>
   );
 };
 

@@ -5,8 +5,9 @@ import VisitaForm from "../../components/Forms/VisitaForm";
 
 import { api } from "../../services/api";
 import { AuthContext } from "../../contexts/AuthContext";
-import * as S from "../../components/CardList/styles";
 import { Header } from "../../components/Header/Header";
+import { Card } from "../../components/Card/";
+import { CardsWrapper } from "../../components/Card/styles";
 
 type PessoaProps = {
   nome_pessoa: string;
@@ -54,41 +55,32 @@ const Visitas = () => {
   }
 
   return (
-    <S.CardsWrapper>
+    <CardsWrapper>
       <Header header="Visitas" />
       <span>Clique no cartão para ver mais informações</span> 
       <br />
       <div className="cardsWrapper">
         {visitas?.map((el) => (
-          <S.Card 
-            key={el.id_visita} 
-            onClick={() => exibirVisita(el)}>
-            {/* parte esquerda, avatar */}
-            <div className="imageWrapper">
-            <img src="/dog.png" alt="foto solicitacao" />
-            </div>
-
-            {/* parte direita, informações gerais */}
-            <div>
-            <h1>{el.liberacao.Aluno.Pessoa.nome_pessoa}</h1>
-            <div>
-              <span>Placa: {el.placa_veiculo}</span>
-              <strong>Entrada às {el.hora_entrada.slice(0, 5)}</strong>
-            </div>
-            </div>
-          </S.Card>
+          <Card 
+            key={el.id_visita}
+            name={el.liberacao.Aluno.Pessoa.nome_pessoa}
+            leftInfo={'Placa: ' + el.placa_veiculo}
+            rightInfo={'Entrada às ' + el.hora_entrada.slice(0, 5)}
+            removeDisabled={true}
+            onEdition={() => exibirVisita(el)}/>
         ))}
       </div>
 
-      <Modal visible={open} close={() => setOpen(false)}>
-        <h2>Registro de Saída</h2>
-        <br />
-        <VisitaForm
-          isEntrada={false}
-          visita={selection}
-          vigilante={user}/>
+      <Modal
+        visible={open}
+        close={() => setOpen(false)}
+        title="Registro de Saída">
+          <VisitaForm
+            isEntrada={false}
+            visita={selection}
+            vigilante={user}/>
       </Modal>
-    </S.CardsWrapper>
+    </CardsWrapper>
   );
 };
 

@@ -2,6 +2,8 @@ import { useState, useContext } from "react";
 
 import { Modal } from "../../components/Modal";
 import FormLabel from "@material-ui/core/FormLabel";
+import { Card } from "../../components/Card/";
+import { CardsWrapper } from "../../components/Card/styles";
 import { Header } from "../../components/Header/Header";
 import { Button } from "../../components/Button/Button";
 import FormControl from "@material-ui/core/FormControl";
@@ -9,8 +11,6 @@ import SolicitacaoForm from "../../components/Forms/SolicitacaoForm";
 import SolicitacaoRadioGroup from "../../components/SolicitaçãoRadioGroup";
 
 import { AuthContext } from "../../contexts/AuthContext";
-
-import * as S from "../../components/CardList/styles";
 
 type SolicitacaoProps = {
   id_liberacao: number;
@@ -47,7 +47,7 @@ const Solicitacoes = () => {
   }
 
   return (
-    <S.CardsWrapper>
+    <CardsWrapper>
       <Header header="Solicitações" />
       <div>
         <FormControl component="fieldset">
@@ -59,24 +59,12 @@ const Solicitacoes = () => {
       <div className="cardsWrapper">
         <div className="cardsWrapper">
           {solicitacoes?.map((el) => (
-            <S.Card
+            <Card
               key={el.id_liberacao}
-              onClick={() => exibirCadastro(el.id_liberacao)}
-            >
-              {/* parte esquerda, avatar */}
-              <div className="imageWrapper">
-                <img src="/dog.png" alt="foto solicitacao" />
-              </div>
-
-              {/* parte direita, infos */}
-              <div>
-                <h1>{el.Aluno.Pessoa.nome_pessoa}</h1>
-                <div>
-                  <span>{el.data_inicio}</span>
-                  <strong>{el.data_fim}</strong>
-                </div>
-              </div>
-            </S.Card>
+              name={el.Aluno.Pessoa.nome_pessoa}
+              leftInfo={el.data_inicio}
+              rightInfo={el.data_fim}
+              onEdition={() => exibirCadastro(el.id_liberacao)}/>
           ))}
         </div>
         <Button
@@ -91,16 +79,17 @@ const Solicitacoes = () => {
         </Button>
       </div>
 
-      <Modal visible={open} close={() => fecharCadastro()}>
-        <h2>{!viewOnly && "Nova"} Solicitação</h2>
-        <br />
-        <SolicitacaoForm
-          viewOnly={viewOnly}
-          novoRegistro={novoRegistro}
-          id_solicitacao={selection}
-        />
+      <Modal
+        visible={open}
+        close={() => fecharCadastro()}
+        title={(!viewOnly && "Nova ") + "Solicitação"}>
+          <SolicitacaoForm
+            viewOnly={viewOnly}
+            novoRegistro={novoRegistro}
+            id_solicitacao={selection}
+          />
       </Modal>
-    </S.CardsWrapper>
+    </CardsWrapper>
   );
 };
 

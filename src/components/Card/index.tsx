@@ -30,6 +30,7 @@ type CardProps = {
   name: string;
   leftInfo: string;
   rightInfo: string;
+  removeDisabled?: boolean;
   onEdition?: () => void;
   onRemoval?: () => void;
 };
@@ -70,7 +71,7 @@ export const Card = (props: CardProps) => {
             <EditIcon color="white"/>
           </Button>
           <Button
-            name="removerButton" type="button"
+            name="removerButton" type="button" disabled={props.removeDisabled}
             onClickFunction={() => setConfirm(true)}>
             <DeleteIcon color="white"/>
           </Button>
