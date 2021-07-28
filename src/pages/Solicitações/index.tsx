@@ -82,7 +82,7 @@ const Solicitacoes = () => {
       <Modal
         visible={open}
         close={() => fecharCadastro()}
-        title={(!viewOnly && "Nova ") + "Solicitação"}>
+        title={(!viewOnly ? "Nova " : "") + "Solicitação"}>
           <SolicitacaoForm
             viewOnly={viewOnly}
             novoRegistro={novoRegistro}

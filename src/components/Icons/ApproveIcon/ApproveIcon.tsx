@@ -13,9 +13,9 @@ export const ApproveIcon = ({ color }: ApproveIconProps) => {
       <g
         id="Icons"
         stroke="none"
-        stroke-width="1"
+        strokeWidth="1"
         fill="none"
-        fill-rule="evenodd">
+        fillRule="evenodd">
         <g id="Rounded" transform="translate(-646.000000, -200.000000)">
           <g id="Action" transform="translate(100.000000, 100.000000)">
             <g id="-Round-/-Action-/-check_circle" transform="translate(544.000000, 98.000000)">

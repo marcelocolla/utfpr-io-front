@@ -110,7 +110,7 @@ const CadastroUsuario = (params: UserProps) => {
       <Modal
         visible={open}
         close={() => fecharCadastro()}
-        title={(!viewOnly && "Novo ") + capitalize(tipoUsuario)}>
+        title={(!viewOnly ? "Novo " : "") + capitalize(tipoUsuario)}>
           { tipoUsuario === "professor" && (
             <ProfessorForm viewOnly={viewOnly} id_usuario={selection} />)}
           { tipoUsuario === "deseg" && (
